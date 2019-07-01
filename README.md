@@ -1,1 +1,3 @@
 # Yeric Study
+
+Project is under construction...

@@ -14,3 +14,9 @@
 Route::get('/', function () {
     return view('welcome');
 });
+
+Auth::routes();
+
+Route::get('/adminpages/{pagename}', 'admin\commonController@adminpages');
+
+Route::get('admin/{module}/{method?}/{optional?}/{optional2?}/{optional3?}', 'admin\commonController@adminmain');

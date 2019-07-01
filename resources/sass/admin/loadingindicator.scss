@@ -1,0 +1,19 @@
+.loading-indicator {
+    position: fixed;
+    bottom: 10px;
+    right: 5px;
+    height: 30px;
+    background-color: #7772e2c2;
+    border-radius: 6px;
+    line-height: 30px;
+    padding-left: 10px;
+    padding-right: 10px;
+    color: white;
+    box-shadow: 2px 2px 2px #7b7a7a;
+    &.ng-hide {
+        transform: translate(100%, 0px);
+    }
+    &.ng-hide-add,&.ng-hide-remove {
+        transition: ease-out 0.2s;
+    }
+}
