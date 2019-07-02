@@ -16,7 +16,14 @@ export default systemmodule.config(['$stateProvider', '$locationProvider', funct
     $stateProvider.state('system.topics.summary', {
         url: '/summary',
         templateUrl: `${baseUrl}adminpages/system.topicssummary`,
-        controller: 'topicssummaryctl'
+        controller: 'topicssummaryctl',
+        resolve: {
+            summaryData: ['Admininterface', function (Admininterface) {
+                return Admininterface.gettopicsummary().$promise.then(response => {
+                    return response.result ? response.data : null;
+                })
+            }]
+        }
     });
 
     $stateProvider.state('system.topics.add', {
@@ -24,7 +31,7 @@ export default systemmodule.config(['$stateProvider', '$locationProvider', funct
         templateUrl: `${baseUrl}adminpages/system.edittopic`,
         controller: 'edittopicctl',
         resolve: {
-            coursesList: ['Persist', 'Admininterface', function(Persist, Admininterface) {
+            coursesList: ['Persist', 'Admininterface', function (Persist, Admininterface) {
                 return Persist.shared.coursesList ? Persist.shared.coursesList : Admininterface.getcoursesList().$promise.then(response => {
                     if (response.result) {
                         Persist.shared.coursesList = response.data;
@@ -34,7 +41,7 @@ export default systemmodule.config(['$stateProvider', '$locationProvider', funct
                     }
                 })
             }],
-            topicData: [function() {
+            topicData: [function () {
                 return null;
             }]
         }

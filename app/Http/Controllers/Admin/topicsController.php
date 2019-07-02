@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Topics as Topics;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use App\Models\Topics as Topics;
 
 class topicsController extends Controller
 {
@@ -51,12 +51,29 @@ class topicsController extends Controller
 
     public function summary()
     {
+        $summaryData = [
+            ['level' => 'PSCHOOL', 'data' => []],
+            ['level' => 'JHSCHOOL', 'data' => []],
+            ['level' => 'SHSCHOOL', 'data' => []],
+        ];
         try {
-            $summaryRecord = DB::table('topics')
-                ->leftJoin('courses', 'courses.id', '=', 'topics.course_id')
-                ->select('courses.name', 'topics.grade', DB::raw('COUNT(topics.id) AS topics_count'))
-                ->groupBy('courses.name', 'topics.grade')
-                ->get();
+            for ($index = 0; $index < count($summaryData); $index++) {
+                $summaryRecord = DB::table('topics')
+                    ->leftJoin('courses', 'courses.id', '=', 'topics.course_id')
+                    ->select('courses.name', 'topics.grade', DB::raw('COUNT(topics.id) AS topics_count'))
+                    ->where('topics.level', $summaryData[$index]['level'])
+                    ->groupBy('courses.name', 'topics.grade')
+                    ->get();
+                
+                foreach ($summaryRecord as $su) {
+                    $summaryData[$index]['data'][] = [
+                        'course_name' => $su->name,
+                        'grade' => $su->grade,
+                        'topics_count' => $su->topics_count
+                    ];
+                }
+            }
+
         } catch (\Illuminate\Database\QueryException $e) {
             Log::error('topicsController->savetopic->QueryException异常' . $e->getMessage());
             return $this->failureresponse('数据库查询出错了');
@@ -64,5 +81,7 @@ class topicsController extends Controller
             Log::error('topicsController->savetopic->Exception' . $e->getMessage());
             return $this->failureresponse('操作失败.');
         }
+        
+        return $this->successresponse($summaryData);
     }
 }

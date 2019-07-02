@@ -1,14 +1,15 @@
+@verbatim
 <h6 class="border-bottom pb-2 font-weight-bold mt-3">
     <span class="head-border-left">题目汇总</span>
 </h6>
 
-<div class="card mb-3">
+<div class="card mb-3" ng-repeat="su in summaryData" ng-show="su.data.length > 0">
     <div class="card-header text-white bg-secondary d-flex justify-content-between">
-        <span>小学</span>
+        <span>{{getlevelname(su.level)}}</span>
         <span class="cursor-pointer" ng-click="addtopic('PSCHOOL')"><i class="fa fa-plus fa-fw" aria-hidden="true"></i></span>
     </div>
     <div class="card-body">
-        <h5 class="card-title">题目总数：100</h5>
+        <h5 class="card-title">题目总数：{{getlevelsum(su)}}</h5>
     </div>
     <table class="table mb-0 table-hover">
         <thead>
@@ -19,11 +20,12 @@
             </tr>
         </thead>
         <tbody>
-            <tr class="cursor-pointer">
-                <td>英语</td>
-                <td>2</td>
-                <td>100</td>
+            <tr class="cursor-pointer" ng-repeat="da in su.data">
+                <td>{{da.course_name}}</td>
+                <td>{{da.grade}}</td>
+                <td>{{da.topics_count}}</td>
             </tr>
         </tbody>
     </table>
 </div>
+@endverbatim
