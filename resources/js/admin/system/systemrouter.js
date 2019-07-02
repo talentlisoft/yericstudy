@@ -22,6 +22,21 @@ export default systemmodule.config(['$stateProvider', '$locationProvider', funct
     $stateProvider.state('system.topics.add', {
         url: '/add',
         templateUrl: `${baseUrl}adminpages/system.edittopic`,
-        controller: 'edittopicctl'
+        controller: 'edittopicctl',
+        resolve: {
+            coursesList: ['Persist', 'Admininterface', function(Persist, Admininterface) {
+                return Persist.shared.coursesList ? Persist.shared.coursesList : Admininterface.getcoursesList().$promise.then(response => {
+                    if (response.result) {
+                        Persist.shared.coursesList = response.data;
+                        return Persist.shared.coursesList;
+                    } else {
+                        return null;
+                    }
+                })
+            }],
+            topicData: [function() {
+                return null;
+            }]
+        }
     });
 }]);

@@ -9,5 +9,17 @@ export default angular.module('Admininterface', ['ngResource']).service('Adminin
             timeout: 2000,
             url: `${baseUrl}rest/common/changepassword`
         },
+        getcoursesList: {
+            method: 'get',
+            isArray: false,
+            timeout: 2000,
+            url: `${baseUrl}rest/courses/list`
+        },
+        savetpic: {
+            method: 'post',
+            isArray: false,
+            timeout: 3000,
+            url: `${baseUrl}rest/courses/save`
+        }
     });
 }]);

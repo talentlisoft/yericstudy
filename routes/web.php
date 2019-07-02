@@ -20,3 +20,6 @@ Auth::routes();
 Route::get('/adminpages/{pagename}', 'admin\commonController@adminpages');
 
 Route::get('admin/{module}/{method?}/{optional?}/{optional2?}/{optional3?}', 'admin\commonController@adminmain');
+
+Route::get('rest/courses/list', 'admin\coursesController@getcoursesList');
+Route::post('rest/courses/save', 'admin\topicsController@savetopic');
