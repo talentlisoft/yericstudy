@@ -1,6 +1,6 @@
 import systemmodule from './systemmodule';
 
-export default systemmodule.controller('edittopicctl', ['$scope', 'Admininterface', 'toastr', 'Persist', 'coursesList', 'topicData', function($scope, Admininterface, toastr, Persist, coursesList, topicData) {
+export default systemmodule.controller('edittopicctl', ['$scope', 'Admininterface', 'toastr', 'Persist', 'coursesList', 'topicData', '$window', function($scope, Admininterface, toastr, Persist, coursesList, topicData, $window) {
     $scope.per = Persist;
     $scope.coursesList = coursesList;
     $scope.saving = false;
@@ -33,8 +33,15 @@ export default systemmodule.controller('edittopicctl', ['$scope', 'Admininterfac
     $scope.saveandnew = () => {
         $scope.savetopic(()=> {
             $scope.initnewtopicData();
+            document.querySelector('#inputquestion').focus();
         })
     };
+
+    $scope.saveandclose = () => {
+        $scope.savetopic(() => {
+            $window.history.back();
+        });
+    }
 
     $scope.savetopic = (successcallback = null) => {
         $scope.saving = true;

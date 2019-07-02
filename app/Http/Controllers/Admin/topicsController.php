@@ -48,4 +48,21 @@ class topicsController extends Controller
             return $this->failureresponse('操作失败.');
         }
     }
+
+    public function summary()
+    {
+        try {
+            $summaryRecord = DB::table('topics')
+                ->leftJoin('courses', 'courses.id', '=', 'topics.course_id')
+                ->select('courses.name', 'topics.grade', DB::raw('COUNT(topics.id) AS topics_count'))
+                ->groupBy('courses.name', 'topics.grade')
+                ->get();
+        } catch (\Illuminate\Database\QueryException $e) {
+            Log::error('topicsController->savetopic->QueryException异常' . $e->getMessage());
+            return $this->failureresponse('数据库查询出错了');
+        } catch (Exception $e) {
+            Log::error('topicsController->savetopic->Exception' . $e->getMessage());
+            return $this->failureresponse('操作失败.');
+        }
+    }
 }

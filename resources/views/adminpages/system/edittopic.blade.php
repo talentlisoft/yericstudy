@@ -66,7 +66,7 @@
         </div>
     </div>
     <div class="d-flex justify-content-end">
-        <button type="button" class="btn btn-secondary mr-2" ng-disabled="saving">保存并关闭</button>
+        <button type="button" class="btn btn-secondary mr-2" ng-disabled="saving" ng-click="saveandclose()">保存并关闭</button>
         <button type="submit" class="btn btn-primary" ng-disabled="saving"><i class="fa fa-fw" ng-class="saving?'fa-spinner fa-pulse':'fa-floppy-o'" aria-hidden="true"></i> 保存并继续</button>
     </div>
 </form>
