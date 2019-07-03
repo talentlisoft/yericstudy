@@ -6,7 +6,7 @@
 <div class="card mb-3" ng-repeat="su in summaryData" ng-show="su.data.length > 0">
     <div class="card-header text-white bg-secondary d-flex justify-content-between">
         <span>{{getlevelname(su.level)}}</span>
-        <span class="cursor-pointer" ng-click="addtopic('PSCHOOL')"><i class="fa fa-plus fa-fw" aria-hidden="true"></i></span>
+        <span class="cursor-pointer" ng-click="addtopic(su.level)"><i class="fa fa-plus fa-fw" aria-hidden="true"></i></span>
     </div>
     <div class="card-body">
         <h5 class="card-title">题目总数：{{getlevelsum(su)}}</h5>
@@ -21,9 +21,9 @@
         </thead>
         <tbody>
             <tr class="cursor-pointer" ng-repeat="da in su.data">
-                <td>{{da.course_name}}</td>
-                <td>{{da.grade}}</td>
-                <td>{{da.topics_count}}</td>
+                <td ng-click="addtopic(su.level, da.course_id, da.grade)">{{da.course_id}}</td>
+                <td ng-click="addtopic(su.level, da.course_id, da.grade)">{{da.grade}}</td>
+                <td ng-click="gotolist(su.level, da.course_id, da.grade)">{{da.topics_count}}</td>
             </tr>
         </tbody>
     </table>

@@ -7,6 +7,7 @@ use App\Models\Topics as Topics;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Carbon\Carbon;
 
 class topicsController extends Controller
 {
@@ -60,14 +61,15 @@ class topicsController extends Controller
             for ($index = 0; $index < count($summaryData); $index++) {
                 $summaryRecord = DB::table('topics')
                     ->leftJoin('courses', 'courses.id', '=', 'topics.course_id')
-                    ->select('courses.name', 'topics.grade', DB::raw('COUNT(topics.id) AS topics_count'))
+                    ->select('courses.name', 'topics.grade', 'topics.course_id', DB::raw('COUNT(topics.id) AS topics_count'))
                     ->where('topics.level', $summaryData[$index]['level'])
-                    ->groupBy('courses.name', 'topics.grade')
+                    ->groupBy('courses.name', 'topics.course_id', 'topics.grade')
                     ->get();
                 
                 foreach ($summaryRecord as $su) {
                     $summaryData[$index]['data'][] = [
                         'course_name' => $su->name,
+                        'course_id' => $su->course_id,
                         'grade' => $su->grade,
                         'topics_count' => $su->topics_count
                     ];
@@ -83,5 +85,49 @@ class topicsController extends Controller
         }
         
         return $this->successresponse($summaryData);
+    }
+
+    public function topicsList(Request $request)
+    {
+        $this->validate($request, [
+            'level' => 'nullable',
+            'grade' => 'nullable',
+            'course' => 'nullable',
+            'search_content' => 'nullable'
+        ]);
+        try {
+            $topicList = [];
+            $topicRecord = DB::table('topics')
+                ->select('topics.id', 'topics.question', 'topics.updated_at')
+                ->where(function($query) use ($request) {
+                    if (!is_null($request->input('level'))) {
+                        $query->where('topics.level', $request->input('level'));
+                    }
+                    if (!is_null($request->input('grade'))) {
+                        $query->where('topics.grade', $request->input('grade'));
+                    }
+                    if (!is_null($request->input('course'))) {
+                        $query->where('topics.course_id', $request->input('course'));
+                    }
+                    if (!is_null($request->input('searchcontent'))) {
+                        $query->where('topics.question', 'LIKE', '%'.$request->input('searchcontent').'%');
+                    }
+                })
+                ->paginate(20);
+            foreach ($topicRecord as $topic) {
+                $topicList[] = [
+                    'id' => $topic->id,
+                    'question' => mb_strimwidth($topic->question, 0, 10, '...'),
+                    'updated_at' => (new Carbon($topic->updated_at))->toDateString()
+                ];
+            }
+            return $this->successresponse(['list' => $topicList, 'total' => $topicRecord->total()]);
+        } catch (\Illuminate\Database\QueryException $e) {
+            Log::error('topicsController->topicsList->QueryException异常' . $e->getMessage());
+            return $this->failureresponse('数据库查询出错了');
+        } catch (Exception $e) {
+            Log::error('topicsController->topicsList->Exception' . $e->getMessage());
+            return $this->failureresponse('操作失败.');
+        }
     }
 }

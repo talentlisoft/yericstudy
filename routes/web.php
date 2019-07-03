@@ -24,3 +24,4 @@ Route::get('admin/{module}/{method?}/{optional?}/{optional2?}/{optional3?}', 'ad
 Route::get('rest/courses/list', 'admin\coursesController@getcoursesList');
 Route::post('rest/courses/save', 'admin\topicsController@savetopic');
 Route::get('rest/topics/summary', 'admin\topicsController@summary');
+Route::post('rest/topics/list', 'admin\topicsController@topicsList');

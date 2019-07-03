@@ -7,6 +7,13 @@ export default appmodule.factory('Persist', [function() {
             selectedlevel: null,
             selectedgrade: null
         },
+        topicsList: {
+            optionexpanded: true,
+            selectedcourse: null,
+            selectedlevel: null,
+            selectedgrade: null,
+            total: 0
+        },
         shared: {
             coursesList: null,
             levelList: [
