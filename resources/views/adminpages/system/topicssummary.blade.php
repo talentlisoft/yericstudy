@@ -21,7 +21,7 @@
         </thead>
         <tbody>
             <tr class="cursor-pointer" ng-repeat="da in su.data">
-                <td ng-click="addtopic(su.level, da.course_id, da.grade)">{{da.course_id}}</td>
+                <td ng-click="addtopic(su.level, da.course_id, da.grade)">{{da.course_name}}</td>
                 <td ng-click="addtopic(su.level, da.course_id, da.grade)">{{da.grade}}</td>
                 <td ng-click="gotolist(su.level, da.course_id, da.grade)">{{da.topics_count}}</td>
             </tr>

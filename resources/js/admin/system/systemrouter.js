@@ -57,6 +57,31 @@ export default systemmodule.config(['$stateProvider', '$locationProvider', funct
         }
     });
 
+    $stateProvider.state('system.topics.detail', {
+        url: '/modify/:topicId',
+        controller: 'edittopicctl',
+        templateUrl: `${baseUrl}adminpages/system.edittopic`,
+        resolve: {
+            coursesList: ['Persist', 'Admininterface', function (Persist, Admininterface) {
+                return Persist.shared.coursesList ? Persist.shared.coursesList : Admininterface.getcoursesList().$promise.then(response => {
+                    if (response.result) {
+                        Persist.shared.coursesList = response.data;
+                        return Persist.shared.coursesList;
+                    } else {
+                        return null;
+                    }
+                })
+            }],
+            topicData: ['$stateParams', 'Admininterface', function ($stateParams, Admininterface) {
+                return Admininterface.gettopicdetail({
+                    topicId: $stateParams.topicId
+                }).$promise.then(response=> {
+                    return response.result ? response.data : null
+                });
+            }]
+        }
+    });
+
     $stateProvider.state('system.topics.list', {
         url: '/list',
         templateUrl: `${baseUrl}adminpages/system.topicslist`,

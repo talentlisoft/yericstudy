@@ -1,7 +1,7 @@
 import systemmodule from './systemmodule';
 import persist from '../persist';
 
-export default systemmodule.controller('topicslistctl', ['$scope', 'Admininterface', 'topicsList', 'Persist', 'coursesList', function($scope, Admininterface, topicsList, Persist, coursesList) {
+export default systemmodule.controller('topicslistctl', ['$scope', 'Admininterface', 'topicsList', 'Persist', 'coursesList', '$state', function($scope, Admininterface, topicsList, Persist, coursesList, $state) {
     $scope.topicsList = topicsList;
     $scope.coursesList = coursesList;
     $scope.searchcontent = null;
@@ -11,6 +11,11 @@ export default systemmodule.controller('topicslistctl', ['$scope', 'Admininterfa
     $scope.researchlist = () => {
         $scope.currentPage = 1;
         $scope.search();
+    };
+
+
+    $scope.gettypedesc = topic => {
+        return `${Persist.shared.levelList.find(lv => lv.id == topic.level).desc}${topic.grade}年级（${topic.course_name}）`;
     };
 
     $scope.search = () => {
@@ -28,4 +33,16 @@ export default systemmodule.controller('topicslistctl', ['$scope', 'Admininterfa
         })
     };
 
-}])
+    $scope.gotodetail = topicItem => {
+        $state.go('system.topics.detail', {topicId: topicItem.id});
+    };
+
+    $scope.addtopic = () => {
+        Persist.edittopic.selectedcourse = Persist.topicsList.selectedcourse;
+        Persist.edittopic.selectedlevel = Persist.topicsList.selectedlevel;
+        Persist.edittopic.selectedgrade = Persist.topicsList.selectedgrade;
+
+        $state.go('system.topics.add');
+    }
+
+}]);

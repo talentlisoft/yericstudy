@@ -25,3 +25,4 @@ Route::get('rest/courses/list', 'admin\coursesController@getcoursesList');
 Route::post('rest/courses/save', 'admin\topicsController@savetopic');
 Route::get('rest/topics/summary', 'admin\topicsController@summary');
 Route::post('rest/topics/list', 'admin\topicsController@topicsList');
+Route::get('rest/topics/detail/{topicId}', 'admin\topicsController@topicDetail');

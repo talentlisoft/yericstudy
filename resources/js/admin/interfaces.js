@@ -32,6 +32,13 @@ export default angular.module('Admininterface', ['ngResource']).service('Adminin
             isArray: false,
             timeout: 2000,
             url: `${baseUrl}rest/topics/list`
+        },
+        gettopicdetail: {
+            method: 'get',
+            isArray: false,
+            timeout: 2000,
+            url: `${baseUrl}rest/topics/detail/:topicId`,
+            topicId: '@topicId'
         }
     });
 }]);

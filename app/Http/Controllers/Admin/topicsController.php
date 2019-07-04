@@ -98,7 +98,8 @@ class topicsController extends Controller
         try {
             $topicList = [];
             $topicRecord = DB::table('topics')
-                ->select('topics.id', 'topics.question', 'topics.updated_at')
+                ->leftJoin('courses', 'courses.id', 'topics.course_id')
+                ->select('topics.id', 'topics.question', 'topics.updated_at', 'topics.level', 'topics.grade', 'courses.name')
                 ->where(function($query) use ($request) {
                     if (!is_null($request->input('level'))) {
                         $query->where('topics.level', $request->input('level'));
@@ -113,12 +114,16 @@ class topicsController extends Controller
                         $query->where('topics.question', 'LIKE', '%'.$request->input('searchcontent').'%');
                     }
                 })
+                ->orderBy('topics.updated_at', 'desc')
                 ->paginate(20);
             foreach ($topicRecord as $topic) {
                 $topicList[] = [
                     'id' => $topic->id,
                     'question' => mb_strimwidth($topic->question, 0, 10, '...'),
-                    'updated_at' => (new Carbon($topic->updated_at))->toDateString()
+                    'level' => $topic->level,
+                    'grade' => $topic->grade,
+                    'course_name' => $topic->name,
+                    'updated_at' => (new Carbon($topic->updated_at))->locale('zh_CN')->diffForHumans(Carbon::now())
                 ];
             }
             return $this->successresponse(['list' => $topicList, 'total' => $topicRecord->total()]);
@@ -127,6 +132,31 @@ class topicsController extends Controller
             return $this->failureresponse('数据库查询出错了');
         } catch (Exception $e) {
             Log::error('topicsController->topicsList->Exception' . $e->getMessage());
+            return $this->failureresponse('操作失败.');
+        }
+    }
+
+    public function topicDetail($topicId)
+    {
+        try {
+            $topicRecord = Topics::find($topicId);
+            if ($topicRecord) {
+                return $this->successresponse([
+                    'id' => $topicRecord->id,
+                    'level' => $topicRecord->level,
+                    'grade' => $topicRecord->grade,
+                    'course' => $topicRecord->course_id,
+                    'question' => $topicRecord->question,
+                    'answer' => $topicRecord->answer
+                ]);
+            } else {
+                return $this->failureresponse('No record');
+            }
+        } catch (\Illuminate\Database\QueryException $e) {
+            Log::error('topicsController->topicDetail->QueryException异常' . $e->getMessage());
+            return $this->failureresponse('数据库查询出错了');
+        } catch (Exception $e) {
+            Log::error('topicsController->topicDetail->Exception' . $e->getMessage());
             return $this->failureresponse('操作失败.');
         }
     }
