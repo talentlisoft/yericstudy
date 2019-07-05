@@ -16,6 +16,7 @@ export default appmodule.factory('Persist', [function() {
         },
         shared: {
             coursesList: null,
+            traineesList: null,
             levelList: [
                 {'id': 'PSCHOOL', 'desc': '小学'},
                 {'id': 'JHSCHOOL', 'desc': '初中'},

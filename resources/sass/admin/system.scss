@@ -1,0 +1,16 @@
+.trainee-item {
+    position: relative;
+    &.bg-light {
+        i {
+            display: none
+        }
+    }
+    &.bg-success {
+        i {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            font-size: 20px;
+        }
+    }
+}

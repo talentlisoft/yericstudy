@@ -15,7 +15,7 @@ export default systemmodule.config(['$stateProvider', '$locationProvider', funct
 
     $stateProvider.state('system.topics.summary', {
         url: '/summary',
-        templateUrl: `${baseUrl}adminpages/system.topicssummary`,
+        templateUrl: `${baseUrl}adminpages/system.topics.topicssummary`,
         controller: 'topicssummaryctl',
         resolve: {
             summaryData: ['Admininterface', function (Admininterface) {
@@ -38,7 +38,7 @@ export default systemmodule.config(['$stateProvider', '$locationProvider', funct
 
     $stateProvider.state('system.topics.add', {
         url: '/add',
-        templateUrl: `${baseUrl}adminpages/system.edittopic`,
+        templateUrl: `${baseUrl}adminpages/system.topics.edittopic`,
         controller: 'edittopicctl',
         resolve: {
             coursesList: ['Persist', 'Admininterface', function (Persist, Admininterface) {
@@ -60,7 +60,7 @@ export default systemmodule.config(['$stateProvider', '$locationProvider', funct
     $stateProvider.state('system.topics.detail', {
         url: '/modify/:topicId',
         controller: 'edittopicctl',
-        templateUrl: `${baseUrl}adminpages/system.edittopic`,
+        templateUrl: `${baseUrl}adminpages/system.topics.edittopic`,
         resolve: {
             coursesList: ['Persist', 'Admininterface', function (Persist, Admininterface) {
                 return Persist.shared.coursesList ? Persist.shared.coursesList : Admininterface.getcoursesList().$promise.then(response => {
@@ -84,7 +84,7 @@ export default systemmodule.config(['$stateProvider', '$locationProvider', funct
 
     $stateProvider.state('system.topics.list', {
         url: '/list',
-        templateUrl: `${baseUrl}adminpages/system.topicslist`,
+        templateUrl: `${baseUrl}adminpages/system.topics.topicslist`,
         controller: 'topicslistctl',
         resolve: {
             coursesList: ['Persist', 'Admininterface', function (Persist, Admininterface) {
@@ -109,6 +109,47 @@ export default systemmodule.config(['$stateProvider', '$locationProvider', funct
                         return response.data.list;
                     }
                 });
+            }]
+        }
+    });
+
+    $stateProvider.state('system.trainings', {
+        url: '/trainings',
+        template: `<ui-view class="w-100 d-block uiview"></ui-view>`
+    });
+
+    $stateProvider.state('system.trainings.list', {
+        url: '/list',
+        templateUrl: `${baseUrl}adminpages/system.trainings.list`,
+        controller: 'trainingslistctl',
+        data: {
+            pageTitle: '训练列表'
+        },
+        resolve: {
+            trainintsList: ['Admininterface', function(Admininterface) {
+                return null;
+            }]
+        }
+    });
+
+    $stateProvider.state('system.trainings.add', {
+        url: '/add',
+        templateUrl: `${baseUrl}adminpages/system.trainings.edit`,
+        controller: 'edittrainingctl',
+        data: {
+            pageTitle: '添加训练'
+        },
+        resolve: {
+            traineesList: ['Persist', 'Admininterface', function(Persist, Admininterface) {
+                return Persist.shared.traineesList ? Persist.shared.traineesList : Admininterface.gettraineelist().$promise.then(response => {
+                    if (response.result) {
+                        Persist.shared.traineesList = response.data;
+                        return Persist.shared.traineesList;
+                    }
+                })
+            }],
+            trainingData: [function() {
+                return null;
             }]
         }
     });
