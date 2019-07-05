@@ -45,6 +45,12 @@ export default angular.module('Admininterface', ['ngResource']).service('Adminin
             isArray: false,
             timeout: 2000,
             url: `${baseUrl}rest/trainees/list`
+        },
+        gettrainingtopicslist: {
+            method: 'post',
+            isArray: false,
+            timeout: 2000,
+            url: `${baseUrl}rest/trainees/topicslist`
         }
     });
 }]);

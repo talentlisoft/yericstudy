@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -81,14 +82,16 @@ class trainingController extends Controller
             $topicList = [];
             foreach ($topicRecord as $to) {
                 $topicList[] = [
-                    'id' => $topic->id,
-                    'question' => mb_strimwidth($topic->question, 0, 10, '...'),
-                    'level' => $topic->level,
-                    'grade' => $topic->grade,
-                    'course_name' => $topic->name,
-                    'updated_at' => (new Carbon($topic->updated_at))->locale('zh_CN')->diffForHumans(Carbon::now())
+                    'id' => $to->id,
+                    'question' => mb_strimwidth($to->question, 0, 10, '...'),
+                    'level' => $to->level,
+                    'grade' => $to->grade,
+                    'course_name' => $to->name,
+                    'updated_at' => (new Carbon($to->updated_at))->locale('zh_CN')->diffForHumans(Carbon::now())
                 ];
             }
+
+            return $this->successresponse(['list' => $topicList, 'total' => $topicRecord->total()]);
         } catch (\Illuminate\Database\QueryException $e) {
             Log::error('trainingController->gettopicsList->QueryException异常' . $e->getMessage());
             return $this->failureresponse('数据库查询出错了');

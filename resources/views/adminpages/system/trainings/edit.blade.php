@@ -62,14 +62,14 @@
 </form>
 
 <ul class="nav nav-tabs">
-    <li class="nav-item">
-        <a class="nav-link" href="#">最近错过</a>
+    <li class="nav-item" ng-click="conditions.mode='RECENT'">
+        <a class="nav-link" ng-class="conditions.mode=='RECENT'?'active':''" href>最近错过</a>
     </li>
-    <li class="nav-item">
-        <a class="nav-link" href="#">曾经错过</a>
+    <li class="nav-item" ng-click="conditions.mode='EVER'">
+        <a class="nav-link" ng-class="conditions.mode=='EVER'?'active':''" href>曾经错过</a>
     </li>
-    <li class="nav-item">
-        <a class="nav-link active" href="#">随机</a>
+    <li class="nav-item" ng-click="conditions.mode='RADOM'">
+        <a class="nav-link" ng-class="conditions.mode=='RADOM'?'active':''" href>随机</a>
     </li>
 </ul>
 @endverbatim
