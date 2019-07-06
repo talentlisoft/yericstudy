@@ -1,4 +1,5 @@
 @verbatim
+<div>
 <h6 class="border-bottom pb-2 font-weight-bold mt-3 mb-3">
     <span class="head-border-left">选择受训人</span>
 </h6>
@@ -61,7 +62,7 @@
     </div>
 </form>
 
-<ul class="nav nav-tabs">
+<ul class="nav nav-tabs mb-3">
     <li class="nav-item" ng-click="conditions.mode='RECENT'">
         <a class="nav-link" ng-class="conditions.mode=='RECENT'?'active':''" href>最近错过</a>
     </li>
@@ -72,4 +73,42 @@
         <a class="nav-link" ng-class="conditions.mode=='RADOM'?'active':''" href>随机</a>
     </li>
 </ul>
+<table class="table table-striped table-hover picking-topics">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>类型</th>
+            <th>题目</th>
+            <th>更新日期</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="topic in topicsList" ng-class="istopicselected(topic)?'table-success':''">
+            <td class="cursor-pointer" ng-click="selecttopic(topic)">
+                <span class="topic-index">{{$index + 1}}</span>
+                <span class="topic-selected"><i class="fa fa-check" aria-hidden="true"></i></span>
+            </td>
+            <td>{{gettypedesc(topic)}}</td>
+            <td>{{topic.question}}</td>
+            <td>{{topic.updated_at}}</td>
+        </tr>
+    </tbody>
+</table>
+
+<div id="selected-topics-pane" class="selected-topics bg-info text-white" ng-show="trainingData.selectedtopics.length > 0" ng-class="showselectedtopics?'show-content':''" click-outside="showselectedtopics = false">
+    <div class="summary cursor-pointer bg-primary" ng-click="showselectedtopics = !showselectedtopics">
+        {{trainingData.selectedtopics.length}} 题
+    </div>
+    <div class="content">
+        <div class="selected-item pl-2 pr-2" ng-repeat="topic in trainingData.selectedtopics">
+            <p class="d-flex justify-content-between">
+                <span>{{topic.grade}}年级{{topic.course_name}}</span>
+                <span class="cursor-pointer" ng-click="removetopic(topic)"><i class="fa fa-times" aria-hidden="true"></i></span>
+            </p>
+            <p>
+                {{topic.question}}
+            </p>
+        </div>
+    </div>
+</div>
 @endverbatim

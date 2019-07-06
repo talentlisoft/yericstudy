@@ -1,9 +1,11 @@
 import systemmodule from './systemmodule';
 
-export default systemmodule.controller('edittrainingctl', ['$scope', 'Persist', 'Admininterface', 'traineesList', 'trainingData', function($scope, Persist, Admininterface, traineesList, trainingData) {
+export default systemmodule.controller('edittrainingctl', ['$scope', 'Persist', 'Admininterface', 'traineesList', 'trainingData', '$timeout', function($scope, Persist, Admininterface, traineesList, trainingData, $timeout) {
     $scope.traineesList = traineesList;
+    $scope.topicsList = null;
     $scope.per = Persist;
     $scope.total = 0;
+    $scope.showselectedtopics = false;
 
     $scope.conditions = {
         selectedlevel: null,
@@ -57,4 +59,34 @@ export default systemmodule.controller('edittrainingctl', ['$scope', 'Persist', 
         $scope.conditions.currentPage = 1;
         $scope.gettopicslist();
     }
+    $scope.gettypedesc = topic => {
+        return `${Persist.shared.levelList.find(lv => lv.id == topic.level).desc}${topic.grade}年级（${topic.course_name}）`;
+    };
+
+    $scope.selecttopic = topic => {
+        let selectedone = $scope.trainingData.selectedtopics.find(tp => tp.id == topic.id);
+        if (selectedone) {
+            let index = $scope.trainingData.selectedtopics.indexOf(selectedone);
+            if (index > -1) {
+                $scope.trainingData.selectedtopics.splice(index, 1);
+            }
+        } else {
+            $scope.trainingData.selectedtopics.push(topic);
+        }
+        if ($scope.trainingData.selectedtopics.length === 0) {
+            $scope.showselectedtopics = false;
+        }
+    };
+    
+    $scope.istopicselected = topic => $scope.trainingData.selectedtopics.find(tp => tp.id == topic.id) ? true : false;
+
+    $scope.removetopic = topic => {
+        let index = $scope.trainingData.selectedtopics.indexOf(topic);
+        if (index > -1) {
+            if ($scope.trainingData.selectedtopics.length === 1) {
+                $scope.showselectedtopics = false;
+            }
+            $timeout(() =>{$scope.trainingData.selectedtopics.splice(index, 1)}, 0);
+        }
+    };
 }]);
