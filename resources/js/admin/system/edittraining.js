@@ -1,11 +1,12 @@
 import systemmodule from './systemmodule';
 
-export default systemmodule.controller('edittrainingctl', ['$scope', 'Persist', 'Admininterface', 'traineesList', 'trainingData', '$timeout', function($scope, Persist, Admininterface, traineesList, trainingData, $timeout) {
+export default systemmodule.controller('edittrainingctl', ['$scope', 'Persist', 'Admininterface', 'traineesList', 'trainingData', '$timeout', 'toastr', '$state', function($scope, Persist, Admininterface, traineesList, trainingData, $timeout, toastr, $state) {
     $scope.traineesList = traineesList;
     $scope.topicsList = null;
     $scope.per = Persist;
     $scope.total = 0;
     $scope.showselectedtopics = false;
+    $scope.saving = false;
 
     $scope.conditions = {
         selectedlevel: null,
@@ -19,7 +20,8 @@ export default systemmodule.controller('edittrainingctl', ['$scope', 'Persist', 
     if (!trainingData) {
         $scope.trainingData = {
             selectedtrainees: [],
-            selectedtopics: []
+            selectedtopics: [],
+            title: null
         };
     }
     $scope.selecttrainee = trainee => {
@@ -87,6 +89,32 @@ export default systemmodule.controller('edittrainingctl', ['$scope', 'Persist', 
                 $scope.showselectedtopics = false;
             }
             $timeout(() =>{$scope.trainingData.selectedtopics.splice(index, 1)}, 0);
+        }
+    };
+
+    $scope.savetraining = () => {
+        if ($scope.trainingData.selectedtrainees.length > 0) {
+            if ($scope.trainingData.selectedtopics.length > 0) {
+                $scope.saving = true;
+                Admininterface.addtraining({
+                    title: $scope.trainingData.title,
+                    trainees: $scope.trainingData.selectedtrainees,
+                    topics: $scope.trainingData.selectedtopics
+                }, response => {
+                    if (response.result) {
+                        toastr.success('已白布置新测试', '操作成功');
+                        $state.go('system.trainings.list');
+                    } else {
+                        $scope.saving = false;
+                    }
+                }, () => {
+                    $scope.saving = false;
+                });
+            } else {
+                toastr.warning('一题也不出吗？', '请检查');
+            }
+        } else {
+            toastr.warning('请至少一名受训人!', '请检查');
         }
     };
 }]);

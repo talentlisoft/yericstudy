@@ -29,3 +29,4 @@ Route::get('rest/topics/detail/{topicId}', 'Admin\topicsController@topicDetail')
 Route::post('rest/trainings/list', 'Admin\trainingController@trainingsList');
 Route::get('rest/trainees/list', 'Admin\TraineeController@traineeList');
 Route::post('rest/trainees/topicslist', 'Admin\trainingController@gettopicsList');
+Route::post('rest/training/add', 'Admin\trainingController@savetraining');

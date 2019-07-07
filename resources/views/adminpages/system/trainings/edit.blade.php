@@ -95,6 +95,16 @@
     </tbody>
 </table>
 
+<form ng-submit="savetraining()">
+    <h6 class="border-bottom pb-2 font-weight-bold mt-3 mb-3">
+        <span class="head-border-left">训练标题</span>
+    </h6>
+    <input type="text" class="form-control" placeholder="标题" ng-model="trainingData.title" maxlength="50" required>
+
+    <div class="d-flex justify-content-end mt-3">
+        <button type="submit" class="btn btn-primary" ng-disabled="saving"><i class="fa fa-fw" ng-class="saving?'fa-spinner fa-pulse':'fa-floppy-o'" aria-hidden="true"></i> 保存</button>
+    </div>
+</form>
 <div id="selected-topics-pane" class="selected-topics bg-info text-white" ng-show="trainingData.selectedtopics.length > 0" ng-class="showselectedtopics?'show-content':''" click-outside="showselectedtopics = false">
     <div class="summary cursor-pointer bg-primary" ng-click="showselectedtopics = !showselectedtopics">
         {{trainingData.selectedtopics.length}} 题
