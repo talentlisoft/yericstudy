@@ -102,7 +102,7 @@ export default systemmodule.controller('edittrainingctl', ['$scope', 'Persist', 
                     topics: $scope.trainingData.selectedtopics
                 }, response => {
                     if (response.result) {
-                        toastr.success('已白布置新测试', '操作成功');
+                        toastr.success('已布置新测试', '操作成功');
                         $state.go('system.trainings.list');
                     } else {
                         $scope.saving = false;

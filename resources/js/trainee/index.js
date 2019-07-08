@@ -1,0 +1,1 @@
+import traineemodule from './traineemodule';

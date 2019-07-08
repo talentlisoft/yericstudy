@@ -16,3 +16,4 @@ mix.js('resources/js/app.js', 'public/js')
 
 mix.copy('node_modules/angular-i18n/angular-locale_zh-cn.js', 'public/js');
 mix.js('resources/js/admin/index.js', 'public/js/admin.js').sass('resources/sass/admin/index.scss', 'public/css/admin.css').version();
+mix.js('resources/js/trainee/index.js', 'public/js/trainee.js').sass('resources/sass/trainee/index.scss', 'public/css/trainee.css').version();

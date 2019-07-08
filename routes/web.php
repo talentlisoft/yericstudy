@@ -11,15 +11,16 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', 'Trainee\loginController@showloginpage');
+
+Route::post('traineeauth/loing', 'Trainee\loginController@login')->name('traineelogin');
 
 Auth::routes();
 
 Route::get('/adminpages/{pagename}', 'Admin\commonController@adminpages');
 
 Route::get('admin/{module}/{method?}/{optional?}/{optional2?}/{optional3?}', 'Admin\commonController@adminmain');
+Route::get('trainee/{module}/{method?}/{optional?}/{optional2?}/{optional3?}', 'Trainee\commonController@showtraineemainpage');
 
 Route::get('rest/courses/list', 'Admin\coursesController@getcoursesList');
 Route::post('rest/courses/save', 'Admin\topicsController@savetopic');

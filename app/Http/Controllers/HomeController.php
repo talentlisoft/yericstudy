@@ -25,4 +25,9 @@ class HomeController extends Controller
     {
         return view('home');
     }
+
+    public function traineelogin()
+    {
+        return view('auth.traineelogin');
+    }
 }
