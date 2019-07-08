@@ -18,6 +18,7 @@ Route::post('traineeauth/loing', 'Trainee\loginController@login')->name('trainee
 Auth::routes();
 
 Route::get('/adminpages/{pagename}', 'Admin\commonController@adminpages');
+Route::get('/traineepages/{pagename}', 'Trainee\commonController@traineepages');
 
 Route::get('admin/{module}/{method?}/{optional?}/{optional2?}/{optional3?}', 'Admin\commonController@adminmain');
 Route::get('trainee/{module}/{method?}/{optional?}/{optional2?}/{optional3?}', 'Trainee\commonController@showtraineemainpage');

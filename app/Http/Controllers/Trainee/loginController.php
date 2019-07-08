@@ -13,7 +13,7 @@ class loginController extends Controller
     public function __construct()
     {
         $this->middleware('traineeauth')->only('logout');
-        $this->middleware('traineeauth')->only('showloginpage');
+        $this->middleware('traineeguest')->only('showloginpage');
     }
 
     public function showloginpage()
@@ -41,7 +41,7 @@ class loginController extends Controller
                         'avatar' => $traineeRecord->avatar
                     ]]);
                     //Goto trainee main page
-                    return redirect('/trainee');
+                    return redirect('/trainee/mytrain/mytrains');
                 } else {
                     return redirect('/')
                         ->withInput();

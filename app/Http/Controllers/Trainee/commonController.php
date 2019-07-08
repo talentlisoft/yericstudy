@@ -17,4 +17,14 @@ class commonController extends Controller
     {
         return view('main.traineemain', ['user' => ['name' => $trainee->name]]);
     }
+
+    public function traineepages($pagename)
+    {
+        // return dump("adminpages.$pagename");
+        if (view()->exists("traineepages.$pagename")) {
+            return view("traineepages.$pagename");
+        } else {
+            abort(404);
+        }
+    }
 }

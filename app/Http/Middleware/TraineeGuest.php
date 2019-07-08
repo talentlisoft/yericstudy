@@ -19,7 +19,7 @@ class TraineeGuest
         if (is_null($logined_trainee)) {
             return $next($request);
         } else {
-            return redirect('/trainee');
+            return redirect('/trainee/mytrain/mytrains');
         }
     }
     

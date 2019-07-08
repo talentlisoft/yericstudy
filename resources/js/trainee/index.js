@@ -1,1 +1,1 @@
-import traineemodule from './traineemodule';
+import traineerouter from './traineerouter';
