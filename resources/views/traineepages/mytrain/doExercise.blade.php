@@ -7,7 +7,7 @@
     <div class="col-md-8">
         <div class="card">
             <div class="card-header">
-                {{trainingData.finished_count + 1 + currentPos}}
+                {{trainingData.finished_count + 1 + currentPos}} / {{trainingData.finished_count + trainingData.pendding_topics.length}}
             </div>
             <div class="card-body">
                 <div class="form-group row">
@@ -33,7 +33,7 @@
             <div class="card-footer">
                 <div class="progress">
                     <div class="progress-bar bg-success" role="progressbar" style="width: {{(trainingData.finished_count +  currentPos)/(trainingData.finished_count + trainingData.pendding_topics.length)*100}}%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
-                        {{(trainingData.finished_count + currentPos)/(trainingData.finished_count + trainingData.pendding_topics.length)*100}}%
+                        {{getroundprogess()}}%
                     </div>
                 </div>
             </div>

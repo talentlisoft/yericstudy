@@ -28,8 +28,11 @@ class mytrainController extends Controller
             $mytrainRecord = DB::table('trainee_trainings')
                 ->join('trainnings', 'trainnings.id', '=', 'trainee_trainings.training_id')
                 ->leftJoin('training_topics', 'training_topics.training_id', '=', 'trainee_trainings.training_id')
-                ->leftJoin('training_results', 'training_results.trainingtrainee_id', '=', 'trainee_trainings.id')
-                ->select('trainee_trainings.id', 'trainnings.title', 'trainee_trainings.created_at', 'trainee_trainings.status', DB::raw('COUNT(training_topics.id) AS total_topics'), DB::raw('COUNT(training_results.id) AS finished_topics'))
+                ->leftJoin('training_results', function($join) {
+                    $join->on('training_results.trainingtrainee_id', '=', 'trainee_trainings.id');
+                    $join->on('training_results.trainingtopic_id', '=', 'training_topics.topic_id');
+                })
+                ->select('trainee_trainings.id', 'trainnings.title', 'trainee_trainings.created_at', 'trainee_trainings.status', DB::raw('COUNT(training_topics.id) AS total_topics'), DB::raw('SUM(IF(training_results.id IS NULL, 0, 1)) AS finished_topics'))
                 ->groupBy('trainee_trainings.id', 'trainnings.title', 'trainee_trainings.created_at', 'trainee_trainings.status')
                 ->where(function ($query) use ($request) {
                     if ($request->input('scope') == 'PENDDING') {
@@ -70,7 +73,7 @@ class mytrainController extends Controller
                 ->where('trainee_trainings.trainee_id', $trainee->id)
                 ->first();
             $finishedtopics_count = DB::table('training_results')
-                ->where('training_results.trainingtrainee_id')->count();
+                ->where('training_results.trainingtrainee_id', $traineetrainingId)->count();
             $trainingData = [
                 'id' => $traineetrainingId,
                 'title' => $trainingRecord->title,

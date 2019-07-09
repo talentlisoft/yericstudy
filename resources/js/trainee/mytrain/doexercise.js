@@ -37,5 +37,7 @@ export default mytrainModule.controller('doexercisectl', ['$scope', 'trainingDat
             $scope.currentPos++;
             // $scope.answer = null;
         }
-    }
+    };
+
+    $scope.getroundprogess = () => Math.round(($scope.trainingData.finished_count + $scope.currentPos)/($scope.trainingData.finished_count + $scope.trainingData.pendding_topics.length)*100);
 }]);
