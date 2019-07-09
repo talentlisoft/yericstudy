@@ -6,4 +6,4 @@ import admininterface from './interfaces';
 import nganimiate from 'angular-animate';
 import changepassword from '../shared/changepassword';
 
-export default angular.module('studyapp', ['systemmodule', 'AdminchangePassword', 'mainMenu', 'Admininterface', 'ngAnimate', 'loadinIndicator']);
+export default angular.module('studyapp', ['systemmodule', 'AdminchangePassword', 'mainMenu', 'Admininterface', 'ngAnimate', 'interfaceInteractor']);

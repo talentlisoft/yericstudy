@@ -10,8 +10,8 @@
 @endsection
 @section('body')
 @component('components.adminnav', ['title' => '学员主页', 'user' => $user])
-    <li class="nav-item mr-2" ui-sref-active="{'active':'system.**'}">
-        <a class="nav-link" ui-sref="system.topics.summary">我的训练</a>
+    <li class="nav-item mr-2" ui-sref-active="{'active':'mytrain.**'}">
+        <a class="nav-link" ui-sref="mytrain.mytrains.list">我的训练</a>
     </li>
 @endcomponent
 @endsection

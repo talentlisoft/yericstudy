@@ -32,3 +32,7 @@ Route::post('rest/trainings/list', 'Admin\trainingController@trainingsList');
 Route::get('rest/trainees/list', 'Admin\TraineeController@traineeList');
 Route::post('rest/trainees/topicslist', 'Admin\trainingController@gettopicsList');
 Route::post('rest/training/add', 'Admin\trainingController@savetraining');
+
+Route::post('resttrainee/mytrain/list', 'Trainee\mytrainController@mytrainlist');
+Route::get('resttrainee/mytrain/detail/{traineetrainingId}', 'Trainee\mytrainController@gettraining');
+Route::post('resttrainee/mytrain/submitanswer', 'Trainee\mytrainController@anawerquestion');

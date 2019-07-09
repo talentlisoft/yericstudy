@@ -16,7 +16,7 @@ class CreateTableTrainingResults extends Migration
         Schema::create('training_results', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->bigInteger('trainingtopic_id')->index();
-            $table->string('answer');
+            $table->string('answer', 50);
             $table->enum('status', ['PENDDING', 'CORRECT', 'WRONG']);
             $table->smallInteger('duration')->default(0);
             $table->timestamps();
