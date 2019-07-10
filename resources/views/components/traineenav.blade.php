@@ -20,11 +20,8 @@
                 <span uib-dropdown-toggle id="usermenu">{{$user['name']}}</span>
                 <div class="dropdown-menu dropdown-menu-right bg-dark" uib-dropdown-menu role="menu">
                     <div class="dropdown-divider"></div>
-                    <a href onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="dropdown-item"><i class="fa fa-sign-out" aria-hidden="true"></i> 退出</a>
+                    <a href="{{url('traineeauth/logout')}}" class="dropdown-item"><i class="fa fa-sign-out" aria-hidden="true"></i> 退出</a>
                 </div>
-                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                    {{ csrf_field() }}
-                </form>
             </span>
         </div>
     </div>

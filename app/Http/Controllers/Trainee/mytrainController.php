@@ -156,7 +156,7 @@ class mytrainController extends Controller
                             DB::table('trainee_topics_summary')
                                 ->where('trainee_id', $trainee->id)
                                 ->where('topic_id', $request->input('topic_id'))
-                                ->increment($result?'corrent_count':'fail_count', 1, [
+                                ->increment($result?'correct_count':'fail_count', 1, [
                                     'recent_failed' => ($result==false) ? true : false,
                                     'updated_at' => Carbon::now()
                                 ]);
@@ -164,7 +164,7 @@ class mytrainController extends Controller
                             DB::table('trainee_topics_summary')->insert([
                                 'trainee_id' => $trainee->id,
                                 'topic_id' => $request->input('topic_id'),
-                                'corrent_count' => ($result? 1 : 0),
+                                'correct_count' => ($result? 1 : 0),
                                 'fail_count' => ($result==false ? 1 : 0),
                                 'recent_failed' => ($result==false) ? true : false,
                                 'created_at' => Carbon::now(),
@@ -200,6 +200,54 @@ class mytrainController extends Controller
             return $this->failureresponse('数据库查询出错了');
         } catch (Exception $e) {
             Log::error('mytrainController->anawerquestion->Exception' . $e->getMessage());
+            return $this->failureresponse('操作失败.');
+        }
+    }
+
+    public function gettrainresult($traineetrainingId, Trainee $trainee)
+    {
+        try {
+            $trainingRecord = DB::table('trainee_trainings')
+                ->join('trainnings', 'trainnings.id', '=', 'trainee_trainings.training_id')
+                ->select('trainnings.title', 'trainee_trainings.created_at', 'trainee_trainings.training_id')
+                ->where('trainee_trainings.id', $traineetrainingId)
+                ->where('trainee_trainings.trainee_id', $trainee->id)
+                ->first();
+            if ($trainingRecord) {
+                $trainingresult = DB::table('training_results')
+                    ->join('topics', 'topics.id', '=', 'training_results.trainingtopic_id')
+                    ->select('topics.question', 'training_results.answer', 'training_results.status', 'training_results.duration')
+                    ->where('training_results.trainingtrainee_id', $traineetrainingId)
+                    ->get();
+
+                $resultList = [];
+                $correctCount = 0;
+                foreach ($trainingresult as $key => $result) {
+                    $resultList[] = [
+                        'question' => mb_strimwidth($result->question, 0, 10, '...'),
+                        'answer' => $result->answer,
+                        'status' => $result->status == 'CORRECT' ? true : false,
+                        'duration' => $result->duration
+                    ];
+                    $correctCount += ($result->status == 'CORRECT' ? 1 : 0);
+                }
+                return $this->successresponse([
+                    'id' => $traineetrainingId,
+                    'title' => $trainingRecord->title,
+                    'created_at' => (new Carbon($trainingRecord->created_at))->locale('zh_CN')->diffForHumans(Carbon::now()),
+                    'results' => $resultList,
+                    'score' => round(($correctCount / count($trainingresult)) * 100)
+                ]);
+            } else {
+                return $this->failureresponse('Can not find such training');
+            }
+
+            
+        } catch (\Illuminate\Database\QueryException $e) {
+            Log::error('mytrainController->gettrainresult->QueryException异常' . $e->getMessage());
+            return $this->failureresponse('数据库查询出错了');
+        } catch (Exception $e) {
+            Log::error('mytrainController->gettrainresult->Exception' . $e->getMessage());
             return $this->failureresponse('操作失败.');
         }
     }

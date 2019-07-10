@@ -14,6 +14,11 @@ export default appmodule.factory('Persist', [function() {
             selectedgrade: null,
             total: 0
         },
+        trainingList: {
+            total: 0,
+            currentPage: 1,
+            searchcontent: null
+        },
         shared: {
             coursesList: null,
             traineesList: null,

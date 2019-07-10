@@ -13,6 +13,6 @@
 </head>
 <body>
     @yield('body')
-    <show-load></show-load>
+    <load-indicator></load-indicator>
 </body>
 </html>

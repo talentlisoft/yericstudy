@@ -41,7 +41,7 @@ class loginController extends Controller
                         'avatar' => $traineeRecord->avatar
                     ]]);
                     //Goto trainee main page
-                    return redirect('/trainee/mytrain/mytrains');
+                    return redirect('/trainee/mytrain/mytrains/list');
                 } else {
                     return redirect('/')
                         ->withInput();

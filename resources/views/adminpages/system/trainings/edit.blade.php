@@ -4,7 +4,7 @@
     <span class="head-border-left">选择受训人</span>
 </h6>
 <div class="row">
-    <div class="col-md-3 col-6 trainnee-item cursor-pointer" ng-repeat="trainee in traineesList" ng-click="selecttrainee(trainee)">
+    <div class="col-md-3 col-6 trainnee-item cursor-pointer" ng-repeat="trainee in traineesList" ng-click="selecttrainee(trainee);gettopicslist()">
         <div class="trainee-item border p-2 rounded" ng-class="istraineeselected(trainee)?'text-light bg-success':'text-dark bg-light'">
             <p>姓名</p>
             <p>{{trainee.name}}</p>
@@ -63,13 +63,13 @@
 </form>
 
 <ul class="nav nav-tabs mb-3">
-    <li class="nav-item" ng-click="conditions.mode='RECENT'">
+    <li class="nav-item" ng-click="conditions.mode='RECENT';gettopicslist()">
         <a class="nav-link" ng-class="conditions.mode=='RECENT'?'active':''" href>最近错过</a>
     </li>
-    <li class="nav-item" ng-click="conditions.mode='EVER'">
+    <li class="nav-item" ng-click="conditions.mode='EVER';gettopicslist()">
         <a class="nav-link" ng-class="conditions.mode=='EVER'?'active':''" href>曾经错过</a>
     </li>
-    <li class="nav-item" ng-click="conditions.mode='RADOM'">
+    <li class="nav-item" ng-click="conditions.mode='RADOM';gettopicslist()">
         <a class="nav-link" ng-class="conditions.mode=='RADOM'?'active':''" href>随机</a>
     </li>
 </ul>

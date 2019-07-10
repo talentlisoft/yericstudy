@@ -24,6 +24,8 @@ export default mytrainModule.controller('mytrainlistctl', ['$scope', 'Traineeint
     $scope.gotodetail = train => {
         if (train.status == 0) {
             $state.go('mytrain.mytrains.doexercise', {traineetrainingId: train.id});
+        } else {
+            $state.go('mytrain.mytrains.result', {traineetrainingId: train.id});
         }
     };
 }]);

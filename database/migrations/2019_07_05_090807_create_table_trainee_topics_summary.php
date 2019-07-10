@@ -17,7 +17,7 @@ class CreateTableTraineeTopicsSummary extends Migration
             $table->bigIncrements('id');
             $table->bigInteger('trainee_id')->index();
             $table->bigInteger('topic_id')->index();
-            $table->integer('corrent_count');
+            $table->integer('correct_count');
             $table->integer('fail_count');
             $table->boolean('recent_failed');
             $table->timestamps();

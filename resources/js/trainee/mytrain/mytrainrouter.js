@@ -51,4 +51,20 @@ export default mytrainModule.config(['$stateProvider', function ($stateProvider)
             }]
         }
     });
+
+    $stateProvider.state('mytrain.mytrains.result', {
+        url: '/result/:traineetrainingId',
+        templateUrl: `${baseUrl}traineepages/mytrain.result`,
+        controller: 'trainresultctl',
+        data: {
+            pageTitle: '训练结果'
+        },
+        resolve: {
+            resultData: ['$stateParams', 'Traineeinterface', function($stateParams, Traineeinterface) {
+                return Traineeinterface.gettrainingresult({
+                    traineetrainingId: $stateParams.traineetrainingId
+                }).$promise.then(response => response.result ? response.data : null);
+            }]
+        }
+    });
 }]);

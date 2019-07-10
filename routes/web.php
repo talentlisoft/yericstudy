@@ -14,6 +14,7 @@
 Route::get('/', 'Trainee\loginController@showloginpage');
 
 Route::post('traineeauth/loing', 'Trainee\loginController@login')->name('traineelogin');
+Route::get('traineeauth/logout', 'Trainee\loginController@logout');
 
 Auth::routes();
 
@@ -32,7 +33,9 @@ Route::post('rest/trainings/list', 'Admin\trainingController@trainingsList');
 Route::get('rest/trainees/list', 'Admin\TraineeController@traineeList');
 Route::post('rest/trainees/topicslist', 'Admin\trainingController@gettopicsList');
 Route::post('rest/training/add', 'Admin\trainingController@savetraining');
+Route::post('rest/training/list', 'Admin\trainingController@trainingsList');
 
 Route::post('resttrainee/mytrain/list', 'Trainee\mytrainController@mytrainlist');
 Route::get('resttrainee/mytrain/detail/{traineetrainingId}', 'Trainee\mytrainController@gettraining');
 Route::post('resttrainee/mytrain/submitanswer', 'Trainee\mytrainController@anawerquestion');
+Route::get('resttrainee/mytrain/result/{traineetrainingId}', 'Trainee\mytrainController@gettrainresult');

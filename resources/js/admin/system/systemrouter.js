@@ -126,8 +126,16 @@ export default systemmodule.config(['$stateProvider', '$locationProvider', funct
             pageTitle: '训练列表'
         },
         resolve: {
-            trainintsList: ['Admininterface', function(Admininterface) {
-                return null;
+            trainingList: ['Admininterface', 'Persist', function(Admininterface, Persist) {
+                return Admininterface.gettrainingslist({
+                    searchcontent: Persist.trainingList.searchcontent,
+                    page: Persist.trainingList.currentPage
+                }).$promise.then(response => {
+                    if (response.result) {
+                        Persist.trainingList.total = response.data.total;
+                        return response.data.list;
+                    }
+                });
             }]
         }
     });

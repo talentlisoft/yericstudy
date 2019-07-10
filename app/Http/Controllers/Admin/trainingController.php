@@ -18,21 +18,29 @@ class trainingController extends Controller
         $this->middleware('auth');
     }
 
-    public function trainingsList(Reqeust $request)
+    public function trainingsList(Request $request)
     {
         $this->validate($request, [
             'searchcontent' => 'nullable',
         ]);
         try {
             $trainingsRecord = DB::table('trainnings')
-                ->select('trainnings.title', 'trainnings.created_at', 'trainnings.id')
+                ->select('trainnings.title', 'trainnings.created_at', 'trainnings.id', 
+                DB::raw('COUNT(trainee_trainings.id) AS trainee_count'),
+                DB::raw('SUM(IF(trainee_trainings.status = 1, 1, 0)) AS finished_count')
+                )
+                ->leftJoin('trainee_trainings', 'trainee_trainings.training_id', '=', 'trainnings.id')
+                ->orderBy('trainnings.created_at', 'desc')
+                ->groupBy('trainnings.title', 'trainnings.created_at', 'trainnings.id')
                 ->paginate(20);
             $trainingsList = [];
             foreach ($trainingsRecord as $tr) {
                 $trainingsList[] = [
                     'id' => $tr->id,
                     'title' => $tr->title,
-                    'created_at' => (new Carbon($tr->updated_at))->locale('zh_CN')->diffForHumans(Carbon::now()),
+                    'trainee_count' =>$tr->trainee_count,
+                    'finished_count' => $tr->finished_count,
+                    'created_at' => (new Carbon($tr->created_at))->locale('zh_CN')->diffForHumans(Carbon::now()),
                 ];
             }
             return $this->successresponse(['list' => $trainingsList, 'total' => $trainingsRecord->total()]);
@@ -97,6 +105,7 @@ class trainingController extends Controller
             'course' => 'nullable',
             'searchcontent' => 'nullable',
             'mode' => 'required',
+            'trainees' => 'array'
         ]);
 
         try {
@@ -122,6 +131,37 @@ class trainingController extends Controller
                         ->inRandomOrder()
                         ->paginate(20);
                     break;
+                case 'RECENT':
+                    $topicRecord = DB::table('trainee_topics_summary')
+                        ->join('topics', 'topics.id', 'trainee_topics_summary.topic_id')
+                        ->leftJoin('courses', 'courses.id', 'topics.course_id')
+                        ->where(function($query) use ($request) {
+                            if (!empty($request->input('trainees'))) {
+                                $query->whereIn('trainee_topics_summary.trainee_id', $request->input('trainees'));
+                            }
+                        })
+                        ->where('trainee_topics_summary.recent_failed', 1)
+                        ->select('topics.id', 'topics.question', 'topics.updated_at', 'topics.level', 'topics.grade', 'courses.name')
+                        ->distinct()
+                        ->paginate(20);
+                    break;
+                case 'EVER':
+                    $topicRecord = DB::table('trainee_topics_summary')
+                        ->join('topics', 'topics.id', 'trainee_topics_summary.topic_id')
+                        ->leftJoin('courses', 'courses.id', 'topics.course_id')
+                        ->where(function($query) use ($request) {
+                            if (!empty($request->input('trainees'))) {
+                                $query->whereIn('trainee_topics_summary.trainee_id', $request->input('trainees'));
+                            }
+                        })
+                        ->where('trainee_topics_summary.recent_failed', 0)
+                        ->where('trainee_topics_summary.fail_count', '>', 0)
+                        ->select('topics.id', 'topics.question', 'topics.updated_at', 'topics.level', 'topics.grade', 'courses.name', 'trainee_topics_summary.correct_count', 'trainee_topics_summary.fail_count')
+                        ->orderBy(DB::raw('(trainee_topics_summary.fail_count - trainee_topics_summary.correct_count)'), 'desc')
+                        ->distinct()
+                        ->paginate(20);
+                    break;
+
                 default:
                         return $this->successresponse(['list' => [], 'total' => 0]);
             }

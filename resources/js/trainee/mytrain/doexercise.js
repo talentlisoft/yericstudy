@@ -26,6 +26,8 @@ export default mytrainModule.controller('doexercisectl', ['$scope', 'trainingDat
                     $scope.answer = null;
                     if (response.data.isFinished) {
                         // Goto result page
+                        toastr.success('都完成啦', '恭喜');
+                        $state.go('mytrain.mytrains.result', {traineetrainingId: $stateParams.traineetrainingId});
                     } else {
                         $scope.lasttime = new Date();
                     }

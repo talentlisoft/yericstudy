@@ -46,7 +46,11 @@ export default systemmodule.controller('edittrainingctl', ['$scope', 'Persist', 
             course: $scope.conditions.selectedcourse ? $scope.conditions.selectedcourse.id : null,
             searchcontent: $scope.conditions.searchcontent,
             mode: $scope.conditions.mode,
-            page: $scope.conditions.currentPage
+            page: $scope.conditions.currentPage,
+            trainees: $scope.trainingData.selectedtrainees.reduce((traineeidList, trainee) => {
+                traineeidList.push(trainee.id);
+                return traineeidList;
+            }, [])
         }, response => {
             if (response.result) {
                 $scope.topicsList = response.data.list;

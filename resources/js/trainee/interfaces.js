@@ -22,6 +22,12 @@ export default angular.module('TraineeInterfaces', ['ngResource']).service('Trai
             isArray: false,
             timeout: 4000,
             url: `${baseUrl}resttrainee/mytrain/submitanswer`,
+        },
+        gettrainingresult: {
+            method: 'get',
+            isArray: false,
+            timeout: 2000,
+            url: `${baseUrl}resttrainee/mytrain/result/:traineetrainingId`,
         }
     });
 }]);
