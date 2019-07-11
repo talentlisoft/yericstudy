@@ -75,7 +75,7 @@ export default systemmodule.config(['$stateProvider', '$locationProvider', funct
             topicData: ['$stateParams', 'Admininterface', function ($stateParams, Admininterface) {
                 return Admininterface.gettopicdetail({
                     topicId: $stateParams.topicId
-                }).$promise.then(response=> {
+                }).$promise.then(response => {
                     return response.result ? response.data : null
                 });
             }]
@@ -126,7 +126,7 @@ export default systemmodule.config(['$stateProvider', '$locationProvider', funct
             pageTitle: '训练列表'
         },
         resolve: {
-            trainingList: ['Admininterface', 'Persist', function(Admininterface, Persist) {
+            trainingList: ['Admininterface', 'Persist', function (Admininterface, Persist) {
                 return Admininterface.gettrainingslist({
                     searchcontent: Persist.trainingList.searchcontent,
                     page: Persist.trainingList.currentPage
@@ -140,6 +140,38 @@ export default systemmodule.config(['$stateProvider', '$locationProvider', funct
         }
     });
 
+    $stateProvider.state('system.trainings.detail', {
+        url: '/detail/:trainingId',
+        templateUrl: `${baseUrl}adminpages/system.trainings.detail`,
+        controller: 'trainingdetailctl',
+        data: {
+            pageTitle: '训练详情'
+        },
+        resolve: {
+            trainingDetail: ['Admininterface', '$stateParams', function (Admininterface, $stateParams) {
+                return Admininterface.gettrainingDetail({
+                    trainingId: $stateParams.trainingId
+                }).$promise.then(response => response.result ? response.data : null);
+            }]
+        }
+    });
+
+    $stateProvider.state('system.trainings.result', {
+        url: '/result/:traineetrainingId',
+        controller: 'trainingresultctl',
+        templateUrl: `${baseUrl}adminpages/system.trainings.result`,
+        data: {
+            pageTitle: '训练结果'
+        },
+        resolve: {
+            resultData: ['Admininterface', '$stateParams', function(Admininterface, $stateParams) {
+                return Admininterface.gettrainingResult({
+                    traineetrainingId: $stateParams.traineetrainingId
+                }).$promise.then(response => response.result ? response.data : null);
+            }]
+        }
+    });
+
     $stateProvider.state('system.trainings.add', {
         url: '/add',
         templateUrl: `${baseUrl}adminpages/system.trainings.edit`,
@@ -148,7 +180,7 @@ export default systemmodule.config(['$stateProvider', '$locationProvider', funct
             pageTitle: '添加训练'
         },
         resolve: {
-            traineesList: ['Persist', 'Admininterface', function(Persist, Admininterface) {
+            traineesList: ['Persist', 'Admininterface', function (Persist, Admininterface) {
                 return Persist.shared.traineesList ? Persist.shared.traineesList : Admininterface.gettraineelist().$promise.then(response => {
                     if (response.result) {
                         Persist.shared.traineesList = response.data;
@@ -156,7 +188,7 @@ export default systemmodule.config(['$stateProvider', '$locationProvider', funct
                     }
                 })
             }],
-            trainingData: [function() {
+            trainingData: [function () {
                 return null;
             }]
         }

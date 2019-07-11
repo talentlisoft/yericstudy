@@ -59,7 +59,7 @@ class loginController extends Controller
         }
     }
 
-    public function logout()
+    public function logout(Request $request)
     {
         $request->session()->forget('logined_trainee');
         return redirect('/');

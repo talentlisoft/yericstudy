@@ -63,6 +63,20 @@ export default angular.module('Admininterface', ['ngResource']).service('Adminin
             isArray: false,
             timeout: 3000,
             url: `${baseUrl}rest/training/list`
+        },
+        gettrainingDetail: {
+            method: 'get',
+            isArray: false,
+            timeout: 3000,
+            url:  `${baseUrl}rest/training/detail/:trainingId`,
+            trainingId: '@trainingId'
+        },
+        gettrainingResult: {
+            method: 'get',
+            isArray: false,
+            timeout: 3000,
+            url: `${baseUrl}rest/training/result/:traineetrainingId`,
+            traineetrainingId: '@traineetrainingId'
         }
     });
 }]);

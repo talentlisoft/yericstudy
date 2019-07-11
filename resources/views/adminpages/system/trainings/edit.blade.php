@@ -17,7 +17,7 @@
     <span class="head-border-left">训练详情</span>
 </h6>
 
-<form ng-submit="researchlist()">
+<form ng-submit="refreshtopiclist()">
     <div class="input-group mb-3">
         <input type="text" class="form-control" ng-model="conditions.searchcontent">
         <div class="input-group-append">
@@ -72,6 +72,9 @@
     <li class="nav-item" ng-click="conditions.mode='RADOM';gettopicslist()">
         <a class="nav-link" ng-class="conditions.mode=='RADOM'?'active':''" href>随机</a>
     </li>
+    <li class="nav-item" ng-click="conditions.mode='FREQUENCY';gettopicslist()">
+        <a class="nav-link" ng-class="conditions.mode=='FREQUENCY'?'active':''" href>训练最少</a>
+    </li>
 </ul>
 <table class="table table-striped table-hover picking-topics">
     <thead>
@@ -94,6 +97,10 @@
         </tr>
     </tbody>
 </table>
+<div class="w-100 d-flex justify-content-end">
+    <ul uib-pagination total-items="total" ng-model="conditions.currentPage" items-per-page="20" max-size="5" class="pagination-sm" boundary-links="true" force-ellipses="true" ng-change="gettopicslist()"></ul>
+</div>
+
 
 <form ng-submit="savetraining()">
     <h6 class="border-bottom pb-2 font-weight-bold mt-3 mb-3">

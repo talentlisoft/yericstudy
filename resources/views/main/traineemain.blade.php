@@ -9,7 +9,7 @@
     <base href="{{url('/trainee')}}/"/>
 @endsection
 @section('body')
-@component('components.adminnav', ['title' => '学员主页', 'user' => $user])
+@component('components.traineenav', ['title' => '学员主页', 'user' => $user])
     <li class="nav-item mr-2" ui-sref-active="{'active':'mytrain.**'}">
         <a class="nav-link" ui-sref="mytrain.mytrains.list">我的训练</a>
     </li>
