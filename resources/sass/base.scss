@@ -233,3 +233,7 @@
         left: 4px solid #f6993f;
     }
 }
+
+button:disabled {
+    cursor: no-drop;
+}

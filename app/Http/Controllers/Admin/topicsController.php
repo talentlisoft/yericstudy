@@ -24,7 +24,9 @@ class topicsController extends Controller
             'grade' => 'required',
             'course' => 'required',
             'question' => 'required',
-            'answer' => 'required|max:50',
+            'type' => 'required|numeric',
+            'answer' => 'max:50',
+            'manualverify' => 'boolean'
         ]);
 
         try {
@@ -34,6 +36,8 @@ class topicsController extends Controller
                 $topicRecord->grade = $request->input('grade');
                 $topicRecord->course_id = $request->input('course');
                 $topicRecord->question = $request->input('question');
+                $topicRecord->manualverify = $request->input('manualverify');
+                $topicRecord->type = $request->input('type');
                 $topicRecord->answer = $request->answer;
                 if ($topicRecord->save()) {
                     return $this->successresponse(['id' => $topicRecord->id]);
@@ -93,13 +97,15 @@ class topicsController extends Controller
             'level' => 'nullable',
             'grade' => 'nullable',
             'course' => 'nullable',
+            'type' => 'nullable',
             'search_content' => 'nullable'
         ]);
         try {
             $topicList = [];
             $topicRecord = DB::table('topics')
                 ->leftJoin('courses', 'courses.id', 'topics.course_id')
-                ->select('topics.id', 'topics.question', 'topics.updated_at', 'topics.level', 'topics.grade', 'courses.name')
+                ->leftJoin('topictypes', 'topictypes.id', '=', 'topics.type')
+                ->select('topics.id', 'topics.question', 'topics.updated_at', 'topics.level', 'topics.grade', 'courses.name', 'topictypes.name AS topic_type')
                 ->where(function($query) use ($request) {
                     if (!is_null($request->input('level'))) {
                         $query->where('topics.level', $request->input('level'));
@@ -113,6 +119,9 @@ class topicsController extends Controller
                     if (!is_null($request->input('searchcontent'))) {
                         $query->where('topics.question', 'LIKE', '%'.$request->input('searchcontent').'%');
                     }
+                    if (!is_null($request->input('type'))) {
+                        $query->where('topics.type', $request->input('type'));
+                    }
                 })
                 ->orderBy('topics.updated_at', 'desc')
                 ->paginate(20);
@@ -123,6 +132,7 @@ class topicsController extends Controller
                     'level' => $topic->level,
                     'grade' => $topic->grade,
                     'course_name' => $topic->name,
+                    'topic_type' => $topic->topic_type,
                     'updated_at' => (new Carbon($topic->updated_at))->locale('zh_CN')->diffForHumans(Carbon::now())
                 ];
             }
@@ -147,7 +157,9 @@ class topicsController extends Controller
                     'grade' => $topicRecord->grade,
                     'course' => $topicRecord->course_id,
                     'question' => $topicRecord->question,
-                    'answer' => $topicRecord->answer
+                    'answer' => $topicRecord->answer,
+                    'topictype_id' => $topicRecord->type,
+                    'manualverify' => $topicRecord->manualverify ? true : false
                 ]);
             } else {
                 return $this->failureresponse('No record');

@@ -29,7 +29,7 @@
                     <label for="selectgrade" class="col-form-label col-md-4">年级</label>
                     <div class="col-md-8">
                         <select id="selectgrade" class="form-control" ng-model="per.topicsList.selectedgrade" ng-options="grade as grade.desc for grade in per.shared.gradeList">
-                            <option value="">筛选年级</option>
+                            <option value="">所有年级</option>
                         </select>
                     </div>
                 </div>
@@ -39,7 +39,17 @@
                     <label for="selectcourse" class="col-form-label col-md-4">科目</label>
                     <div class="col-md-8">
                         <select id="selectcourse" class="form-control" ng-model="per.topicsList.selectedcourse" ng-options="course as course.name for course in per.shared.coursesList">
-                            <option value="">筛选科目</option>
+                            <option value="">全部科目</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group row">
+                    <label for="selecttype" class="col-form-label col-md-4">题型</label>
+                    <div class="col-md-8">
+                        <select id="slecttype" class="form-control" ng-model="selectedtype" ng-options="type as type.name for type in per.shared.topictypesList">
+                            <option value="">全部题型</option>
                         </select>
                     </div>
                 </div>

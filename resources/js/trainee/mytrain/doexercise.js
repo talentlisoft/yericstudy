@@ -12,32 +12,34 @@ export default mytrainModule.controller('doexercisectl', ['$scope', 'trainingDat
     };
 
     $scope.answerquestion = () => {
-        if ($scope.currentPos < $scope.trainingData.pendding_topics.length) {
-            $scope.submitting = true;
-            Traineeinterface.submitanswer({
-                'topic_id': $scope.trainingData.pendding_topics[$scope.currentPos].topic_id,
-                'answer': $scope.answer,
-                'traineetrainingId': $stateParams.traineetrainingId,
-                'duration': parseInt((new Date - $scope.lasttime) / 1000)
-            }, response => {
-                $scope.submitting = false;
-                if (response.result) {
-                    $scope.currentPos++;
-                    $scope.answer = null;
-                    if (response.data.isFinished) {
-                        // Goto result page
-                        toastr.success('都完成啦', '恭喜');
-                        $state.go('mytrain.mytrains.result', {traineetrainingId: $stateParams.traineetrainingId});
-                    } else {
-                        $scope.lasttime = new Date();
+        if (!submitting) {
+            if ($scope.currentPos < $scope.trainingData.pendding_topics.length) {
+                $scope.submitting = true;
+                Traineeinterface.submitanswer({
+                    'topic_id': $scope.trainingData.pendding_topics[$scope.currentPos].topic_id,
+                    'answer': $scope.answer,
+                    'traineetrainingId': $stateParams.traineetrainingId,
+                    'duration': parseInt((new Date - $scope.lasttime) / 1000)
+                }, response => {
+                    $scope.submitting = false;
+                    if (response.result) {
+                        $scope.currentPos++;
+                        $scope.answer = null;
+                        if (response.data.isFinished) {
+                            // Goto result page
+                            toastr.success('都完成啦', '恭喜');
+                            $state.go('mytrain.mytrains.result', {traineetrainingId: $stateParams.traineetrainingId});
+                        } else {
+                            $scope.lasttime = new Date();
+                        }
                     }
-                }
-            }, () => {
-                $scope.submitting = false;
-            });
-        } else {
-            $scope.currentPos++;
-            // $scope.answer = null;
+                }, () => {
+                    $scope.submitting = false;
+                });
+            } else {
+                $scope.currentPos++;
+                // $scope.answer = null;
+            }
         }
     };
 

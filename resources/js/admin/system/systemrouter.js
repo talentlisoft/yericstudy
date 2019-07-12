@@ -26,7 +26,8 @@ export default systemmodule.config(['$stateProvider', '$locationProvider', funct
             coursesList: ['Persist', 'Admininterface', function (Persist, Admininterface) {
                 return Persist.shared.coursesList ? Persist.shared.coursesList : Admininterface.getcoursesList().$promise.then(response => {
                     if (response.result) {
-                        Persist.shared.coursesList = response.data;
+                        Persist.shared.coursesList = response.data.courses;
+                        Persist.shared.topictypesList = response.data.topic_types;
                         return Persist.shared.coursesList;
                     } else {
                         return null;
@@ -44,7 +45,8 @@ export default systemmodule.config(['$stateProvider', '$locationProvider', funct
             coursesList: ['Persist', 'Admininterface', function (Persist, Admininterface) {
                 return Persist.shared.coursesList ? Persist.shared.coursesList : Admininterface.getcoursesList().$promise.then(response => {
                     if (response.result) {
-                        Persist.shared.coursesList = response.data;
+                        Persist.shared.coursesList = response.data.courses;
+                        Persist.shared.topictypesList = response.data.topic_types;
                         return Persist.shared.coursesList;
                     } else {
                         return null;
@@ -65,7 +67,8 @@ export default systemmodule.config(['$stateProvider', '$locationProvider', funct
             coursesList: ['Persist', 'Admininterface', function (Persist, Admininterface) {
                 return Persist.shared.coursesList ? Persist.shared.coursesList : Admininterface.getcoursesList().$promise.then(response => {
                     if (response.result) {
-                        Persist.shared.coursesList = response.data;
+                        Persist.shared.coursesList = response.data.courses;
+                        Persist.shared.topictypesList = response.data.topic_types;
                         return Persist.shared.coursesList;
                     } else {
                         return null;
@@ -90,7 +93,8 @@ export default systemmodule.config(['$stateProvider', '$locationProvider', funct
             coursesList: ['Persist', 'Admininterface', function (Persist, Admininterface) {
                 return Persist.shared.coursesList ? Persist.shared.coursesList : Admininterface.getcoursesList().$promise.then(response => {
                     if (response.result) {
-                        Persist.shared.coursesList = response.data;
+                        Persist.shared.coursesList = response.data.courses;
+                        Persist.shared.topictypesList = response.data.topic_types;
                         return Persist.shared.coursesList;
                     } else {
                         return null;
@@ -102,6 +106,7 @@ export default systemmodule.config(['$stateProvider', '$locationProvider', funct
                     level: Persist.topicsList.selectedlevel ? Persist.topicsList.selectedlevel.id : null,
                     grade: Persist.topicsList.selectedgrade ? Persist.topicsList.selectedgrade.id : null,
                     course: Persist.topicsList.selectedcourse ? Persist.topicsList.selectedcourse.id : null,
+                    type: null,
                     page: 1
                 }).$promise.then(response => {
                     if (response.result) {
@@ -190,7 +195,18 @@ export default systemmodule.config(['$stateProvider', '$locationProvider', funct
             }],
             trainingData: [function () {
                 return null;
-            }]
+            }],
+            coursesList: ['Persist', 'Admininterface', function (Persist, Admininterface) {
+                return Persist.shared.coursesList ? Persist.shared.coursesList : Admininterface.getcoursesList().$promise.then(response => {
+                    if (response.result) {
+                        Persist.shared.coursesList = response.data.courses;
+                        Persist.shared.topictypesList = response.data.topic_types;
+                        return Persist.shared.coursesList;
+                    } else {
+                        return null;
+                    }
+                })
+            }],
         }
     });
 }]);

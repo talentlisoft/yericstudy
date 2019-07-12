@@ -11,7 +11,7 @@
             </div>
             <div class="card-body">
                 <div class="form-group row">
-                    <label class="col-form-label col-md-3">{{currenttopic().course_name}}</label>
+                    <label class="col-form-label col-md-3">{{currenttopic().course_name + currenttopic().topic_type}}</label>
                     <div class="col-md-9">
                         {{currenttopic().question}}
                     </div>
@@ -23,7 +23,7 @@
                             <div class="input-group">
                                 <input type="text" class="form-control" ng-model="answer" required>
                                 <div class="input-group-append">
-                                    <button class="btn btn-outline-success" type="submit"><i class="fa fa-check" aria-hidden="true"></i></button>
+                                    <button ng-disabled="submitting" class="btn btn-outline-success" type="submit"><i class="fa fa-fw" ng-class="submitting?'fa-spinner fa-pulse':'fa-check'" aria-hidden="true"></i></button>
                                 </div>
                             </div>
                         </div>

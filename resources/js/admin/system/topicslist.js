@@ -4,6 +4,7 @@ import persist from '../persist';
 export default systemmodule.controller('topicslistctl', ['$scope', 'Admininterface', 'topicsList', 'Persist', 'coursesList', '$state', function($scope, Admininterface, topicsList, Persist, coursesList, $state) {
     $scope.topicsList = topicsList;
     $scope.coursesList = coursesList;
+    $scope.selectedtype = null;
     $scope.searchcontent = null;
     $scope.per = Persist;
     $scope.currentPage = 1;
@@ -15,7 +16,7 @@ export default systemmodule.controller('topicslistctl', ['$scope', 'Admininterfa
 
 
     $scope.gettypedesc = topic => {
-        return `${Persist.shared.levelList.find(lv => lv.id == topic.level).desc}${topic.grade}年级（${topic.course_name}）`;
+        return `${Persist.shared.levelList.find(lv => lv.id == topic.level).desc}${topic.grade}年级（${topic.course_name}${topic.topic_type}）`;
     };
 
     $scope.search = () => {
@@ -23,6 +24,7 @@ export default systemmodule.controller('topicslistctl', ['$scope', 'Admininterfa
             level: Persist.topicsList.selectedlevel ? Persist.topicsList.selectedlevel.id : null,
             grade: Persist.topicsList.selectedgrade ? Persist.topicsList.selectedgrade.id : null,
             course: Persist.topicsList.selectedcourse ? Persist.topicsList.selectedcourse.id : null,
+            type: $scope.selectedtype ? $scope.selectedtype.id : null,
             searchcontent: $scope.searchcontent,
             page: $scope.currentPage
         }, response=> {

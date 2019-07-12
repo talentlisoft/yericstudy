@@ -1,6 +1,6 @@
 import systemmodule from './systemmodule';
 
-export default systemmodule.controller('edittrainingctl', ['$scope', 'Persist', 'Admininterface', 'traineesList', 'trainingData', '$timeout', 'toastr', '$state', function($scope, Persist, Admininterface, traineesList, trainingData, $timeout, toastr, $state) {
+export default systemmodule.controller('edittrainingctl', ['$scope', 'Persist', 'Admininterface', 'traineesList', 'trainingData', '$timeout', 'toastr', '$state', 'coursesList', function($scope, Persist, Admininterface, traineesList, trainingData, $timeout, toastr, $state, coursesList) {
     $scope.traineesList = traineesList;
     $scope.topicsList = null;
     $scope.per = Persist;
@@ -14,6 +14,7 @@ export default systemmodule.controller('edittrainingctl', ['$scope', 'Persist', 
         selectedcourse: null,
         searchcontent: null,
         optionexpanded: true,
+        selectedtype: null,
         mode: 'RADOM',
         currentPage: 1,
     };
@@ -44,6 +45,7 @@ export default systemmodule.controller('edittrainingctl', ['$scope', 'Persist', 
             level: $scope.conditions.selectedlevel ? $scope.conditions.selectedlevel.id : null,
             trade: $scope.conditions.selectedgrade ? $scope.conditions.selectedgrade.id : null,
             course: $scope.conditions.selectedcourse ? $scope.conditions.selectedcourse.id : null,
+            type: $scope.conditions.selectedtype ? $scope.conditions.selectedtype.id : null,
             searchcontent: $scope.conditions.searchcontent,
             mode: $scope.conditions.mode,
             page: $scope.conditions.currentPage,
@@ -66,7 +68,7 @@ export default systemmodule.controller('edittrainingctl', ['$scope', 'Persist', 
         $scope.gettopicslist();
     }
     $scope.gettypedesc = topic => {
-        return `${Persist.shared.levelList.find(lv => lv.id == topic.level).desc}${topic.grade}年级（${topic.course_name}）`;
+        return `${Persist.shared.levelList.find(lv => lv.id == topic.level).desc}${topic.grade}年级（${topic.course_name}${topic.topic_type}）`;
     };
 
     $scope.selecttopic = topic => {

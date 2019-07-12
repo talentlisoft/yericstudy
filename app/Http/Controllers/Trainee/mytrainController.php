@@ -85,11 +85,12 @@ class mytrainController extends Controller
                 $topicsRecord = DB::table('training_topics')
                     ->join('topics', 'topics.id', '=', 'training_topics.topic_id')
                     ->join('courses', 'courses.id', '=', 'topics.course_id')
+                    ->leftJoin('topictypes', 'topictypes.id', '=', 'topics.type')
                     ->leftJoin('training_results', function ($join) use ($traineetrainingId) {
                         $join->on('training_results.trainingtopic_id', '=', 'training_topics.topic_id');
                         $join->on('training_results.trainingtrainee_id', '=', DB::raw($traineetrainingId));
                     })
-                    ->select('topics.question', 'topics.id', 'courses.name')
+                    ->select('topics.question', 'topics.id', 'courses.name', 'topictypes.name as topic_type')
                     ->where('training_topics.training_id', $trainingRecord->training_id)
                     ->whereNull('training_results.id')
                     ->get();
@@ -98,6 +99,7 @@ class mytrainController extends Controller
                         'topic_id' => $topic->id,
                         'course_name' => $topic->name,
                         'question' => $topic->question,
+                        'topic_type' =>$topic->topic_type
                     ];
                 }
 

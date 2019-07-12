@@ -5,13 +5,15 @@ export default appmodule.factory('Persist', [function() {
         edittopic: {
             selectedcourse: null,
             selectedlevel: null,
-            selectedgrade: null
+            selectedgrade: null,
+            selectedtype: null
         },
         topicsList: {
             optionexpanded: true,
             selectedcourse: null,
             selectedlevel: null,
             selectedgrade: null,
+            selectedtype: null,
             total: 0
         },
         trainingList: {
@@ -22,6 +24,7 @@ export default appmodule.factory('Persist', [function() {
         shared: {
             coursesList: null,
             traineesList: null,
+            topictypesList:null,
             levelList: [
                 {'id': 'PSCHOOL', 'desc': '小学'},
                 {'id': 'JHSCHOOL', 'desc': '初中'},

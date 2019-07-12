@@ -19,7 +19,7 @@ class CreateTableTopics extends Migration
             $table->enum('grade', ['1', '2', '3', '4', '5', '6']);
             $table->bigInteger('course_id')->index()->comment('学科ID');
             $table->text('question')->comment('题目');
-            $table->string('answer', 50)->comment('答案');
+            $table->string('answer', 50)->nullable()->comment('答案');
             $table->index(['level', 'grade']);
             $table->timestamps();
         });
