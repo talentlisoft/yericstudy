@@ -36,6 +36,7 @@ Route::post('rest/training/add', 'Admin\trainingController@savetraining');
 Route::post('rest/training/list', 'Admin\trainingController@trainingsList');
 Route::get('rest/training/detail/{trainingId}', 'Admin\trainingController@trainingDetail');
 Route::get('rest/training/result/{traineetrainingId}', 'Admin\trainingController@trainingResult');
+Route::get('rest/manualaudit/list', 'Admin\trainingController@manualauditlist');
 
 Route::post('resttrainee/mytrain/list', 'Trainee\mytrainController@mytrainlist');
 Route::get('resttrainee/mytrain/detail/{traineetrainingId}', 'Trainee\mytrainController@gettraining');

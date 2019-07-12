@@ -6,3 +6,4 @@ import trainingslist from './trainingslist';
 import edittraining from './edittraining';
 import trainingdetail from './trainingdetail';
 import trainingresult from './trainingresult';
+import manualaudit from './manualaudit';

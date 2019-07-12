@@ -5,4 +5,7 @@
 <li class="nav-item">
     <a class="nav-link" ui-sref="system.trainings.list" ui-sref-active="{'active':'system.trainings.**'}"><i class="fa fa-flag-checkered fa-fw"></i>训练管理</a>
 </li>
+<li class="nav-item">
+    <a class="nav-link" ui-sref="system.manualaudit" ui-sref-active="{'active':'system.manualaudit'}"><i class="fa fa-question-circle-o fa-fw"></i>人工审核</a>
+</li>
 @endcomponent

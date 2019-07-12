@@ -77,6 +77,12 @@ export default angular.module('Admininterface', ['ngResource']).service('Adminin
             timeout: 3000,
             url: `${baseUrl}rest/training/result/:traineetrainingId`,
             traineetrainingId: '@traineetrainingId'
+        },
+        getmanualauditlist: {
+            method: 'get',
+            isArray: false,
+            timeout: 3000,
+            url: `${baseUrl}rest/manualaudit/list`
         }
     });
 }]);

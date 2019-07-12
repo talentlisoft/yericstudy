@@ -131,7 +131,7 @@ class mytrainController extends Controller
                 ->first();
             if ($trainingtrainee) {
                 $topicsRecord = DB::table('topics')
-                    ->select('answer')->where('id', $request->input('topic_id'))
+                    ->select('answer', 'manualverify')->where('id', $request->input('topic_id'))
                     ->first();
                 if ($topicsRecord) {
                     $result = false;
@@ -148,7 +148,7 @@ class mytrainController extends Controller
                     }
                     $trainingresult->trainingtopic_id = $request->input('topic_id');
                     $trainingresult->answer = $request->input('answer');
-                    $trainingresult->status = ($result ? 'CORRECT' : 'WRONG');
+                    $trainingresult->status = ($topicsRecord->manualverify ? 'PENDDING' : ($result ? 'CORRECT' : 'WRONG'));
                     $trainingresult->duration = $request->input('duration');
                     $trainingresult->trainingtrainee_id = $request->input('traineetrainingId');
 

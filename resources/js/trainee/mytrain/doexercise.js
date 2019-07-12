@@ -12,7 +12,7 @@ export default mytrainModule.controller('doexercisectl', ['$scope', 'trainingDat
     };
 
     $scope.answerquestion = () => {
-        if (!submitting) {
+        if (!$scope.submitting) {
             if ($scope.currentPos < $scope.trainingData.pendding_topics.length) {
                 $scope.submitting = true;
                 Traineeinterface.submitanswer({

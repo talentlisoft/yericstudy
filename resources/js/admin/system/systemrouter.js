@@ -209,4 +209,18 @@ export default systemmodule.config(['$stateProvider', '$locationProvider', funct
             }],
         }
     });
+
+    $stateProvider.state('system.manualaudit', {
+        url: '/manualaudit',
+        templateUrl: `${baseUrl}adminpages/system.manualaudit`,
+        controller: 'manualauditctl',
+        data: {
+            pageTitle: '测试结果人工审核'
+        },
+        resolve: {
+            auditList: ['Admininterface', function (Admininterface) {
+                return Admininterface.getmanualauditlist().$promise.then(response => response.result ? response.data : null);
+            }]
+        }
+    });
 }]);

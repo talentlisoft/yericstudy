@@ -349,4 +349,36 @@ class trainingController extends Controller
             return $this->failureresponse('操作失败.');
         }
     }
+
+    public function manualauditlist()
+    {
+        try {
+            $manualauditRecord = DB::table('training_results')
+                ->join('topics', 'topics.id', '=', 'training_results.trainingtopic_id')
+                ->join('trainee_trainings', 'trainee_trainings.id', 'training_results.trainingtrainee_id')
+                ->join('trainees', 'trainees.id', '=', 'trainee_trainings.trainee_id')
+                ->select('trainees.name as trainee_name', 'topics.question', 'training_results.answer', 'training_results.id as result_id')
+                ->where('training_results.status', 'PENDDING')
+                ->get();
+            
+            $manualauditList = [];
+            foreach ($manualauditRecord as $au) {
+                $manualauditList[] = [
+                    'result_id' => $au->result_id,
+                    'trainee_name' => $au->trainee_name,
+                    'question' => mb_strimwidth($au->question, 0, 10, '...'),
+                    'answer' => mb_strimwidth($au->answer, 0, 10, '...'),
+                ];
+            }
+
+            return $this->successresponse($manualauditList);
+
+        } catch (\Illuminate\Database\QueryException $e) {
+            Log::error('trainingController->manualauditlist->QueryException异常' . $e->getMessage());
+            return $this->failureresponse('数据库查询出错了');
+        } catch (Exception $e) {
+            Log::error('trainingController->manualauditlist->Exception' . $e->getMessage());
+            return $this->failureresponse('操作失败.');
+        }
+    }
 }
