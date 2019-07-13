@@ -21,7 +21,7 @@
     <h6 class="border-bottom pb-2 font-weight-bold mb-3">
         <span class="head-border-left">{{answerDetail.trainee_name}}用时{{answerDetail.duration}}秒做出的回答</span>
     </h6>
-    <div class="alert" ng-class="answerDetail.status=='CORRECT'?'alert_success':(answerDetail.status=='WRONG'?'alert-danger':'alert-secondary')" role="alert">
+    <div class="alert" ng-class="answerDetail.status=='CORRECT'?'alert-success':(answerDetail.status=='WRONG'?'alert-danger':'alert-secondary')" role="alert">
         {{answerDetail.trainee_answer}}
     </div>
 </div>
