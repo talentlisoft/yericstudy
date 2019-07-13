@@ -1,6 +1,6 @@
 import mytrainModule from './mytrainmodule';
 
-export default mytrainModule.controller('trainresultctl', ['$scope', 'resultData', function($scope, resultData) {
+export default mytrainModule.controller('trainresultctl', ['$scope', 'resultData', '$uibModal', function($scope, resultData, $uibModal) {
     $scope.resultData = resultData;
 
     $scope.getresulticon = answer => {
@@ -19,7 +19,35 @@ export default mytrainModule.controller('trainresultctl', ['$scope', 'resultData
             default:
                 return null;
         }
-    }
+    },
+
+    $scope.answerdetail = answer => {
+        let detaildlg = $uibModal.open({
+            animation: true,
+            size: 'lg',
+            templateUrl: '../traineepages/mytrain.answerdetail',
+            controller: ['$scope', 'answerDetail', '$uibModalInstance', function($scope, answerDetail, $uibModalInstance) {
+                $scope.answerDetail = answerDetail;
+                $scope.getanswerlist = () => answerDetail.answer ? answerDetail.answer.split('|') : null;
+                $scope.close = () => {
+                    $uibModalInstance.close(null);
+                };
+            }],
+            resolve: {
+                answerDetail: ['Traineeinterface', function(Traineeinterface) {
+                    return Traineeinterface.getanswerdetail({
+                        resultId: answer.result_id
+                    }).$promise.then(response => response.result ? response.data : null);
+                }]
+            }
+        });
+
+        detaildlg.result.then(result => {
+
+        }, () => {
+            // Canceled
+        });
+    };
 
     $scope.getresultcolor = answer => answer.status == 'WRONG' ? 'table-warning': '';
 }]);

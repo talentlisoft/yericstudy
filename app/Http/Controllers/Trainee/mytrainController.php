@@ -218,7 +218,7 @@ class mytrainController extends Controller
             if ($trainingRecord) {
                 $trainingresult = DB::table('training_results')
                     ->join('topics', 'topics.id', '=', 'training_results.trainingtopic_id')
-                    ->select('topics.question', 'training_results.answer', 'training_results.status', 'training_results.duration')
+                    ->select('topics.question', 'training_results.answer', 'training_results.status', 'training_results.duration', 'training_results.id')
                     ->where('training_results.trainingtrainee_id', $traineetrainingId)
                     ->get();
 
@@ -229,7 +229,8 @@ class mytrainController extends Controller
                         'question' => mb_strimwidth($result->question, 0, 10, '...'),
                         'answer' => $result->answer,
                         'status' => $result->status,
-                        'duration' => $result->duration
+                        'duration' => $result->duration,
+                        'result_id' => $result->id
                     ];
                     $correctCount += ($result->status == 'CORRECT' ? 1 : 0);
                 }
@@ -245,6 +246,42 @@ class mytrainController extends Controller
             }
 
             
+        } catch (\Illuminate\Database\QueryException $e) {
+            Log::error('mytrainController->gettrainresult->QueryException异常' . $e->getMessage());
+            return $this->failureresponse('数据库查询出错了');
+        } catch (Exception $e) {
+            Log::error('mytrainController->gettrainresult->Exception' . $e->getMessage());
+            return $this->failureresponse('操作失败.');
+        }
+    }
+
+    public function getanswerDetail($resultId, Trainee $trainee)
+    {
+        try {
+            $answerRecord = DB::table('training_results')
+                ->leftJoin('topics', 'topics.id', '=', 'training_results.trainingtopic_id')
+                ->leftJoin('courses', 'courses.id', '=', 'topics.course_id')
+                ->leftJoin('topictypes', 'topictypes.id', '=', 'topics.type')
+                ->leftJoin('trainee_trainings', 'trainee_trainings.id', '=', 'training_results.trainingtrainee_id')
+                ->leftJoin('trainees', 'trainees.id', 'trainee_trainings.trainee_id')
+                ->select('trainees.name as trainee_name', 'topics.question', 'topics.answer', 'courses.name as course_name', 'topictypes.name as topic_type', 'training_results.answer as trainee_answer', 'training_results.status', 'training_results.duration')
+                ->where('training_results.id', $resultId)
+                ->where('trainee_trainings.trainee_id', $trainee->id)
+                ->first();
+            if ($answerRecord) {
+                return $this->successresponse([
+                    'trainee_name' => $answerRecord->trainee_name,
+                    'question' => $answerRecord->question,
+                    'answer' => $answerRecord->answer,
+                    'course_name' => $answerRecord->course_name,
+                    'topic_type' => $answerRecord->topic_type,
+                    'trainee_answer' => $answerRecord->trainee_answer,
+                    'status' => $answerRecord->status,
+                    'duration' => $answerRecord->duration
+                ]);
+            } else {
+                return $this->failureresponse('Record not exists');
+            }
         } catch (\Illuminate\Database\QueryException $e) {
             Log::error('mytrainController->gettrainresult->QueryException异常' . $e->getMessage());
             return $this->failureresponse('数据库查询出错了');

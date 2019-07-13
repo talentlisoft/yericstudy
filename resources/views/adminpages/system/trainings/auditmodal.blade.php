@@ -2,7 +2,7 @@
 <div class="modal-header">
     <h3 class="modal-title" id="modal-title">审核回答</h3>
 </div>
-<div class="modal-body" id="modal-body">
+<div class="modal-body">
     <div class="form-group row">
         <label for="inputquestion" class="col-form-label col-md-3">{{auditdetailData.course_name+auditdetailData.type_name}}</label>
         <div class="col-md-9">

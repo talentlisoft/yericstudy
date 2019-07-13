@@ -44,3 +44,4 @@ Route::post('resttrainee/mytrain/list', 'Trainee\mytrainController@mytrainlist')
 Route::get('resttrainee/mytrain/detail/{traineetrainingId}', 'Trainee\mytrainController@gettraining');
 Route::post('resttrainee/mytrain/submitanswer', 'Trainee\mytrainController@anawerquestion');
 Route::get('resttrainee/mytrain/result/{traineetrainingId}', 'Trainee\mytrainController@gettrainresult');
+Route::get('resttrainee/mytrain/result/detail/{resultId}', 'Trainee\mytrainController@getanswerDetail');
