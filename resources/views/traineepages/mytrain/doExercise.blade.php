@@ -11,23 +11,20 @@
             </div>
             <div class="card-body">
                 <div class="form-group row">
-                    <label class="col-form-label col-md-3">{{currenttopic().course_name + currenttopic().topic_type}}</label>
+                    <label class="col-form-label col-md-3" for="inputquestion">{{currenttopic().course_name + currenttopic().topic_type}}</label>
                     <div class="col-md-9">
-                        {{currenttopic().question}}
+                        <textarea class="form-control" id="inputquestion" rows="5" ng-value="currenttopic().question" readonly></textarea>
                     </div>
                 </div>
                 <form ng-submit="answerquestion()">
                     <div class="form-group row">
                         <label for="inputanswer" class="col-form-label col-3">回答</label>
                         <div class="col-9">
-                            <div class="input-group">
-                                <input type="text" class="form-control" ng-model="answer" required>
-                                <div class="input-group-append">
-                                    <button ng-disabled="submitting" class="btn btn-outline-success" type="submit"><i class="fa fa-fw" ng-class="submitting?'fa-spinner fa-pulse':'fa-check'" aria-hidden="true"></i></button>
-                                </div>
-                            </div>
+                            <textarea id="answer" class="form-control" rows="3" ng-model="answer" required>
+                            </textarea>
                         </div>
                     </div>
+                    <button ng-disabled="submitting" class="pull-right btn btn-outline-success" type="submit"><i class="fa fa-fw" ng-class="submitting?'fa-spinner fa-pulse':'fa-check'" aria-hidden="true"></i> 回答</button>                    
                 </form>
             </div>
             <div class="card-footer">

@@ -429,7 +429,9 @@ class trainingController extends Controller
                 ->select('status')
                 ->first();
             if ($resultRecord && $resultRecord->status == 'PENDDING') {
-                DB::table('training_results')->update([
+                DB::table('training_results')
+                ->where('training_results.id', $request->input('trainingresultId'))
+                ->update([
                     'status' => $request->input('result') ? 'CORRECT' : 'WRONG',
                     'updated_at' => Carbon::now()
                 ]);

@@ -12,7 +12,7 @@
         <ul class="navbar-nav mr-auto pl-3 text-left">
             {{$slot}}
             <li class="nav-item d-sm-block d-md-block d-lg-none">
-                <a href onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="nav-link"><i class="fa fa-sign-out" aria-hidden="true"></i> 退出</a>
+                <a href="{{url('traineeauth/logout')}}" class="nav-link"><i class="fa fa-sign-out" aria-hidden="true"></i> 退出</a>
             </li>
         </ul>
         <div class="navbar-text my-2 my-lg-0 d-none d-lg-block">
