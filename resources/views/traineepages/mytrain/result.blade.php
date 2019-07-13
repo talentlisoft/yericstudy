@@ -19,13 +19,13 @@
             </tr>
         </thead>
         <tbody>
-            <tr ng-repeat="topic in resultData.results" ng-class="topic.status?'':'table-warning'">
+            <tr ng-repeat="topic in resultData.results" ng-class="getresultcolor(topic)">
                 <td>{{$index + 1}}</td>
                 <td>{{topic.question}}</td>
                 <td ng-class="topic.status?'':'text-danger'">{{topic.answer}}</td>
                 <td>{{topic.duration}}</td>
                 <td>
-                    <i class="fa" aria-hidden="true" ng-class="topic.status?'fa-check text-success':'fa-times text-danger'"></i>
+                    <i class="fa" aria-hidden="true" ng-class="getresulticon(topic)"></i>
                 </td>
             </tr>
         </tbody>

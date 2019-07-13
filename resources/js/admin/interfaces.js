@@ -83,6 +83,19 @@ export default angular.module('Admininterface', ['ngResource']).service('Adminin
             isArray: false,
             timeout: 3000,
             url: `${baseUrl}rest/manualaudit/list`
+        },
+        getmanualauditdetail: {
+            method: 'get',
+            isArray: false,
+            timeout: 3000,
+            url: `${baseUrl}rest/manualaudit/detail/:trainingresultId`,
+            trainingresultId: '@trainingresultId'
+        },
+        auditanswer: {
+            method: 'post',
+            isArray: false,
+            timeout: 3000,
+            url: `${baseUrl}rest/manualaudit/auditanswer`,
         }
     });
 }]);

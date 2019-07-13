@@ -322,7 +322,7 @@ class trainingController extends Controller
                     $resultList[] = [
                         'question' => mb_strimwidth($result->question, 0, 10, '...'),
                         'answer' => $result->answer ?? '--',
-                        'status' => $result->status? ($result->status == 'CORRECT' ? true : false) : '--',
+                        'status' => $result->status,
                         'duration' => $result->duration ?? '--',
                         'topic_type' => $result->topic_type,
                     ];
@@ -378,6 +378,71 @@ class trainingController extends Controller
             return $this->failureresponse('数据库查询出错了');
         } catch (Exception $e) {
             Log::error('trainingController->manualauditlist->Exception' . $e->getMessage());
+            return $this->failureresponse('操作失败.');
+        }
+    }
+
+    public function getauditDetail($trainingresultId)
+    {
+        try {
+            $auditdetailRecord = DB::table('training_results')
+                ->join('topics', 'topics.id', '=', 'training_results.trainingtopic_id')
+                ->leftJoin('courses', 'courses.id', 'topics.course_id')
+                ->leftJoin('topictypes', 'topictypes.id', 'topics.type')
+                ->join('trainee_trainings', 'trainee_trainings.id', 'training_results.trainingtrainee_id')
+                ->join('trainees', 'trainees.id', '=', 'trainee_trainings.trainee_id')
+                ->where('training_results.id', $trainingresultId)
+                ->where('training_results.status', 'PENDDING')
+                ->select('trainees.name as trainee_name', 'topics.question', 'training_results.answer', 'training_results.id as result_id', 'courses.name as course_name', 'topictypes.name as type_name')
+                ->first();
+            if ($auditdetailRecord) {
+                return $this->successresponse([
+                    'trainingresultId' => $trainingresultId,
+                    'trainee_name' => $auditdetailRecord->trainee_name,
+                    'question' => $auditdetailRecord->question,
+                    'answer' => $auditdetailRecord->answer,
+                    'course_name' => $auditdetailRecord->course_name,
+                    'type_name' => $auditdetailRecord->type_name
+                ]);
+            } else {
+                return $this->failureresponse('Record not exists!');
+            }
+        } catch (\Illuminate\Database\QueryException $e) {
+            Log::error('trainingController->getauditDetail->QueryException异常' . $e->getMessage());
+            return $this->failureresponse('数据库查询出错了');
+        } catch (Exception $e) {
+            Log::error('trainingController->getauditDetail->Exception' . $e->getMessage());
+            return $this->failureresponse('操作失败.');
+        }
+    }
+
+    public function auditanawer(Request $request)
+    {
+        $this->validate($request, [
+            'trainingresultId' => 'numeric|required',
+            'result' => 'boolean|required'
+        ]);
+
+        try {
+            $resultRecord = DB::table('training_results')
+                ->where('training_results.id', $request->input('trainingresultId'))
+                ->select('status')
+                ->first();
+            if ($resultRecord && $resultRecord->status == 'PENDDING') {
+                DB::table('training_results')->update([
+                    'status' => $request->input('result') ? 'CORRECT' : 'WRONG',
+                    'updated_at' => Carbon::now()
+                ]);
+
+                return $this->successresponse(['result' => $request->input('result')]);
+            } else {
+                return $this->failureresponse('No record or record status abnormal!');
+            }
+        } catch (\Illuminate\Database\QueryException $e) {
+            Log::error('trainingController->auditanawer->QueryException异常' . $e->getMessage());
+            return $this->failureresponse('数据库查询出错了');
+        } catch (Exception $e) {
+            Log::error('trainingController->auditanawer->Exception' . $e->getMessage());
             return $this->failureresponse('操作失败.');
         }
     }
