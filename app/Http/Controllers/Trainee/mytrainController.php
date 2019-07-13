@@ -228,7 +228,7 @@ class mytrainController extends Controller
                     $resultList[] = [
                         'question' => mb_strimwidth($result->question, 0, 10, '...'),
                         'answer' => $result->answer,
-                        'status' => $result,
+                        'status' => $result->status,
                         'duration' => $result->duration
                     ];
                     $correctCount += ($result->status == 'CORRECT' ? 1 : 0);
