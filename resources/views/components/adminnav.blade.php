@@ -1,7 +1,7 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top crm-nav" ng-controller="headController">
     <div class="navbar-brand navbar-left">
         {{$title}}
-        <button class="btn btn-sm fl-right btn-dark float-right slideBtn" ng-click="openMenu()">
+        <button id="submenutoggle" class="btn btn-sm fl-right btn-dark float-right slideBtn" ng-click="openMenu()">
             <i class="fa fa-bars"></i>
         </button>
     </div>

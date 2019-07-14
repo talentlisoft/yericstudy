@@ -15,7 +15,7 @@ class commonController extends Controller
 
     public function showtraineemainpage($module, $method = null, $optional1 = null, $optional2 = null, $optional3 = null, Trainee $trainee)
     {
-        return view('main.traineemain', ['user' => ['name' => $trainee->name]]);
+        return view('main.traineemain', ['user' => ['name' => $trainee->name, 'avatar' => $trainee->avatar]]);
     }
 
     public function traineepages($pagename)

@@ -1,5 +1,5 @@
 <div ng-controller="mainmenuController">
-    <div class="sidebar-nav d-print-none" ng-class="!mainMenuService.changeMenuState?'sidebar-nav-show':'sidebar-nav-hide'" id="sidebar" ng-cloak>
+    <div class="sidebar-nav d-print-none" click-outside="mainMenuService.changeMenuState = true" outside-if-not="submenutoggle" ng-class="!mainMenuService.changeMenuState?'sidebar-nav-show':'sidebar-nav-hide'" id="sidebar" ng-cloak>
         <div class="sidebar-sticky">
             <ul class="nav flex-column">
                 {{ $slot }}
