@@ -41,7 +41,7 @@
                         <!-- Authentication Links -->
                         @guest
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
+                                <a class="nav-link" href="{{ route('login') }}">管理登陆</a>
                             </li>
                         @else
                             <li class="nav-item dropdown">
@@ -70,6 +70,9 @@
         <main class="py-4">
             @yield('content')
         </main>
+    </div>
+    <div class="footericp w-100 bg-info text-dark">
+        沪ICP备17030323号-2
     </div>
 </body>
 </html>

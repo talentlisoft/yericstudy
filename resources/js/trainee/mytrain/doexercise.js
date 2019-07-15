@@ -31,6 +31,7 @@ export default mytrainModule.controller('doexercisectl', ['$scope', 'trainingDat
                             $state.go('mytrain.mytrains.result', {traineetrainingId: $stateParams.traineetrainingId});
                         } else {
                             $scope.lasttime = new Date();
+                            document.querySelector('#answer').focus();
                         }
                     }
                 }, () => {
