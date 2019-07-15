@@ -229,13 +229,13 @@ export default systemmodule.config(['$stateProvider', '$locationProvider', funct
         template: `<ui-view class="w-100 d-block uiview"></ui-view>`
     });
 
-    $stateProvider.state('system.user.list', {
+    $stateProvider.state('system.users.list', {
         url: '/list',
         templateUrl: `${baseUrl}adminpages/system.users.list`,
         controller: 'userslistctl',
         resolve: {
             usersList: ['Admininterface', function(Admininterface) {
-                return null;
+                return Admininterface.getuserlist().$promise.then(response => response.result ? response.data : null);
             }]
         }
     })

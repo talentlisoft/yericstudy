@@ -96,6 +96,12 @@ export default angular.module('Admininterface', ['ngResource']).service('Adminin
             isArray: false,
             timeout: 3000,
             url: `${baseUrl}rest/manualaudit/auditanswer`,
+        },
+        getuserlist: {
+            method: 'get',
+            isArray: false,
+            timeout: 3000,
+            url: `${baseUrl}rest/users/list`,
         }
     });
 }]);
