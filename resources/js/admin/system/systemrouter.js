@@ -223,4 +223,20 @@ export default systemmodule.config(['$stateProvider', '$locationProvider', funct
             }]
         }
     });
+
+    $stateProvider.state('system.users', {
+        url: '/users',
+        template: `<ui-view class="w-100 d-block uiview"></ui-view>`
+    });
+
+    $stateProvider.state('system.user.list', {
+        url: '/list',
+        templateUrl: `${baseUrl}adminpages/system.users.list`,
+        controller: 'userslistctl',
+        resolve: {
+            usersList: ['Admininterface', function(Admininterface) {
+                return null;
+            }]
+        }
+    })
 }]);
