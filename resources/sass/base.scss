@@ -1,0 +1,239 @@
+// Bootstrap
+@import "variables";
+@import "~bootstrap/scss/bootstrap";
+//font awesome
+// $fa-font-path: "../../fonts/vendor/font-awesome";
+@import "~font-awesome/scss/font-awesome";
+//angular toastr
+@import "~angular-toastr/dist/angular-toastr.css";
+//froala-editor
+// @import "~froala-editor/css/froala_editor.pkgd.css";
+// @import "~froala-editor/css/froala_style.css";
+//ui-select
+// @import "~ui-select/dist/select.css";
+// @import "uiselect";
+@import "changepassword";
+// @import "sortable";
+@import "loadingindicator";
+.container-fluid{
+    font-size: 0.875rem !important;
+}
+.crm-nav{
+    height: 55px;
+
+    .navbar-left {
+        width: 200px;
+    }
+
+    .slideBtn {
+        display: none;
+    }
+
+    .dropdown-menu {
+        a:hover {
+            color: black;
+        }
+    }
+
+    .dropdown-toggle {
+        cursor: pointer;
+    }
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.sidebar-nav {
+    // position: sticky;
+    position: fixed;
+    top: 55px;
+    z-index: 1000;
+    // height: calc(100vh - 55px);
+    bottom: 0;
+    border-right: 1px solid rgba(0, 0, 0, .1);
+    padding: 0;
+    background: #222d32;
+    padding-top: 10px;
+    overflow: auto;
+    left: 0;
+    width: 230px;
+    transition: all .3s ease-in-out;
+
+    .nav-link {
+        color: #b8c7ce;
+        border-left: 3px solid transparent;
+        position: relative;
+
+        .nav-badge {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translate(0, -50%);
+        }
+
+        .fa {
+            margin-right: 5px;
+        }
+
+        &.active {
+            color: #fff;
+            background-color: #1e282c;
+            border-left-color: #3c8dbc;
+        }
+
+        &:hover {
+            color: #fff;
+        }
+    }
+}
+
+.maincontent {
+    margin-left: 230px;
+}
+
+
+.uiview {
+    &.ng-enter {
+        opacity: 0; // transition-delay: 0.3s;
+        transform: translate3d(0, 20px, 0);
+        transition: all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.3s;
+    }
+
+    &.ng-enter-active {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+    }
+
+    &.ng-leave-active {
+        opacity: 0;
+    }
+}
+
+.mainuiview.ng-enter {
+    transition: all .5s ease-out;
+
+    #sidebar {
+        transition-delay: 0.2s;
+        transform: translate3d(-150%, 0, 0);
+    }
+
+    #maincontent {
+        transition: all .3s ease-out;
+        opacity: 0;
+        transform: translate3d(0, 20px, 0);
+    }
+}
+
+.mainuiview.ng-enter-active {
+
+    #sidebar,
+    #maincontent {
+        transform: translate3d(0, 0, 0);
+    }
+
+    #maincontent {
+        opacity: 1;
+    }
+}
+
+.mainuiview.ng-leave {
+    transition: all .5s ease-out;
+
+    #sidebar {
+        transform: translate3d(0, 0, 0);
+    }
+
+    #maincontent {
+        opacity: 0;
+    }
+}
+
+.mainuiview.ng-leave-active {
+    #sidebar {
+        transform: translate3d(-150%, 0, 0);
+    }
+}
+
+@media (max-width: 768px) {
+    .sidebar-nav {
+        transform: translate(-230px, 0);
+
+        &.sidebar-nav-show {
+            transform: translate(0, 0);
+        }
+
+        &.sidebar-nav-hide {
+            transform: translate(-230px, 0);
+        }
+    }
+
+    .maincontent {
+        margin-left: 0;
+
+        &.maincontent-noOffset {
+            margin-left: 0;
+        }
+
+        &.maincontent-offset {
+            margin-left: 230px;
+        }
+    }
+
+    .crm-nav {
+        .slideBtn {
+            display: block;
+        }
+    }
+}
+
+.open>.dropdown-menu {
+    display: block;
+}
+
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.searchmore {
+    margin-top: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: rgb(230, 230, 230);
+}
+
+.table {
+    font-size: 14px;
+    color: #606266;
+    font-weight:500;
+}
+
+.nav-messages {
+    position: relative;
+    .badge {
+        position: absolute;
+        position: absolute;
+        top: -6px;
+        right: -13px;
+    }
+}
+
+.link-nodecoration:hover {
+    text-decoration: none;
+}
+
+.navbar-collapse{
+    background-color: #343a3f;
+}
+
+.head-border-left{
+    padding-left: 15px;
+    border: {
+        left: 4px solid #f6993f;
+    }
+}
+
+button:disabled {
+    cursor: no-drop;
+}
