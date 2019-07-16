@@ -238,5 +238,24 @@ export default systemmodule.config(['$stateProvider', '$locationProvider', funct
                 return Admininterface.getuserlist().$promise.then(response => response.result ? response.data : null);
             }]
         }
-    })
+    });
+
+    $stateProvider.state('system.users.add', {
+        url: '/add',
+        templateUrl: `${baseUrl}adminpages/system.users.edit`,
+        controller: 'editusersctl',
+        resolve: {
+            userData: [function() {
+                return null;
+            }],
+            traineesList: ['Persist', 'Admininterface', function (Persist, Admininterface) {
+                return Persist.shared.traineesList ? Persist.shared.traineesList : Admininterface.gettraineelist().$promise.then(response => {
+                    if (response.result) {
+                        Persist.shared.traineesList = response.data;
+                        return Persist.shared.traineesList;
+                    }
+                })
+            }],
+        }
+    });
 }]);

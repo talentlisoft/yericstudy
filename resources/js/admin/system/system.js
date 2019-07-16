@@ -8,3 +8,4 @@ import trainingdetail from './trainingdetail';
 import trainingresult from './trainingresult';
 import manualaudit from './manualaudit';
 import userslist from './users/list';
+import edituser from './users/edit';
