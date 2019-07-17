@@ -22,35 +22,37 @@ export default systemModule.controller('trainingresultctl', ['$scope', '$state',
     }
 
     $scope.answerdetail = answer => {
-        let detaildlg = $uibModal.open({
-            animation: true,
-            size: 'lg',
-            templateUrl: '../adminpages/system.trainings.answerdetail',
-            controller: ['$scope', 'answerDetail', '$uibModalInstance', '$state', function($scope, answerDetail, $uibModalInstance, $state) {
-                $scope.answerDetail = answerDetail;
-                $scope.getanswerlist = () => answerDetail.answer ? answerDetail.answer.split('|') : null;
-                $scope.close = () => {
-                    $uibModalInstance.close(null);
-                };
-                $scope.edittopic = () => {
-                    $uibModalInstance.close(null);
-                    $state.go('system.topics.detail', {topicId: answerDetail.topic_id});
-                };
-            }],
-            resolve: {
-                answerDetail: ['Admininterface', function(Admininterface) {
-                    return Admininterface.getresultdetail({
-                        resultId: answer.result_id
-                    }).$promise.then(response => response.result ? response.data : null);
-                }]
-            }
-        });
-
-        detaildlg.result.then(result => {
-
-        }, () => {
-            // Canceled
-        });
+        if (answer.result_id) {
+            let detaildlg = $uibModal.open({
+                animation: true,
+                size: 'lg',
+                templateUrl: '../adminpages/system.trainings.answerdetail',
+                controller: ['$scope', 'answerDetail', '$uibModalInstance', '$state', function($scope, answerDetail, $uibModalInstance, $state) {
+                    $scope.answerDetail = answerDetail;
+                    $scope.getanswerlist = () => answerDetail.answer ? answerDetail.answer.split('|') : null;
+                    $scope.close = () => {
+                        $uibModalInstance.close(null);
+                    };
+                    $scope.edittopic = () => {
+                        $uibModalInstance.close(null);
+                        $state.go('system.topics.detail', {topicId: answerDetail.topic_id});
+                    };
+                }],
+                resolve: {
+                    answerDetail: ['Admininterface', function(Admininterface) {
+                        return Admininterface.getresultdetail({
+                            resultId: answer.result_id
+                        }).$promise.then(response => response.result ? response.data : null);
+                    }]
+                }
+            });
+    
+            detaildlg.result.then(result => {
+    
+            }, () => {
+                // Canceled
+            });
+        }
     };
 
     $scope.getresultcolor = answer => answer.status == 'WRONG' ? 'table-warning': '';
