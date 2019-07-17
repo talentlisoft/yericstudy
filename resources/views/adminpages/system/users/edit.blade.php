@@ -63,7 +63,7 @@
     </div>
 
     <div class="d-flex justify-content-end col-12 mt-3">
-        <button class="btn btn-primary" type="submit"><i class="fa fa-floppy-o" aria-hidden="true"></i> 保存</button>
+        <button class="btn btn-primary" ng-disabled="saving" type="submit"><i class="fa" ng-class="saving?'fa-spinner fa-pulse':'fa-floppy-o'" aria-hidden="true"></i> 保存</button>
     </div>
 </form>
 @endverbatim

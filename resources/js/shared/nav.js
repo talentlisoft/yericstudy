@@ -27,9 +27,13 @@ export default angular.module('mainMenu',['ui.router']).factory('mainMenu', func
     });
 
     $scope.mainMenuService.changeMenuState = $scope.openMenu;
-}]).controller('headController', ['$scope','mainMenu' ,function($scope,mainMenu){
+}]).controller('headController', ['$scope','mainMenu', '$transitions', function($scope,mainMenu, $transitions){
     $scope.mainMenuService = mainMenu;
+    $scope.isNavCollapsed = false;
     $scope.openMenu = function(){
         mainMenu.openMainMenu();
     };
+    $transitions.onSuccess({}, function(transition) {
+        $scope.isNavCollapsed = false;
+    });
 }]);

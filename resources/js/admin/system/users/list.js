@@ -4,6 +4,6 @@ export default systemModule.controller('userslistctl', ['$scope', 'usersList', '
     $scope.usersList = usersList;
 
     $scope.gotouserdetail = user => {
-        
+        $state.go('system.users.modify', {userId: user.id});
     };
 }]);

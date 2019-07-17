@@ -40,6 +40,8 @@ Route::get('rest/manualaudit/list', 'Admin\trainingController@manualauditlist');
 Route::get('rest/manualaudit/detail/{trainingresultId}', 'Admin\trainingController@getauditDetail');
 Route::post('rest/manualaudit/auditanswer', 'Admin\trainingController@auditanawer');
 Route::get('rest/users/list', 'Admin\usersController@userslist');
+Route::post('rest/users/save', 'Admin\usersController@saveuser');
+Route::get('rest/users/detail/{userId}', 'Admin\usersController@userDetail');
 
 Route::post('resttrainee/mytrain/list', 'Trainee\mytrainController@mytrainlist');
 Route::get('resttrainee/mytrain/detail/{traineetrainingId}', 'Trainee\mytrainController@gettraining');

@@ -102,6 +102,19 @@ export default angular.module('Admininterface', ['ngResource']).service('Adminin
             isArray: false,
             timeout: 3000,
             url: `${baseUrl}rest/users/list`,
+        },
+        saveuser: {
+            method: 'post',
+            isArray: false,
+            timeout: 3000,
+            url: `${baseUrl}rest/users/save`,
+        },
+        getuserdetail: {
+            method: 'get',
+            isArray: false,
+            timeout: 3000,
+            url: `${baseUrl}rest/users/detail/:userId`,
+            userId: '@userId'
         }
     });
 }]);
