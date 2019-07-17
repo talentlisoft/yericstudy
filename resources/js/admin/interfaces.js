@@ -58,6 +58,13 @@ export default angular.module('Admininterface', ['ngResource']).service('Adminin
             timeout: 4000,
             url: `${baseUrl}rest/training/add`
         },
+        getresultdetail: {
+            method: 'get',
+            isArray: false,
+            timeout: 4000,
+            url: `${baseUrl}rest/training/resultdetail/:resultId`,
+            resultId: '@resultId'
+        },
         gettrainingslist: {
             method: 'post',
             isArray: false,
