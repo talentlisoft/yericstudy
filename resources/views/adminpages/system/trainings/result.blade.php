@@ -20,7 +20,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr ng-repeat="topic in resultData.results" ng-class="getresultcolor(topic)">
+            <tr ng-repeat="topic in resultData.results" ng-class="getresultcolor(topic)" class="cursor-pointer" ng-click="answerdetail(topic)">
                 <td>{{$index + 1}}</td>
                 <td>{{topic.question}}</td>
                 <td ng-class="topic.status?'':'text-danger'">{{topic.answer}}</td>
