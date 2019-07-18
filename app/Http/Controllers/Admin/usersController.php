@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Hash;
-use Carbon\Carbon;
 use App\User;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 
 class usersController extends Controller
 {
@@ -28,7 +29,7 @@ class usersController extends Controller
                 $userList[] = [
                     'id' => $user->id,
                     'name' => $user->name,
-                    'email'=> $user->email
+                    'email' => $user->email,
                 ];
             }
 
@@ -53,34 +54,38 @@ class usersController extends Controller
             'permissions.checktopics' => 'required|boolean',
             'permissions.checkusers' => 'required|boolean',
             'selectedtrainees' => 'array',
-            'selectedtrainees.*.id' => 'numeric|required'
+            'selectedtrainees.*.id' => 'numeric|required',
         ]);
 
         try {
-            DB::beginTransaction();
-            $userRecord = is_null($request->input('id')) ? new User : User::find($request->input('id'));
-            if ($userRecord) {
-                $userRecord->name = $request->input('name');
-                $userRecord->email = $request->input('email');
-                if ($request->input('password') != 'nochange') {
-                    $userRecord->password =  Hash::make($request->input('password'));
-                }
-                $userRecord->permissions = ($request->input('permissions.checktopics') ? 1 :0) | ($request->input('permissions.checkusers') ? 2 : 0);
-                if ($userRecord->save())
-                {
-                    DB::table('user_trainee')->where('user_id', $userRecord->id)->delete();
-                    foreach ($request->input('selectedtrainees') as $trainee) {
-                        DB::table('user_trainee')
-                            ->insert([
-                              'user_id' => $userRecord->id,
-                              'trainee_id'=>  $trainee['id'],
-                              'created_at' => Carbon::now(),
-                              'updated_at' => Carbon::now()
-                            ]);
+            $user = Auth::user();
+            if (($user->permissions & 2) == 2) {
+                DB::beginTransaction();
+                $userRecord = is_null($request->input('id')) ? new User : User::find($request->input('id'));
+                if ($userRecord) {
+                    $userRecord->name = $request->input('name');
+                    $userRecord->email = $request->input('email');
+                    if ($request->input('password') != 'nochange') {
+                        $userRecord->password = Hash::make($request->input('password'));
                     }
+                    $userRecord->permissions = ($request->input('permissions.checktopics') ? 1 : 0) | ($request->input('permissions.checkusers') ? 2 : 0);
+                    if ($userRecord->save()) {
+                        DB::table('user_trainee')->where('user_id', $userRecord->id)->delete();
+                        foreach ($request->input('selectedtrainees') as $trainee) {
+                            DB::table('user_trainee')
+                                ->insert([
+                                    'user_id' => $userRecord->id,
+                                    'trainee_id' => $trainee['id'],
+                                    'created_at' => Carbon::now(),
+                                    'updated_at' => Carbon::now(),
+                                ]);
+                        }
+                    }
+                    DB::commit();
+                    return $this->successresponse(['id' => $userRecord->id]);
                 }
-                DB::commit();
-                return $this->successresponse(['id' => $userRecord->id]);
+            } else {
+                return $this->failureresponse('Not allowed');
             }
         } catch (\Illuminate\Database\QueryException $e) {
             DB::rollBack();
@@ -103,7 +108,7 @@ class usersController extends Controller
                     'email' => $userRecord->email,
                     'password' => 'nochange',
                     'permissions' => ['checktopics' => ($userRecord->permissions & 1) == 1 ? true : false, 'checkusers' => ($userRecord->permissions & 2) == 2 ? true : false],
-                    'selectedtrainees' => []
+                    'selectedtrainees' => [],
                 ];
                 $traineeRecord = DB::table('user_trainee')
                     ->select('trainee_id')

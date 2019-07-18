@@ -186,7 +186,7 @@ export default systemmodule.config(['$stateProvider', '$locationProvider', funct
         },
         resolve: {
             traineesList: ['Persist', 'Admininterface', function (Persist, Admininterface) {
-                return Persist.shared.traineesList ? Persist.shared.traineesList : Admininterface.gettraineelist().$promise.then(response => {
+                return Persist.shared.traineesList ? Persist.shared.traineesList : Admininterface.getmytraineelist().$promise.then(response => {
                     if (response.result) {
                         Persist.shared.traineesList = response.data;
                         return Persist.shared.traineesList;
@@ -248,12 +248,9 @@ export default systemmodule.config(['$stateProvider', '$locationProvider', funct
             userData: [function() {
                 return null;
             }],
-            traineesList: ['Persist', 'Admininterface', function (Persist, Admininterface) {
-                return Persist.shared.traineesList ? Persist.shared.traineesList : Admininterface.gettraineelist().$promise.then(response => {
-                    if (response.result) {
-                        Persist.shared.traineesList = response.data;
-                        return Persist.shared.traineesList;
-                    }
+            traineesList: ['Admininterface', function (Admininterface) {
+                return Admininterface.gettraineelist().$promise.then(response => {
+                    return response.result ? response.data : null;
                 })
             }],
         }
@@ -269,14 +266,11 @@ export default systemmodule.config(['$stateProvider', '$locationProvider', funct
                     userId: $stateParams.userId
                 }).$promise.then(response => response.result ? response.data : null);
             }],
-            traineesList: ['Persist', 'Admininterface', function (Persist, Admininterface) {
-                return Persist.shared.traineesList ? Persist.shared.traineesList : Admininterface.gettraineelist().$promise.then(response => {
-                    if (response.result) {
-                        Persist.shared.traineesList = response.data;
-                        return Persist.shared.traineesList;
-                    }
+            traineesList: ['Admininterface', function (Admininterface) {
+                return Admininterface.gettraineelist().$promise.then(response => {
+                    return response.result ? response.data : null;
                 })
-            }],
+            }]
         }
     });
 
@@ -289,12 +283,9 @@ export default systemmodule.config(['$stateProvider', '$locationProvider', funct
         url: '/list',
         templateUrl: `${baseUrl}adminpages/system.trainees.list`,
         resolve: {
-            traineesList: ['Persist', 'Admininterface', function (Persist, Admininterface) {
+            traineesList: ['Admininterface', function (Admininterface) {
                 return Admininterface.gettraineelist().$promise.then(response => {
-                    if (response.result) {
-                        Persist.shared.traineesList = response.data;
-                        return Persist.shared.traineesList;
-                    }
+                    return response.result ? response.data : null;
                 })
             }],
         },

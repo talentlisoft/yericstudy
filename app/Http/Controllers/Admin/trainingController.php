@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Log;
 use App\Models\Training as Training;
 use App\Models\TrainingTopics as TrainingTopics;
 use App\Models\TrainingTrainees as TrainingTrainees;
+use Illuminate\Support\Facades\Auth;
+use App\User;
 
 class trainingController extends Controller
 {
@@ -24,12 +26,15 @@ class trainingController extends Controller
             'searchcontent' => 'nullable',
         ]);
         try {
+            $user = Auth::user();
             $trainingsRecord = DB::table('trainnings')
                 ->select('trainnings.title', 'trainnings.created_at', 'trainnings.id', 
                 DB::raw('COUNT(trainee_trainings.id) AS trainee_count'),
                 DB::raw('SUM(IF(trainee_trainings.status = 1, 1, 0)) AS finished_count')
                 )
                 ->leftJoin('trainee_trainings', 'trainee_trainings.training_id', '=', 'trainnings.id')
+                ->join('user_trainee', 'user_trainee.trainee_id', '=' ,'trainee_trainings.trainee_id')
+                ->where('user_trainee.user_id', $user->id)
                 ->orderBy('trainnings.created_at', 'desc')
                 ->groupBy('trainnings.title', 'trainnings.created_at', 'trainnings.id')
                 ->paginate(20);
@@ -266,13 +271,16 @@ class trainingController extends Controller
     public function trainingDetail($trainingId)
     {
         try {
+            $user = Auth::user();
             $traineeRecord = DB::table('trainee_trainings')
+                ->join('user_trainee', 'user_trainee.trainee_id', '=' ,'trainee_trainings.trainee_id')
                 ->join('trainees', 'trainees.id', '=', 'trainee_trainings.trainee_id')
                 ->select('trainees.name', 'trainee_trainings.id', 
                     DB::raw('(SELECT COUNT(*) FROM training_topics WHERE training_topics.training_id = trainee_trainings.training_id) AS total_topics'), 
                     DB::raw('(SELECT COUNT(*) FROM training_results WHERE training_results.trainingtrainee_id = trainee_trainings.id) AS finished_topics'), 
                     'trainee_trainings.status')
                 ->where('trainee_trainings.training_id', $trainingId)
+                ->where('user_trainee.user_id', $user->id)
                 ->get();
 
             $traineeList = [];
@@ -299,10 +307,13 @@ class trainingController extends Controller
     public function trainingResult($traineetrainingId)
     {
         try {
+            $user = Auth::user();
             $trainingRecord = DB::table('trainee_trainings')
+                ->join('user_trainee', 'user_trainee.trainee_id', '=' ,'trainee_trainings.trainee_id')
                 ->join('trainnings', 'trainnings.id', '=', 'trainee_trainings.training_id')
                 ->select('trainnings.title', 'trainee_trainings.created_at', 'trainee_trainings.training_id', 'trainee_trainings.status')
                 ->where('trainee_trainings.id', $traineetrainingId)
+                ->where('user_trainee.user_id', $user->id)
                 ->first();
             if ($trainingRecord) {
                 $trainingresult = DB::table('training_topics')
@@ -354,12 +365,15 @@ class trainingController extends Controller
     public function manualauditlist()
     {
         try {
+            $user = Auth::user();
             $manualauditRecord = DB::table('training_results')
                 ->join('topics', 'topics.id', '=', 'training_results.trainingtopic_id')
                 ->join('trainee_trainings', 'trainee_trainings.id', 'training_results.trainingtrainee_id')
+                ->join('user_trainee', 'user_trainee.trainee_id', '=' ,'trainee_trainings.trainee_id')
                 ->join('trainees', 'trainees.id', '=', 'trainee_trainings.trainee_id')
                 ->select('trainees.name as trainee_name', 'topics.question', 'training_results.answer', 'training_results.id as result_id')
                 ->where('training_results.status', 'PENDDING')
+                ->where('user_trainee.user_id', $user->id)
                 ->get();
             
             $manualauditList = [];
@@ -386,14 +400,17 @@ class trainingController extends Controller
     public function getauditDetail($trainingresultId)
     {
         try {
+            $user = Auth::user();
             $auditdetailRecord = DB::table('training_results')
                 ->join('topics', 'topics.id', '=', 'training_results.trainingtopic_id')
                 ->leftJoin('courses', 'courses.id', 'topics.course_id')
                 ->leftJoin('topictypes', 'topictypes.id', 'topics.type')
                 ->join('trainee_trainings', 'trainee_trainings.id', 'training_results.trainingtrainee_id')
+                ->join('user_trainee', 'user_trainee.trainee_id', '=' ,'trainee_trainings.trainee_id')
                 ->join('trainees', 'trainees.id', '=', 'trainee_trainings.trainee_id')
                 ->where('training_results.id', $trainingresultId)
                 ->where('training_results.status', 'PENDDING')
+                ->where('user_trainee.user_id', $user->id)
                 ->select('trainees.name as trainee_name', 'topics.question', 'training_results.answer', 'training_results.id as result_id', 'courses.name as course_name', 'topictypes.name as type_name')
                 ->first();
             if ($auditdetailRecord) {
@@ -450,17 +467,48 @@ class trainingController extends Controller
         }
     }
 
+    public function getmytraineesList()
+    {
+        try {
+            $user = Auth::user();
+            $traineeRecord = DB::table('trainees')
+                ->join('user_trainee', 'user_trainee.trainee_id', '=' ,'trainees.id')
+                ->where('user_trainee.user_id', $user->id)
+                ->select('trainees.name', 'trainees.id', 'trainees.avatar')
+                ->get();
+            $traineeList = [];
+            foreach ($traineeRecord as $trainee) {
+                $traineeList[] = [
+                    'id' => $trainee->id,
+                    'name'=> $trainee->name,
+                    'avatar' => $trainee->avatar
+                ];
+            }
+
+            return $this->successresponse($traineeList);
+        } catch (\Illuminate\Database\QueryException $e) {
+            Log::error('trainingController->getmytraineesList->QueryException异常' . $e->getMessage());
+            return $this->failureresponse('数据库查询出错了');
+        } catch (Exception $e) {
+            Log::error('trainingController->getmytraineesList->Exception' . $e->getMessage());
+            return $this->failureresponse('操作失败.');
+        }
+    }
+
     public function getanswerDetail($resultId)
     {
         try {
+            $user = Auth::user();
             $answerRecord = DB::table('training_results')
                 ->leftJoin('topics', 'topics.id', '=', 'training_results.trainingtopic_id')
                 ->leftJoin('courses', 'courses.id', '=', 'topics.course_id')
                 ->leftJoin('topictypes', 'topictypes.id', '=', 'topics.type')
                 ->leftJoin('trainee_trainings', 'trainee_trainings.id', '=', 'training_results.trainingtrainee_id')
+                ->join('user_trainee', 'user_trainee.trainee_id', '=' ,'trainee_trainings.trainee_id')
                 ->leftJoin('trainees', 'trainees.id', 'trainee_trainings.trainee_id')
                 ->select('trainees.name as trainee_name', 'topics.question', 'topics.answer', 'courses.name as course_name', 'topictypes.name as topic_type', 'training_results.answer as trainee_answer', 'training_results.status', 'training_results.duration', 'topics.id')
                 ->where('training_results.id', $resultId)
+                ->where('user_trainee.user_id', $user->id)
                 ->first();
             if ($answerRecord) {
                 return $this->successresponse([

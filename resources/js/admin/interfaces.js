@@ -46,6 +46,12 @@ export default angular.module('Admininterface', ['ngResource']).service('Adminin
             timeout: 2000,
             url: `${baseUrl}rest/trainees/list`
         },
+        getmytraineelist: {
+            method: 'get',
+            isArray: false,
+            timeout: 2000,
+            url: `${baseUrl}rest/trainees/mylist`
+        },
         gettrainingtopicslist: {
             method: 'post',
             isArray: false,
@@ -122,6 +128,12 @@ export default angular.module('Admininterface', ['ngResource']).service('Adminin
             timeout: 3000,
             url: `${baseUrl}rest/users/detail/:userId`,
             userId: '@userId'
+        },
+        savetrainee: {
+            method: 'post',
+            isArray: false,
+            timeout: 3000,
+            url: `${baseUrl}rest/trainees/save`
         }
     });
 }]);
