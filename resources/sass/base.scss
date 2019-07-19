@@ -15,6 +15,11 @@
 @import "changepassword";
 // @import "sortable";
 @import "loadingindicator";
+
+body {
+    overflow-x: hidden;
+}
+
 .container-fluid{
     font-size: 0.875rem !important;
 }
@@ -237,4 +242,16 @@
 
 button:disabled {
     cursor: no-drop;
+}
+
+.result-answer {
+    position: relative;
+    .badge {
+        position: absolute;
+        top: -8px;
+    }
+}
+
+.font-24 {
+    font-size: 24px;
 }

@@ -11,7 +11,7 @@
     @yield('base')
     <title update-title>Yeric Study</title>
 </head>
-<body>
+<body class="w-100">
     @yield('body')
     <load-indicator></load-indicator>
 </body>

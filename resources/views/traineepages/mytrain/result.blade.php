@@ -22,7 +22,12 @@
             <tr ng-repeat="topic in resultData.results" class="cursor-pointer" ng-class="getresultcolor(topic)" ng-click="answerdetail(topic)">
                 <td>{{$index + 1}}</td>
                 <td>{{topic.question}}</td>
-                <td ng-class="topic.status?'':'text-danger'">{{topic.answer}}</td>
+                <td ng-class="topic.status?'':'text-danger'">
+                    <span class="result-answer">
+                        <span>{{topic.answer}}</span>
+                        <span class="badge badge-pill badge-danger" tooltip-class="text-nowrap" uib-tooltip="错误总数" ng-show="topic.status=='WRONG' && topic.fail_count > 1">{{topic.fail_count}}</span>
+                    </span>
+                </td>
                 <td>{{topic.duration}}</td>
                 <td>
                     <i class="fa" aria-hidden="true" ng-class="getresulticon(topic)"></i>

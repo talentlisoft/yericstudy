@@ -323,7 +323,12 @@ class trainingController extends Controller
                         $join->on('training_results.trainingtrainee_id', '=', DB::raw($traineetrainingId));
                         $join->on('training_results.trainingtopic_id', '=', 'training_topics.topic_id');
                     })
-                    ->select('topics.question', 'training_results.answer', 'training_results.status', 'training_results.duration', 'topictypes.name as topic_type', 'training_results.id')
+                    ->leftJoin('trainee_trainings', 'trainee_trainings.id', 'training_results.trainingtrainee_id')
+                    ->leftJoin('trainee_topics_summary', function($join) {
+                        $join->on('trainee_topics_summary.topic_id', '=', 'topics.id');
+                        $join->on('trainee_topics_summary.trainee_id', '=', 'trainee_trainings.trainee_id');
+                    })
+                    ->select('topics.question', 'training_results.answer', 'training_results.status', 'training_results.duration', 'topictypes.name as topic_type', 'training_results.id', 'trainee_topics_summary.correct_count', 'trainee_topics_summary.fail_count')
                     ->where('training_topics.training_id', $trainingRecord->training_id)
                     ->get();
 
@@ -336,7 +341,9 @@ class trainingController extends Controller
                         'status' => $result->status,
                         'duration' => $result->duration ?? '--',
                         'topic_type' => $result->topic_type,
-                        'result_id' => $result->id
+                        'result_id' => $result->id,
+                        'correct_count' => $result->correct_count,
+                        'fail_count' => $result->fail_count
                     ];
                     $correctCount += ($result->status == 'CORRECT' ? 1 : 0);
                 }
@@ -420,7 +427,7 @@ class trainingController extends Controller
                     'question' => $auditdetailRecord->question,
                     'answer' => $auditdetailRecord->answer,
                     'course_name' => $auditdetailRecord->course_name,
-                    'type_name' => $auditdetailRecord->type_name
+                    'type_name' => $auditdetailRecord->type_name                    
                 ]);
             } else {
                 return $this->failureresponse('Record not exists!');
@@ -506,11 +513,29 @@ class trainingController extends Controller
                 ->leftJoin('trainee_trainings', 'trainee_trainings.id', '=', 'training_results.trainingtrainee_id')
                 ->join('user_trainee', 'user_trainee.trainee_id', '=' ,'trainee_trainings.trainee_id')
                 ->leftJoin('trainees', 'trainees.id', 'trainee_trainings.trainee_id')
-                ->select('trainees.name as trainee_name', 'topics.question', 'topics.answer', 'courses.name as course_name', 'topictypes.name as topic_type', 'training_results.answer as trainee_answer', 'training_results.status', 'training_results.duration', 'topics.id')
+                ->select('trainees.name as trainee_name', 'topics.question', 'topics.answer', 'courses.name as course_name', 'topictypes.name as topic_type', 'training_results.answer as trainee_answer', 'training_results.status', 'training_results.duration', 'trainee_trainings.trainee_id', 'topics.id as topic_id')
                 ->where('training_results.id', $resultId)
                 ->where('user_trainee.user_id', $user->id)
                 ->first();
             if ($answerRecord) {
+                $historyRecord = DB::table('training_results')
+                    ->join('trainee_trainings', 'trainee_trainings.id', 'training_results.trainingtrainee_id')
+                    ->join('trainnings', 'trainnings.id', 'trainee_trainings.training_id')
+                    ->select('trainnings.title', 'training_results.created_at', 'training_results.status', 'training_results.answer')
+                    ->where('trainee_trainings.trainee_id', $answerRecord->trainee_id)
+                    ->where('training_results.trainingtopic_id', $answerRecord->topic_id)
+                    ->where('training_results.id', '<>', $resultId)
+                    ->orderBy('training_results.created_at', 'desc')
+                    ->get();
+                $historyList = [];
+                foreach ($historyRecord as $his) {
+                    $historyList[] = [
+                        'title' => $his->title,
+                        'created_at' => (new Carbon($his->created_at))->locale('zh_CN')->diffForHumans(Carbon::now()),
+                        'status' => $his->status,
+                        'answer' => $his->answer
+                    ];
+                }
                 return $this->successresponse([
                     'trainee_name' => $answerRecord->trainee_name,
                     'question' => $answerRecord->question,
@@ -520,7 +545,8 @@ class trainingController extends Controller
                     'trainee_answer' => $answerRecord->trainee_answer,
                     'status' => $answerRecord->status,
                     'duration' => $answerRecord->duration,
-                    'topic_id' => $answerRecord->id
+                    'topic_id' => $answerRecord->topic_id,
+                    'history' => $historyList
                 ]);
             } else {
                 return $this->failureresponse('Record not exists');

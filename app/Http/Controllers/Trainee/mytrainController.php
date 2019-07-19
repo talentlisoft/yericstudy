@@ -218,7 +218,12 @@ class mytrainController extends Controller
             if ($trainingRecord) {
                 $trainingresult = DB::table('training_results')
                     ->join('topics', 'topics.id', '=', 'training_results.trainingtopic_id')
-                    ->select('topics.question', 'training_results.answer', 'training_results.status', 'training_results.duration', 'training_results.id')
+                    ->leftJoin('trainee_trainings', 'trainee_trainings.id', 'training_results.trainingtrainee_id')
+                    ->leftJoin('trainee_topics_summary', function($join) {
+                        $join->on('trainee_topics_summary.topic_id', '=', 'topics.id');
+                        $join->on('trainee_topics_summary.trainee_id', '=', 'trainee_trainings.trainee_id');
+                    })
+                    ->select('topics.question', 'training_results.answer', 'training_results.status', 'training_results.duration', 'training_results.id', 'trainee_topics_summary.correct_count', 'trainee_topics_summary.fail_count')
                     ->where('training_results.trainingtrainee_id', $traineetrainingId)
                     ->get();
 
@@ -230,7 +235,9 @@ class mytrainController extends Controller
                         'answer' => $result->answer,
                         'status' => $result->status,
                         'duration' => $result->duration,
-                        'result_id' => $result->id
+                        'result_id' => $result->id,
+                        'correct_count' => $result->correct_count,
+                        'fail_count' => $result->fail_count
                     ];
                     $correctCount += ($result->status == 'CORRECT' ? 1 : 0);
                 }

@@ -1,25 +1,8 @@
 import systemModule from './systemmodule';
 
-export default systemModule.controller('trainingresultctl', ['$scope', '$state', 'resultData', '$uibModal', function($scope, $state, resultData, $uibModal) {
+export default systemModule.controller('trainingresultctl', ['$scope', '$state', 'resultData', '$uibModal', 'Persist', function($scope, $state, resultData, $uibModal, Persist) {
     $scope.resultData = resultData;
-
-    $scope.getresulticon = answer => {
-        switch (answer.status) {
-            case null:
-                return 'text-dark fa-clock-o';
-                break;
-            case 'CORRECT':
-                return 'fa-check text-success';
-                break;
-            case 'WRONG':
-                return 'fa-times text-danger';
-            case 'PENDDING':
-                return 'fa-question-circle text-dark';
-                break;
-            default:
-                return null;
-        }
-    }
+    $scope.per = Persist;
 
     $scope.answerdetail = answer => {
         if (answer.result_id) {
@@ -27,7 +10,9 @@ export default systemModule.controller('trainingresultctl', ['$scope', '$state',
                 animation: true,
                 size: 'lg',
                 templateUrl: '../adminpages/system.trainings.answerdetail',
-                controller: ['$scope', 'answerDetail', '$uibModalInstance', '$state', function($scope, answerDetail, $uibModalInstance, $state) {
+                controller: ['$scope', 'answerDetail', '$uibModalInstance', '$state', 'Persist', function($scope, answerDetail, $uibModalInstance, $state, Persist) {
+                    $scope.per = Persist;
+                    $scope.hidehistory = true;
                     $scope.answerDetail = answerDetail;
                     $scope.getanswerlist = () => answerDetail.answer ? answerDetail.answer.split('|') : null;
                     $scope.close = () => {
