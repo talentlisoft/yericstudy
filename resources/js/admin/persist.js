@@ -22,6 +22,7 @@ export default appmodule.factory('Persist', [function() {
             searchcontent: null
         },
         shared: {
+            permission: null,
             coursesList: null,
             traineesList: null,
             topictypesList:null,

@@ -226,7 +226,23 @@ export default systemmodule.config(['$stateProvider', '$locationProvider', funct
 
     $stateProvider.state('system.users', {
         url: '/users',
-        template: `<ui-view class="w-100 d-block uiview"></ui-view>`
+        template: `<ui-view class="w-100 d-block uiview"></ui-view>`,
+        resolve: {
+            guard: ['Persist', 'Admininterface', '$q', function(Persist, Admininterface, $q) {
+                if (Persist.shared.permission) {
+                    return Persist.shared.permission.editusers ? true : $q.reject();
+                } else {
+                    return Admininterface.getuserpermission().$promise.then(response => {
+                        if (response.result) {
+                            Persist.shared.permission = response.data.permission;
+                            return Persist.shared.permission.editusers ? true : $q.reject();
+                        } else {
+                            return $q.reject();
+                        }
+                    })
+                }
+            }]
+        }
     });
 
     $stateProvider.state('system.users.list', {

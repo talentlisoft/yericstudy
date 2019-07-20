@@ -25,6 +25,7 @@ Route::get('admin/{module}/{method?}/{optional?}/{optional2?}/{optional3?}', 'Ad
 Route::get('trainee/{module}/{method?}/{optional?}/{optional2?}/{optional3?}', 'Trainee\commonController@showtraineemainpage');
 
 Route::get('rest/training/resultdetail/{resultId}', 'Admin\trainingController@getanswerDetail');
+Route::get('rest/common/permission', 'Admin\commonController@getusrpermission');
 Route::get('rest/courses/list', 'Admin\coursesController@getcoursesList');
 Route::post('rest/courses/save', 'Admin\topicsController@savetopic');
 Route::get('rest/topics/summary', 'Admin\topicsController@summary');

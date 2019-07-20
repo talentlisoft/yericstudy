@@ -9,6 +9,12 @@ export default angular.module('Admininterface', ['ngResource']).service('Adminin
             timeout: 2000,
             url: `${baseUrl}rest/common/changepassword`
         },
+        getuserpermission: {
+            method: 'get',
+            isArray: false,
+            timeout: 2000,
+            url: `${baseUrl}rest/common/permission`
+        },
         getcoursesList: {
             method: 'get',
             isArray: false,
