@@ -10,7 +10,33 @@ export default systemmodule.config(['$stateProvider', '$locationProvider', funct
 
     $stateProvider.state('system.topics', {
         url: '/topics',
-        template: `<ui-view class="w-100 d-block uiview"></ui-view>`
+        template: `<ui-view class="w-100 d-block uiview"></ui-view>`,
+        resolve: {
+            guard: ['Persist', 'Admininterface', '$q', 'toastr', function(Persist, Admininterface, $q, toastr) {
+                if (Persist.shared.permission) {
+                    if (Persist.shared.permission.edittopics) {
+                        return true;
+                    } else {
+                        toastr.error('您暂时还无法使用此模块', '抱歉');
+                        return $q.reject();
+                    }
+                } else {
+                    return Admininterface.getuserpermission().$promise.then(response => {
+                        if (response.result) {
+                            Persist.shared.permission = response.data.permission;
+                            if (Persist.shared.permission.edittopics) {
+                                return true;
+                            } else {
+                                toastr.error('您暂时还无法使用此模块', '抱歉');
+                                return $q.reject();
+                            }
+                        } else {
+                            return $q.reject();
+                        }
+                    })
+                }
+            }]
+        }
     });
 
     $stateProvider.state('system.topics.summary', {
@@ -228,14 +254,24 @@ export default systemmodule.config(['$stateProvider', '$locationProvider', funct
         url: '/users',
         template: `<ui-view class="w-100 d-block uiview"></ui-view>`,
         resolve: {
-            guard: ['Persist', 'Admininterface', '$q', function(Persist, Admininterface, $q) {
+            guard: ['Persist', 'Admininterface', '$q', 'toastr', function(Persist, Admininterface, $q, toastr) {
                 if (Persist.shared.permission) {
-                    return Persist.shared.permission.editusers ? true : $q.reject();
+                    if (Persist.shared.permission.editusers) {
+                        return true;
+                    } else {
+                        toastr.error('您暂时还无法使用此模块', '抱歉');
+                        return $q.reject();
+                    }
                 } else {
                     return Admininterface.getuserpermission().$promise.then(response => {
                         if (response.result) {
                             Persist.shared.permission = response.data.permission;
-                            return Persist.shared.permission.editusers ? true : $q.reject();
+                            if (Persist.shared.permission.editusers) {
+                                return true;
+                            } else {
+                                toastr.error('您暂时还无法使用此模块', '抱歉');
+                                return $q.reject();
+                            }
                         } else {
                             return $q.reject();
                         }
