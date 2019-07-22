@@ -85,6 +85,9 @@
     <li class="nav-item" ng-click="conditions.mode='FREQUENCY';gettopicslist()">
         <a class="nav-link" ng-class="conditions.mode=='FREQUENCY'?'active':''" href>训练最少</a>
     </li>
+    <li class="nav-item" ng-click="conditions.mode='NEWEST';gettopicslist()">
+        <a class="nav-link" ng-class="conditions.mode=='NEWEST'?'active':''" href>最新的</a>
+    </li>
 </ul>
 <table class="table table-striped table-hover picking-topics">
     <thead>
@@ -92,7 +95,7 @@
             <th>#</th>
             <th>类型</th>
             <th>题目</th>
-            <th>更新日期</th>
+            <th>做题统计</th>
         </tr>
     </thead>
     <tbody>
@@ -103,7 +106,7 @@
             </td>
             <td>{{gettypedesc(topic)}}</td>
             <td>{{topic.question}}</td>
-            <td>{{topic.updated_at}}</td>
+            <td><span class="text-success">{{topic.total_correct}}</span> / <span class="text-danger">{{topic.total_fail}}</span></td>
         </tr>
     </tbody>
 </table>

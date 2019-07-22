@@ -115,13 +115,24 @@ class trainingController extends Controller
         ]);
 
         try {
+            $user = $request->user();
             switch ($request->input('mode')) {
                 case 'RADOM':
                     $topicRecord = DB::table('topics')
                         ->leftJoin('courses', 'courses.id', 'topics.course_id')
                         ->leftJoin('topictypes', 'topictypes.id', '=', 'topics.type')
-                        ->select('topics.id', 'topics.question', 'topics.updated_at', 'topics.level', 'topics.grade', 'courses.name', 'topictypes.name AS topic_type')
+                        ->leftJoin('trainee_topics_summary', 'trainee_topics_summary.topic_id', 'topics.id')
+                        ->leftJoin('user_trainee', function($join) use ($user) {
+                            $join->on('user_trainee.trainee_id', '=', 'trainee_topics_summary.trainee_id');
+                            $join->on('user_trainee.user_id', '=', DB::raw($user->id));
+                        })
+                        ->select('topics.id', 'topics.question', 'topics.updated_at', 'topics.level', 'topics.grade', 'courses.name', 'topictypes.name AS topic_type', DB::raw('SUM(trainee_topics_summary.correct_count) AS total_correct'), DB::raw('SUM(trainee_topics_summary.fail_count) AS total_fail'))
+                        ->groupBy('topics.id', 'topics.question', 'topics.updated_at', 'topics.level', 'topics.grade', 'courses.name', 'topictypes.name')
                         ->where(function ($query) use ($request) {
+                            if (!empty($request->input('trainees'))) {
+                                $query->whereIn('trainee_topics_summary.trainee_id', $request->input('trainees'));
+                                $query->orWhere('trainee_topics_summary.trainee_id', null);
+                            }
                             if (!is_null($request->input('level'))) {
                                 $query->where('topics.level', $request->input('level'));
                             }
@@ -145,7 +156,9 @@ class trainingController extends Controller
                     $topicRecord = DB::table('trainee_topics_summary')
                         ->join('topics', 'topics.id', 'trainee_topics_summary.topic_id')
                         ->leftJoin('topictypes', 'topictypes.id', '=', 'topics.type')
+                        ->join('user_trainee', 'user_trainee.trainee_id', '=', 'trainee_topics_summary.trainee_id')
                         ->leftJoin('courses', 'courses.id', 'topics.course_id')
+                        ->where('user_trainee.user_id', $user->id)
                         ->where(function($query) use ($request) {
                             if (!empty($request->input('trainees'))) {
                                 $query->whereIn('trainee_topics_summary.trainee_id', $request->input('trainees'));
@@ -169,15 +182,17 @@ class trainingController extends Controller
                             }
                         })
                         ->where('trainee_topics_summary.recent_failed', 1)
-                        ->select('topics.id', 'topics.question', 'topics.updated_at', 'topics.level', 'topics.grade', 'courses.name', 'topictypes.name AS topic_type')
-                        ->distinct()
+                        ->select('topics.id', 'topics.question', 'topics.updated_at', 'topics.level', 'topics.grade', 'courses.name', 'topictypes.name AS topic_type', DB::raw('SUM(trainee_topics_summary.correct_count) AS total_correct'), DB::raw('SUM(trainee_topics_summary.fail_count) AS total_fail'))
+                        ->groupBy('topics.id', 'topics.question', 'topics.updated_at', 'topics.level', 'topics.grade', 'courses.name', 'topictypes.name')
                         ->paginate(20);
                     break;
                 case 'EVER':
                     $topicRecord = DB::table('trainee_topics_summary')
+                        ->join('user_trainee', 'user_trainee.trainee_id', '=', 'trainee_topics_summary.trainee_id')
                         ->join('topics', 'topics.id', 'trainee_topics_summary.topic_id')
                         ->leftJoin('topictypes', 'topictypes.id', '=', 'topics.type')
                         ->leftJoin('courses', 'courses.id', 'topics.course_id')
+                        ->where('user_trainee.user_id', $user->id)
                         ->where(function($query) use ($request) {
                             if (!empty($request->input('trainees'))) {
                                 $query->whereIn('trainee_topics_summary.trainee_id', $request->input('trainees'));
@@ -210,10 +225,15 @@ class trainingController extends Controller
                 case 'FREQUENCY':
                     $topicRecord = DB::table('topics')
                         ->leftJoin('topictypes', 'topictypes.id', '=', 'topics.type')
+                        ->leftJoin('trainee_topics_summary', 'trainee_topics_summary.topic_id', 'topics.id')
+                        ->leftJoin('user_trainee', function($join) use ($user) {
+                            $join->on('user_trainee.trainee_id', '=', 'trainee_topics_summary.trainee_id');
+                            $join->on('user_trainee.user_id', '=', DB::raw($user->id));
+                        })
                         ->leftJoin('training_results', 'training_results.trainingtopic_id', '=', 'topics.id')
                         ->leftJoin('courses', 'courses.id', '=','topics.course_id')
                         ->leftJoin('trainee_trainings', 'trainee_trainings.id', '=', 'training_results.trainingtrainee_id')
-                        ->select('topics.id', 'topics.question', 'topics.updated_at', 'topics.level', 'topics.grade', 'courses.name', 'topictypes.name AS topic_type', DB::raw('COUNT(training_results.id)'))
+                        ->select('topics.id', 'topics.question', 'topics.updated_at', 'topics.level', 'topics.grade', 'courses.name', 'topictypes.name AS topic_type', DB::raw('COUNT(training_results.id)'), DB::raw('SUM(trainee_topics_summary.correct_count) AS total_correct'), DB::raw('SUM(trainee_topics_summary.fail_count) AS total_fail'))
                         ->where(function($query) use ($request) {
                             if (!empty($request->input('trainees'))) {
                                 $query->whereIn('trainee_trainings.trainee_id', $request->input('trainees'));
@@ -241,6 +261,41 @@ class trainingController extends Controller
                         ->orderBy(DB::raw('COUNT(training_results.id)'))
                         ->paginate(20);
                     break;
+                case 'NEWEST':
+                    $topicRecord = DB::table('topics')
+                        ->leftJoin('courses', 'courses.id', 'topics.course_id')
+                        ->leftJoin('topictypes', 'topictypes.id', '=', 'topics.type')
+                        ->leftJoin('trainee_topics_summary', 'trainee_topics_summary.topic_id', 'topics.id')
+                        ->leftJoin('user_trainee', function($join) use ($user) {
+                            $join->on('user_trainee.trainee_id', '=', 'trainee_topics_summary.trainee_id');
+                            $join->on('user_trainee.user_id', '=', DB::raw($user->id));
+                        })
+                        ->select('topics.id', 'topics.question', 'topics.updated_at', 'topics.level', 'topics.grade', 'courses.name', 'topictypes.name AS topic_type', DB::raw('SUM(trainee_topics_summary.correct_count) AS total_correct'), DB::raw('SUM(trainee_topics_summary.fail_count) AS total_fail'))
+                        ->groupBy('topics.id', 'topics.question', 'topics.updated_at', 'topics.level', 'topics.grade', 'courses.name', 'topictypes.name')
+                        ->where(function ($query) use ($request) {
+                            if (!empty($request->input('trainees'))) {
+                                $query->whereIn('trainee_topics_summary.trainee_id', $request->input('trainees'));
+                                $query->orWhere('trainee_topics_summary.trainee_id', null);
+                            }
+                            if (!is_null($request->input('level'))) {
+                                $query->where('topics.level', $request->input('level'));
+                            }
+                            if (!is_null($request->input('grade'))) {
+                                $query->where('topics.grade', $request->input('grade'));
+                            }
+                            if (!is_null($request->input('course'))) {
+                                $query->where('topics.course_id', $request->input('course'));
+                            }
+                            if (!is_null($request->input('searchcontent'))) {
+                                $query->where('topics.question', 'LIKE', '%' . $request->input('searchcontent') . '%');
+                            }
+                            if (!is_null($request->input('type'))) {
+                                $query->where('topics.type', $request->input('type'));
+                            }
+                        })
+                        ->orderBy('topics.updated_at', 'desc')
+                        ->paginate(20);
+                    break;
                 default:
                         return $this->successresponse(['list' => [], 'total' => 0]);
             }
@@ -254,6 +309,8 @@ class trainingController extends Controller
                     'grade' => $to->grade,
                     'course_name' => $to->name,
                     'topic_type' => $to->topic_type,
+                    'total_correct' => $to->total_correct,
+                    'total_fail' => $to->total_fail,
                     'updated_at' => (new Carbon($to->updated_at))->locale('zh_CN')->diffForHumans(Carbon::now())
                 ];
             }
