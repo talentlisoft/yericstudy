@@ -27,4 +27,8 @@
         </div>
     </div>
 </div>
+
+<div class="w-100 d-flex justify-content-end mb-3 mt-3">
+    <ul uib-pagination total-items="per.total" ng-model="per.currentPage" items-per-page="12" max-size="5" class="pagination-sm" boundary-links="true" force-ellipses="true" ng-change="getmytrainlist()"></ul>
+</div>
 @endverbatim
