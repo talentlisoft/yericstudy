@@ -218,7 +218,7 @@ class trainingController extends Controller
                         ->where('trainee_topics_summary.recent_failed', 0)
                         ->where('trainee_topics_summary.fail_count', '>', 0)
                         ->select('topics.id', 'topics.question', 'topics.updated_at', 'topics.level', 'topics.grade', 'courses.name', 'topictypes.name AS topic_type', DB::raw('SUM(trainee_topics_summary.correct_count) AS total_correct'), DB::raw('SUM(trainee_topics_summary.fail_count) AS total_fail'))
-                        ->orderBy(DB::raw('SUM( trainee_topics_summary.fail_count )) - (SUM( trainee_topics_summary.correct_count )'), 'desc')
+                        ->orderBy(DB::raw('(SUM( trainee_topics_summary.fail_count ) - SUM( trainee_topics_summary.correct_count ))'), 'desc')
                         ->groupBy('topics.id', 'topics.question', 'topics.updated_at', 'topics.level', 'topics.grade', 'courses.name', 'topictypes.name')
                         ->paginate(20);
                     break;
