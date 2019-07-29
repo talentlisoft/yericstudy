@@ -305,6 +305,7 @@ class trainingController extends Controller
                 $topicList[] = [
                     'id' => $to->id,
                     'question' => mb_strimwidth($to->question, 0, 10, '...'),
+                    'question_full' => $to->question,
                     'level' => $to->level,
                     'grade' => $to->grade,
                     'course_name' => $to->name,

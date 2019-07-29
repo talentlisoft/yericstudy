@@ -105,7 +105,7 @@
                 <span class="topic-selected"><i class="fa fa-check" aria-hidden="true"></i></span>
             </td>
             <td>{{gettypedesc(topic)}}</td>
-            <td>{{topic.question}}</td>
+            <td><span uib-popover="{{topic.question_full}}" popover-title="题目详情" popover-trigger="topic.question_full == topic.question ? 'none':'mouseenter'">{{topic.question}}</span></td>
             <td><span class="text-success">{{topic.total_correct}}</span> / <span class="text-danger">{{topic.total_fail}}</span></td>
         </tr>
     </tbody>
