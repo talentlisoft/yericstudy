@@ -71,7 +71,7 @@
         <tbody>
             <tr ng-repeat="item in topicsList" class="cursor-pointer" ng-click="gotodetail(item)">
                 <td>{{$index + 1}}</td>
-                <td>{{item.question}}</td>
+                <td><span uib-popover="{{item.question_full}}" popover-title="题目详情" popover-trigger="item.question_full == item.question ? 'none':'mouseenter'">{{item.question}}</span></td>
                 <th>{{gettypedesc(item)}}</th>
                 <td>{{item.updated_at}}</td>
             </tr>

@@ -136,6 +136,7 @@ class topicsController extends Controller
                 $topicList[] = [
                     'id' => $topic->id,
                     'question' => mb_strimwidth($topic->question, 0, 10, '...'),
+                    'question_full' => $topic->question,
                     'level' => $topic->level,
                     'grade' => $topic->grade,
                     'course_name' => $topic->name,
