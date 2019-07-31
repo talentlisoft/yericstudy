@@ -10,9 +10,12 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use App\Traits\traineetopicssummaryUpdater;
 
 class mytrainController extends Controller
 {
+    use traineetopicssummaryUpdater;
+
     public function __construct()
     {
         $this->middleware('traineeauth');
@@ -156,24 +159,8 @@ class mytrainController extends Controller
 
                     if ($trainingresult->save()) {
                         // Update trainee topic summary
-                        if (DB::table('trainee_topics_summary')->where('trainee_id', $trainee->id)->where('topic_id', $request->input('topic_id'))->exists()) {
-                            DB::table('trainee_topics_summary')
-                                ->where('trainee_id', $trainee->id)
-                                ->where('topic_id', $request->input('topic_id'))
-                                ->increment($result?'correct_count':'fail_count', 1, [
-                                    'recent_failed' => ($result==false) ? true : false,
-                                    'updated_at' => Carbon::now()
-                                ]);
-                        } else {
-                            DB::table('trainee_topics_summary')->insert([
-                                'trainee_id' => $trainee->id,
-                                'topic_id' => $request->input('topic_id'),
-                                'correct_count' => ($result? 1 : 0),
-                                'fail_count' => ($result==false ? 1 : 0),
-                                'recent_failed' => ($result==false) ? true : false,
-                                'created_at' => Carbon::now(),
-                                'updated_at' => Carbon::now()
-                            ]);
+                        if (!$topicsRecord->manualverify) {
+                            $this->updatetraineetopicsummary($trainee->id, $request->input('topic_id'), $result);
                         }
                         // Check if training finished
                         $isFinished = !DB::table('training_topics')

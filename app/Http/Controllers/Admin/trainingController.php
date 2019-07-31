@@ -11,10 +11,12 @@ use App\Models\Training as Training;
 use App\Models\TrainingTopics as TrainingTopics;
 use App\Models\TrainingTrainees as TrainingTrainees;
 use Illuminate\Support\Facades\Auth;
+use App\Traits\traineetopicssummaryUpdater;
 use App\User;
 
 class trainingController extends Controller
 {
+    use traineetopicssummaryUpdater;
     public function __construct()
     {
         $this->middleware('auth');
@@ -121,7 +123,10 @@ class trainingController extends Controller
                     $topicRecord = DB::table('topics')
                         ->leftJoin('courses', 'courses.id', 'topics.course_id')
                         ->leftJoin('topictypes', 'topictypes.id', '=', 'topics.type')
-                        ->leftJoin('trainee_topics_summary', 'trainee_topics_summary.topic_id', 'topics.id')
+                        ->leftJoin('trainee_topics_summary', function($join) use ($request) {
+                            $join->on('trainee_topics_summary.topic_id', '=', 'topics.id')->whereIn('trainee_topics_summary.trainee_id', $request->input('trainees'));
+                            
+                        })
                         ->leftJoin('user_trainee', function($join) use ($user) {
                             $join->on('user_trainee.trainee_id', '=', 'trainee_topics_summary.trainee_id');
                             $join->on('user_trainee.user_id', '=', DB::raw($user->id));
@@ -225,12 +230,17 @@ class trainingController extends Controller
                 case 'FREQUENCY':
                     $topicRecord = DB::table('topics')
                         ->leftJoin('topictypes', 'topictypes.id', '=', 'topics.type')
-                        ->leftJoin('trainee_topics_summary', 'trainee_topics_summary.topic_id', 'topics.id')
+                        ->leftJoin('trainee_topics_summary', function($join) use ($request) {
+                            $join->on('trainee_topics_summary.topic_id', '=', 'topics.id')->whereIn('trainee_topics_summary.trainee_id', $request->input('trainees'));
+                            
+                        })
                         ->leftJoin('user_trainee', function($join) use ($user) {
                             $join->on('user_trainee.trainee_id', '=', 'trainee_topics_summary.trainee_id');
                             $join->on('user_trainee.user_id', '=', DB::raw($user->id));
                         })
-                        ->leftJoin('training_results', 'training_results.trainingtopic_id', '=', 'topics.id')
+                        ->leftJoin('training_results', function($join) use ($request) {
+                            $join->on('training_results.trainingtopic_id', '=', 'topics.id')->whereIn('trainee_topics_summary.trainee_id', $request->input('trainees'));
+                        })
                         ->leftJoin('courses', 'courses.id', '=','topics.course_id')
                         ->leftJoin('trainee_trainings', 'trainee_trainings.id', '=', 'training_results.trainingtrainee_id')
                         ->select('topics.id', 'topics.question', 'topics.updated_at', 'topics.level', 'topics.grade', 'courses.name', 'topictypes.name AS topic_type', DB::raw('COUNT(training_results.id)'), DB::raw('SUM(trainee_topics_summary.correct_count) AS total_correct'), DB::raw('SUM(trainee_topics_summary.fail_count) AS total_fail'))
@@ -265,7 +275,10 @@ class trainingController extends Controller
                     $topicRecord = DB::table('topics')
                         ->leftJoin('courses', 'courses.id', 'topics.course_id')
                         ->leftJoin('topictypes', 'topictypes.id', '=', 'topics.type')
-                        ->leftJoin('trainee_topics_summary', 'trainee_topics_summary.topic_id', 'topics.id')
+                        ->leftJoin('trainee_topics_summary', function($join) use ($request) {
+                            $join->on('trainee_topics_summary.topic_id', '=', 'topics.id')->whereIn('trainee_topics_summary.trainee_id', $request->input('trainees'));
+                            
+                        })
                         ->leftJoin('user_trainee', function($join) use ($user) {
                             $join->on('user_trainee.trainee_id', '=', 'trainee_topics_summary.trainee_id');
                             $join->on('user_trainee.user_id', '=', DB::raw($user->id));
@@ -509,7 +522,8 @@ class trainingController extends Controller
         try {
             $resultRecord = DB::table('training_results')
                 ->where('training_results.id', $request->input('trainingresultId'))
-                ->select('status')
+                ->join('trainee_trainings', 'trainee_trainings.id', '=', 'training_results.trainingtrainee_id')
+                ->select('training_results.status', 'trainee_trainings.trainee_id', 'training_results.trainingtopic_id')
                 ->first();
             if ($resultRecord && $resultRecord->status == 'PENDDING') {
                 DB::table('training_results')
@@ -518,6 +532,8 @@ class trainingController extends Controller
                     'status' => $request->input('result') ? 'CORRECT' : 'WRONG',
                     'updated_at' => Carbon::now()
                 ]);
+
+                $this->updatetraineetopicsummary($resultRecord->trainee_id, $resultRecord->trainingtopic_id, $request->input('result'));
 
                 return $this->successresponse(['result' => $request->input('result')]);
             } else {

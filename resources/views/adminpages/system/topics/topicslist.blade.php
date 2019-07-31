@@ -79,6 +79,6 @@
     </table>
 </div>
 <div class="d-flex justify-content-end">
-    <ul uib-pagination boundary-links="true" total-items="per.topicsList.total" ng-model="currentPage" class="pagination-sm" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;" ng-change="search()"></ul>
+    <ul uib-pagination boundary-links="true" max-size="3" boundary-link-numbers="true" rotate="true" items-per-page="20" total-items="per.topicsList.total" ng-model="currentPage" class="pagination-sm" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;" ng-change="search()"></ul>
 </div>
 @endverbatim
