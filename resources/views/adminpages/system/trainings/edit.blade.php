@@ -73,19 +73,19 @@
 </form>
 
 <ul class="nav nav-tabs mb-3">
-    <li class="nav-item" ng-click="conditions.mode='RECENT';gettopicslist()">
+    <li class="nav-item" ng-click="conditions.mode='RECENT';refreshtopiclist()">
         <a class="nav-link" ng-class="conditions.mode=='RECENT'?'active':''" href>最近错过</a>
     </li>
-    <li class="nav-item" ng-click="conditions.mode='EVER';gettopicslist()">
+    <li class="nav-item" ng-click="conditions.mode='EVER';refreshtopiclist()">
         <a class="nav-link" ng-class="conditions.mode=='EVER'?'active':''" href>曾经错过</a>
     </li>
-    <li class="nav-item" ng-click="conditions.mode='RADOM';gettopicslist()">
+    <li class="nav-item" ng-click="conditions.mode='RADOM';refreshtopiclist()">
         <a class="nav-link" ng-class="conditions.mode=='RADOM'?'active':''" href>随机</a>
     </li>
-    <li class="nav-item" ng-click="conditions.mode='FREQUENCY';gettopicslist()">
+    <li class="nav-item" ng-click="conditions.mode='FREQUENCY';refreshtopiclist()">
         <a class="nav-link" ng-class="conditions.mode=='FREQUENCY'?'active':''" href>训练最少</a>
     </li>
-    <li class="nav-item" ng-click="conditions.mode='NEWEST';gettopicslist()">
+    <li class="nav-item" ng-click="conditions.mode='NEWEST';refreshtopiclist()">
         <a class="nav-link" ng-class="conditions.mode=='NEWEST'?'active':''" href>最新的</a>
     </li>
 </ul>
