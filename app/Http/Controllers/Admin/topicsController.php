@@ -26,7 +26,7 @@ class topicsController extends Controller
             'course' => 'required',
             'question' => 'required',
             'type' => 'required|numeric',
-            'answer' => 'max:50',
+            'answer' => 'max:200',
             'manualverify' => 'boolean'
         ]);
 
