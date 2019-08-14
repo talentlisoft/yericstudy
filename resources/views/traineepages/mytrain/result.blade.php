@@ -5,7 +5,7 @@
 
 <div class="card bg-light mb-3">
     <div class="card-header">{{resultData.title}}</div>
-    <div class="card-body">
+    <div class="card-body" ng-class="resultData.score>=80?'score-good':(resultData.score>=60?'score-notbad':'score-bad')">
         <h5 class="card-title">得分：<span class="text-danger font-weight-bold">{{resultData.score}}</span></h5>
     </div>
     <table class="table table-striped mb-0">
