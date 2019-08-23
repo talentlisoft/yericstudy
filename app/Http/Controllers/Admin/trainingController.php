@@ -124,8 +124,10 @@ class trainingController extends Controller
                         ->leftJoin('courses', 'courses.id', 'topics.course_id')
                         ->leftJoin('topictypes', 'topictypes.id', '=', 'topics.type')
                         ->leftJoin('trainee_topics_summary', function($join) use ($request) {
-                            $join->on('trainee_topics_summary.topic_id', '=', 'topics.id')->whereIn('trainee_topics_summary.trainee_id', $request->input('trainees'));
-                            
+                            $join->on('trainee_topics_summary.topic_id', '=', 'topics.id');
+                            if (!empty($request->input('trainees'))) {
+                                $join->whereIn('trainee_topics_summary.trainee_id', $request->input('trainees'));
+                            }
                         })
                         ->leftJoin('user_trainee', function($join) use ($user) {
                             $join->on('user_trainee.trainee_id', '=', 'trainee_topics_summary.trainee_id');
@@ -134,10 +136,10 @@ class trainingController extends Controller
                         ->select('topics.id', 'topics.question', 'topics.updated_at', 'topics.level', 'topics.grade', 'courses.name', 'topictypes.name AS topic_type', DB::raw('SUM(trainee_topics_summary.correct_count) AS total_correct'), DB::raw('SUM(trainee_topics_summary.fail_count) AS total_fail'))
                         ->groupBy('topics.id', 'topics.question', 'topics.updated_at', 'topics.level', 'topics.grade', 'courses.name', 'topictypes.name')
                         ->where(function ($query) use ($request) {
-                            if (!empty($request->input('trainees'))) {
-                                $query->whereIn('trainee_topics_summary.trainee_id', $request->input('trainees'));
-                                $query->orWhere('trainee_topics_summary.trainee_id', null);
-                            }
+                            // if (!empty($request->input('trainees'))) {
+                            //     $query->whereIn('trainee_topics_summary.trainee_id', $request->input('trainees'));
+                            //     $query->orWhere('trainee_topics_summary.trainee_id', null);
+                            // }
                             if (!is_null($request->input('level'))) {
                                 $query->where('topics.level', $request->input('level'));
                             }
@@ -231,25 +233,32 @@ class trainingController extends Controller
                     $topicRecord = DB::table('topics')
                         ->leftJoin('topictypes', 'topictypes.id', '=', 'topics.type')
                         ->leftJoin('trainee_topics_summary', function($join) use ($request) {
-                            $join->on('trainee_topics_summary.topic_id', '=', 'topics.id')->whereIn('trainee_topics_summary.trainee_id', $request->input('trainees'));
-                            
+                            $join->on('trainee_topics_summary.topic_id', '=', 'topics.id');
+                            if (!empty($request->input('trainees'))) {
+                                $join->whereIn('trainee_topics_summary.trainee_id', $request->input('trainees'));
+                            }
                         })
                         ->leftJoin('user_trainee', function($join) use ($user) {
                             $join->on('user_trainee.trainee_id', '=', 'trainee_topics_summary.trainee_id');
                             $join->on('user_trainee.user_id', '=', DB::raw($user->id));
                         })
                         ->leftJoin('training_results', function($join) use ($request) {
-                            $join->on('training_results.trainingtopic_id', '=', 'topics.id')->whereIn('trainee_topics_summary.trainee_id', $request->input('trainees'));
+                            $join->on('training_results.trainingtopic_id', '=', 'topics.id');
                         })
                         ->leftJoin('courses', 'courses.id', '=','topics.course_id')
-                        ->leftJoin('trainee_trainings', 'trainee_trainings.id', '=', 'training_results.trainingtrainee_id')
-                        ->select('topics.id', 'topics.question', 'topics.updated_at', 'topics.level', 'topics.grade', 'courses.name', 'topictypes.name AS topic_type', DB::raw('COUNT(training_results.id)'), DB::raw('SUM(trainee_topics_summary.correct_count) AS total_correct'), DB::raw('SUM(trainee_topics_summary.fail_count) AS total_fail'))
-                        ->where(function($query) use ($request) {
+                        ->leftJoin('trainee_trainings', function($join) use ($request) {
+                            $join->on('trainee_trainings.id', '=', 'training_results.trainingtrainee_id');
                             if (!empty($request->input('trainees'))) {
-                                $query->whereIn('trainee_trainings.trainee_id', $request->input('trainees'));
-                                $query->orWhereNull('training_results.id');
+                                $join->whereIn('trainee_trainings.trainee_id', $request->input('trainees'));
                             }
                         })
+                        ->select('topics.id', 'topics.question', 'topics.updated_at', 'topics.level', 'topics.grade', 'courses.name', 'topictypes.name AS topic_type', DB::raw('COUNT(training_results.id) AS training_count'), DB::raw('SUM(trainee_topics_summary.correct_count) AS total_correct'), DB::raw('SUM(trainee_topics_summary.fail_count) AS total_fail'))
+                        // ->where(function($query) use ($request) {
+                        //     if (!empty($request->input('trainees'))) {
+                        //         $query->whereIn('trainee_trainings.trainee_id', $request->input('trainees'));
+                        //         $query->orWhereNull('training_results.id');
+                        //     }
+                        // })
                         ->where(function ($query) use ($request) {
                             if (!is_null($request->input('level'))) {
                                 $query->where('topics.level', $request->input('level'));
@@ -276,8 +285,10 @@ class trainingController extends Controller
                         ->leftJoin('courses', 'courses.id', 'topics.course_id')
                         ->leftJoin('topictypes', 'topictypes.id', '=', 'topics.type')
                         ->leftJoin('trainee_topics_summary', function($join) use ($request) {
-                            $join->on('trainee_topics_summary.topic_id', '=', 'topics.id')->whereIn('trainee_topics_summary.trainee_id', $request->input('trainees'));
-                            
+                            $join->on('trainee_topics_summary.topic_id', '=', 'topics.id');
+                            if (!empty($request->input('trainees'))) {
+                                $join->whereIn('trainee_topics_summary.trainee_id', $request->input('trainees'));
+                            }
                         })
                         ->leftJoin('user_trainee', function($join) use ($user) {
                             $join->on('user_trainee.trainee_id', '=', 'trainee_topics_summary.trainee_id');
@@ -286,10 +297,10 @@ class trainingController extends Controller
                         ->select('topics.id', 'topics.question', 'topics.updated_at', 'topics.level', 'topics.grade', 'courses.name', 'topictypes.name AS topic_type', DB::raw('SUM(trainee_topics_summary.correct_count) AS total_correct'), DB::raw('SUM(trainee_topics_summary.fail_count) AS total_fail'))
                         ->groupBy('topics.id', 'topics.question', 'topics.updated_at', 'topics.level', 'topics.grade', 'courses.name', 'topictypes.name')
                         ->where(function ($query) use ($request) {
-                            if (!empty($request->input('trainees'))) {
-                                $query->whereIn('trainee_topics_summary.trainee_id', $request->input('trainees'));
-                                $query->orWhere('trainee_topics_summary.trainee_id', null);
-                            }
+                            // if (!empty($request->input('trainees'))) {
+                            //     $query->whereIn('trainee_topics_summary.trainee_id', $request->input('trainees'));
+                            //     $query->orWhere('trainee_topics_summary.trainee_id', null);
+                            // }
                             if (!is_null($request->input('level'))) {
                                 $query->where('topics.level', $request->input('level'));
                             }
@@ -323,8 +334,8 @@ class trainingController extends Controller
                     'grade' => $to->grade,
                     'course_name' => $to->name,
                     'topic_type' => $to->topic_type,
-                    'total_correct' => $to->total_correct,
-                    'total_fail' => $to->total_fail,
+                    'total_correct' => ($request->input('mode') == 'FREQUENCY' && $to->training_count >0) ? ($to->total_correct / $to->training_count) : $to->total_correct,
+                    'total_fail' => ($request->input('mode') == 'FREQUENCY' && $to->training_count >0) ? ($to->total_fail / $to->training_count) : $to->total_fail,
                     'updated_at' => (new Carbon($to->updated_at))->locale('zh_CN')->diffForHumans(Carbon::now())
                 ];
             }
