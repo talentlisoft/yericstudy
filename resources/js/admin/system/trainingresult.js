@@ -1,4 +1,11 @@
 import systemModule from './systemmodule';
+import Echo from 'laravel-echo';
+
+window.io = require('socket.io-client');
+window.Echo = new Echo({
+    broadcaster: 'socket.io',
+    host: window.location.hostname + ':6001'
+});
 
 export default systemModule.controller('trainingresultctl', ['$scope', '$state', 'resultData', '$uibModal', 'Persist', function($scope, $state, resultData, $uibModal, Persist) {
     $scope.resultData = resultData;
@@ -41,4 +48,22 @@ export default systemModule.controller('trainingresultctl', ['$scope', '$state',
     };
 
     $scope.getresultcolor = answer => answer.status == 'WRONG' ? 'table-warning': '';
+    if ($scope.resultData.status != 1) {
+        window.Echo.private(`training.${resultData.id}`).listen('.trainee.answering', e => {
+            angular.forEach($scope.resultData.results, resultItem => {
+                if (resultItem.topic_id == e.topic_id) {
+                    resultItem.answer = e.answer;
+                    resultItem.duration = e.duration;
+                    resultItem.result_id = e.result_id;
+                    resultItem.status = e.status;
+                }
+            });
+        });
+    }
+
+
+    $scope.$on('$destroy', () => {
+        window.Echo.leaveChannel(`training.${resultData.id}`);
+    });
+
 }])

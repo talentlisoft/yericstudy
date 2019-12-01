@@ -410,7 +410,7 @@ class trainingController extends Controller
                         $join->on('trainee_topics_summary.topic_id', '=', 'topics.id');
                         $join->on('trainee_topics_summary.trainee_id', '=', 'trainee_trainings.trainee_id');
                     })
-                    ->select('topics.question', 'training_results.answer', 'training_results.status', 'training_results.duration', 'topictypes.name as topic_type', 'training_results.id', 'trainee_topics_summary.correct_count', 'trainee_topics_summary.fail_count')
+                    ->select('topics.question', 'topics.id as topic_id', 'training_results.answer', 'training_results.status', 'training_results.duration', 'topictypes.name as topic_type', 'training_results.id', 'trainee_topics_summary.correct_count', 'trainee_topics_summary.fail_count')
                     ->where('training_topics.training_id', $trainingRecord->training_id)
                     ->get();
 
@@ -419,6 +419,7 @@ class trainingController extends Controller
                 foreach ($trainingresult as $key => $result) {
                     $resultList[] = [
                         'question' => mb_strimwidth($result->question, 0, 10, '...'),
+                        'topic_id' => $result->topic_id,
                         'answer' => $result->answer ?? '--',
                         'status' => $result->status,
                         'duration' => $result->duration ?? '--',

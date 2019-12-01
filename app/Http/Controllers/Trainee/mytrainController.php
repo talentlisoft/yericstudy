@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Traits\traineetopicssummaryUpdater;
+use App\Events\studentAnswering;
 
 class mytrainController extends Controller
 {
@@ -176,6 +177,7 @@ class mytrainController extends Controller
                             $trainingtrainee->status = 1;
                             $trainingtrainee->save();
                         }
+                        broadcast(new studentAnswering($request->input('traineetrainingId'), $trainingresult->id, $request->input('topic_id'), $request->input('answer'), $request->input('duration'), $trainingresult->status));
                         return $this->successresponse(['isFinished' => $isFinished]);
                     } else {
                         return $this->failureresponse('Can not save training result');
