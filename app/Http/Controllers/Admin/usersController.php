@@ -63,6 +63,9 @@ class usersController extends Controller
                 DB::beginTransaction();
                 $userRecord = is_null($request->input('id')) ? new User : User::find($request->input('id'));
                 if ($userRecord) {
+                    if (is_null($request->input('id'))) { // generate api_token
+                        $userRecord->api_token = str_random(64);
+                    }
                     $userRecord->name = $request->input('name');
                     $userRecord->email = $request->input('email');
                     if ($request->input('password') != 'nochange') {
