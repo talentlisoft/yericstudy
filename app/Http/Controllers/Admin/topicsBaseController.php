@@ -10,13 +10,8 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 
-class topicsController extends Controller
+class topicsBaseController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
-
     public function savetopic(Request $request)
     {
         $this->validate($request, [

@@ -27,10 +27,10 @@ Route::get('trainee/{module}/{method?}/{optional?}/{optional2?}/{optional3?}', '
 Route::get('rest/training/resultdetail/{resultId}', 'Admin\trainingController@getanswerDetail');
 Route::get('rest/common/permission', 'Admin\commonController@getusrpermission');
 Route::get('rest/courses/list', 'Admin\coursesController@getcoursesList');
-Route::post('rest/courses/save', 'Admin\topicsController@savetopic');
-Route::get('rest/topics/summary', 'Admin\topicsController@summary');
-Route::post('rest/topics/list', 'Admin\topicsController@topicsList');
-Route::get('rest/topics/detail/{topicId}', 'Admin\topicsController@topicDetail');
+Route::post('rest/courses/save', 'Web\webtopicsController@savetopic');
+Route::get('rest/topics/summary', 'Web\webtopicsController@summary');
+Route::post('rest/topics/list', 'Web\webtopicsController@topicsList');
+Route::get('rest/topics/detail/{topicId}', 'Web\webtopicsController@topicDetail');
 Route::post('rest/trainings/list', 'Admin\trainingController@trainingsList');
 Route::get('rest/trainees/list', 'Admin\TraineeController@traineeList');
 Route::get('rest/trainees/mylist', 'Admin\trainingController@getmytraineesList');

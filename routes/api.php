@@ -18,3 +18,5 @@ use Illuminate\Http\Request;
 // });
 
 Route::post('auth/login', 'Api\authController@login');
+
+Route::get('topics/summary', 'Api\apitopicsController@summary');
