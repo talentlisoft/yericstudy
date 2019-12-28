@@ -22,3 +22,4 @@ Route::post('auth/login', 'Api\authController@login');
 Route::get('topics/summary', 'Api\apitopicsController@summary');
 
 Route::post('topics/list', 'Api\apitopicsController@topicsList');
+Route::get('courses/list', 'Api\apicoursesController@getcoursesList');
