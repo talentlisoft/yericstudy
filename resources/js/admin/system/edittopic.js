@@ -67,6 +67,12 @@ export default systemmodule.controller('edittopicctl', ['$scope', 'Admininterfac
         });
     }
 
+    $scope.checkquestion = () => {
+        if ($scope.per.edittopic.selectedtype.name == '计算') {
+            $scope.topicData.answer = eval($scope.topicData.question);
+        }
+    }
+
     $scope.savetopic = (successcallback = null) => {
         if ($scope.topicData.selectedverifytype.id == false && !$scope.topicData.answer) {
             toastr.warning('计算机自动审题的话总得给个答案做参考吧~~', '请检查');

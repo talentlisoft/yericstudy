@@ -8,7 +8,7 @@ export default mytrainModule.controller('doexercisectl', ['$scope', 'trainingDat
     $scope.lasttime = new Date();
     
     $scope.currenttopic = () => {
-        return $scope.currentPos < $scope.trainingData.pendding_topics.length ? $scope.trainingData.pendding_topics[$scope.currentPos] : {course_name: 'Done', question: '--'}
+        return $scope.currentPos < $scope.trainingData.pendding_topics.length ? $scope.trainingData.pendding_topics[$scope.currentPos] : {course_name: 'Done', question: '--'};
     };
 
     $scope.answerquestion = () => {

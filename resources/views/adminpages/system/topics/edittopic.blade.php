@@ -48,7 +48,7 @@
                 <div class="form-group row">
                     <label for="inputquestion" class="col-form-label col-md-2">题目</label>
                     <div class="col-md-10">
-                        <textarea id="inputquestion" rows="5" class="form-control" ng-model="topicData.question" required></textarea>
+                        <textarea id="inputquestion" rows="5" class="form-control" ng-model="topicData.question" ng-blur="checkquestion()" required></textarea>
                     </div>
                 </div>
             </div>
