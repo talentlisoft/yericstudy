@@ -22,4 +22,10 @@ Route::post('auth/login', 'Api\authController@login');
 Route::get('topics/summary', 'Api\apitopicsController@summary');
 
 Route::post('topics/list', 'Api\apitopicsController@topicsList');
+Route::post('courses/save', 'Api\apitopicsController@savetopic');
 Route::get('courses/list', 'Api\apicoursesController@getcoursesList');
+Route::get('topics/detail/{topicId}', 'Api\apitopicsController@topicDetail');
+
+Route::post('trainings/list', 'Api\apitrainingController@trainingsList');
+
+Route::get('trainees/list', 'Api\apitraineeController@traineeList');

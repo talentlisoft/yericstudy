@@ -10,13 +10,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Trainee;
 
-class TraineeController extends Controller
+class TraineebaseController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
-
     public function traineeList()
     {
         try {

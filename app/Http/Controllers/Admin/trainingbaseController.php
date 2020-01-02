@@ -14,13 +14,9 @@ use Illuminate\Support\Facades\Auth;
 use App\Traits\traineetopicssummaryUpdater;
 use App\User;
 
-class trainingController extends Controller
+class trainingbaseController extends Controller
 {
     use traineetopicssummaryUpdater;
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
 
     public function trainingsList(Request $request)
     {
