@@ -29,3 +29,4 @@ Route::get('topics/detail/{topicId}', 'Api\apitopicsController@topicDetail');
 Route::post('trainings/list', 'Api\apitrainingController@trainingsList');
 
 Route::get('trainees/list', 'Api\apitraineeController@traineeList');
+Route::post('trainees/topicslist', 'Api\apitrainingController@gettopicsList');
