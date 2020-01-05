@@ -30,3 +30,4 @@ Route::post('trainings/list', 'Api\apitrainingController@trainingsList');
 
 Route::get('trainees/list', 'Api\apitraineeController@traineeList');
 Route::post('trainees/topicslist', 'Api\apitrainingController@gettopicsList');
+Route::post('training/add', 'Api\apitrainingController@savetraining');
