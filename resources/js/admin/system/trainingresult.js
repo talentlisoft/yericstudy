@@ -56,6 +56,7 @@ export default systemModule.controller('trainingresultctl', ['$scope', '$state',
                     resultItem.duration = e.duration;
                     resultItem.result_id = e.result_id;
                     resultItem.status = e.status;
+                    $scope.$apply();
                 }
             });
         });
