@@ -415,6 +415,7 @@ class trainingbaseController extends Controller
                 foreach ($trainingresult as $key => $result) {
                     $resultList[] = [
                         'question' => mb_strimwidth($result->question, 0, 10, '...'),
+                        'question_full' => $result->question,
                         'topic_id' => $result->topic_id,
                         'answer' => $result->answer ?? '--',
                         'status' => $result->status,

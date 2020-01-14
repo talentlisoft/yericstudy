@@ -33,3 +33,4 @@ Route::post('trainees/topicslist', 'Api\apitrainingController@gettopicsList');
 Route::post('training/add', 'Api\apitrainingController@savetraining');
 Route::get('training/detail/{trainingId}', 'Api\apitrainingController@trainingDetail');
 Route::get('training/result/{traineetrainingId}', 'Api\apitrainingController@trainingResult');
+Route::get('training/resultdetail/{resultId}', 'Api\apitrainingController@getanswerDetail');
