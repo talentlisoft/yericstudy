@@ -14,7 +14,7 @@
                     <span class="head-border-left">{{currenttopic().course_name + currenttopic().topic_type}}</span>
                 </h6>
                 <div class="alert alert-primary" role="alert">
-                    {{currenttopic().topic_type == '计算'?(currenttopic().question | yericfomular):currenttopic().question}}
+                    {{currenttopic().question | yericfomular}}
                 </div>
                 <h6 class="border-bottom pb-2 font-weight-bold mt-3 mb-3">
                     <span class="head-border-left">回答</span>

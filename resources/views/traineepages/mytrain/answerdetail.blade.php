@@ -7,7 +7,7 @@
         <span class="head-border-left">{{answerDetail.course_name + answerDetail.topic_type}}题</span>
     </h6>
     <div class="alert alert-info" role="alert">
-        {{answer.topic_type=='计算'?(answerDetail.question | yericfomular):answerDetail.question}}
+        {{answerDetail.question | yericfomular}}
     </div>
     <h6 class="border-bottom pb-2 font-weight-bold mb-3">
         <span class="head-border-left">正确答案</span>

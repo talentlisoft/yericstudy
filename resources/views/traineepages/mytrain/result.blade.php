@@ -21,7 +21,7 @@
         <tbody>
             <tr ng-repeat="topic in resultData.results" class="cursor-pointer" ng-class="getresultcolor(topic)" ng-click="answerdetail(topic)">
                 <td>{{$index + 1}}</td>
-                <td>{{topic.question}}</td>
+                <td>{{topic.question | yericfomular}}</td>
                 <td ng-class="topic.status?'':'text-danger'">
                     <span class="result-answer">
                         <span>{{topic.answer}}</span>
