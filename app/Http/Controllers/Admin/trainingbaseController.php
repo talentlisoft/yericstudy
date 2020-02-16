@@ -507,7 +507,7 @@ class trainingbaseController extends Controller
                     'question' => $auditdetailRecord->question,
                     'answer' => $auditdetailRecord->answer,
                     'course_name' => $auditdetailRecord->course_name,
-                    'type_name' => $auditdetailRecord->type_name                    
+                    'type_name' => $auditdetailRecord->type_name
                 ]);
             } else {
                 return $this->failureresponse('Record not exists!');
