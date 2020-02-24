@@ -33,16 +33,27 @@
 </template>
 
 <script>
+import Vue from 'vue';
+
 export default {
     data() {
         return {
-
+            topicsSummary: []
         }
     },
     beforeRouteEnter(to, from, next) {
-        console.log('enter');
-        next(vm => {})
+        Vue.axios.get('../rest/topics/summary').then(response => {
+            next(vm => {
+                vm.setSummarydata(response.data);
+            });
+        })
+    },
+    methods: {
+        setSummarydata(data) {
+            this.topicsSummary = data;
+        }        
     }
+
 }
 </script>
 

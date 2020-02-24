@@ -21,8 +21,11 @@
                 </ul>
             </div>
         </div>
-        <div class="maincontent" id="maincontent">
-            <router-view class="container-fluid"></router-view>
+        <div class="maincontent">
+            <transition name="modulefade">
+                <router-view class="container-fluid"></router-view>
+            </transition>
+            
         </div>
     </div>
 
@@ -33,3 +36,13 @@ export default {
     
 }
 </script>
+
+<style>
+    .modulefade-enter-active {
+        transition: all 0.3s ease-in-out;
+    }
+    .modulefade-enter {
+        opacity: 0;
+        transform: translate3d(0, 20px, 0);
+    }
+</style>

@@ -23,7 +23,7 @@
             <div class="nav-content navbar-collapse collapse">
                 <ul class="navbar-nav mr-auto pl-3 text-left">
                     <li class="nav-item mr-2">
-                        <router-link class="nav-link" active-class="active" to="/system">系统配置</router-link>
+                        <router-link class="nav-link" active-class="active" to="/system/topicssummary">系统配置</router-link>
                     </li>
                     <li class="nav-item d-sm-block d-md-block d-lg-none">
                         <a href onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="nav-link"><i class="fa fa-sign-out" aria-hidden="true"></i> 退出</a>
