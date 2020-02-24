@@ -15,7 +15,7 @@ class commonController extends Controller
 
     public function adminmain($module, $method = null, $optional1 = null, $optional2 = null, $optional3 = null, User $user)
     {
-        return view('main.adminmain', ['user' => [
+        return view('main.vuemain', ['user' => [
             'name' => $user->name
         ]]);
         
