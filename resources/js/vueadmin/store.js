@@ -22,9 +22,9 @@ export default new Vuex.Store({
         coursesList: null,
         topicTypes: null,
         selectedtopicsCondition: {
-            grade: null,
-            level: null,
-            course: null,
+            grade: '',
+            level: '',
+            course: '',
         }
     },
     mutations: {
