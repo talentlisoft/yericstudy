@@ -19,10 +19,12 @@ export default new Vuex.Store({
             {'id': '5', 'desc': '五年级'},
             {'id': '6', 'desc': '六年级'}
         ],
+        coursesList: null,
+        topicTypes: null,
         selectedtopicsCondition: {
             grade: null,
             level: null,
-            course: null
+            course: null,
         }
     },
     mutations: {
@@ -30,6 +32,10 @@ export default new Vuex.Store({
             state.selectedtopicsCondition.grade = payload.grade;
             state.selectedtopicsCondition.level = payload.level;
             state.selectedtopicsCondition.course = payload.course;
+        },
+        setcoursesList(state, courseList) {
+            state.coursesList = courseList.courses;
+            state.topicTypes = courseList.topic_types;
         }
     }
 });
