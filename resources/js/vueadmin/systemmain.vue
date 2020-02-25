@@ -4,7 +4,7 @@
             <div class="sidebar-sticky">
                 <ul class="nav flex-column">
                     <li class="nav-item">
-                        <router-link class="nav-link" to="/system/topicssummary" active-class="active"><i class="fa fa-university fa-fw"></i>题目管理</router-link>
+                        <router-link class="nav-link" to="/system/topics/summary" :class="{active: istopicsmodule}"><i class="fa fa-university fa-fw"></i>题目管理</router-link>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link"><i class="fa fa-flag-checkered fa-fw"></i>训练管理</a>
@@ -33,7 +33,23 @@
 
 <script>
 export default {
-    
+    data() {
+        return {
+
+        }
+    },
+    methods: {
+        currentroute() {
+            // console.log(this.$route)
+            return this.$route.path;
+        }
+    },
+    computed: {
+        istopicsmodule() {
+            let topicstest = /^\/system\/topics\//
+            return topicstest.test(this.$route.path);
+        }
+    }
 }
 </script>
 

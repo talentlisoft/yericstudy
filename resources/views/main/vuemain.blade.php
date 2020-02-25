@@ -3,7 +3,7 @@
     <script type="text/javascript" src="{{url(mix('/js/vue.js'))}}"></script>
 @endsection
 @section('styles')
-    <link rel="stylesheet" href="{{url(mix('/css/admin.css'))}}">
+    <link rel="stylesheet" href="{{url(mix('/css/adminvue.css'))}}">
 @endsection
 @section('base')
     <base href="{{url('/admin')}}/"/>
