@@ -25,7 +25,8 @@ export default new Vuex.Store({
             grade: '',
             level: '',
             course: '',
-        }
+        },
+        loading: 0
     },
     mutations: {
         setselectedtopicsCondition(state, payload) {
@@ -36,6 +37,12 @@ export default new Vuex.Store({
         setcoursesList(state, courseList) {
             state.coursesList = courseList.courses;
             state.topicTypes = courseList.topic_types;
+        },
+        beginloading(state) {
+            state.loading ++;
+        },
+        endloading(state) {
+            state.loading--;
         }
     }
 });

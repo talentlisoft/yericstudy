@@ -47,6 +47,6 @@
         <div class="crm-content">
             <router-view></router-view>
         </div>
-        
+        <load-indicator></load-indicator>
     </div>
 @endsection
