@@ -266,4 +266,12 @@ button:disabled {
     transform: translate(100%, 0px);
 }
 
+.navbar-dark {
+    .dropdown-menu {
+        background-color: rgb(52, 58, 63);
+    }
+}
+
+[v-cloak] { display: none }
+
 @import "system";

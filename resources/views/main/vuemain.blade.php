@@ -9,7 +9,7 @@
     <base href="{{url('/admin')}}/"/>
 @endsection
 @section('body')
-    <div id="studyapp">
+    <div id="studyapp" v-cloak>
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top crm-nav">
             <div class="navbar-brand navbar-left">
                 YericStudy
@@ -23,24 +23,29 @@
             <div class="nav-content navbar-collapse collapse">
                 <ul class="navbar-nav mr-auto pl-3 text-left">
                     <li class="nav-item mr-2">
-                        <router-link class="nav-link" active-class="active" to="/system/topicssummary">系统配置</router-link>
+                        <router-link class="nav-link" active-class="active" to="/system/topics/summary">系统配置</router-link>
                     </li>
                     <li class="nav-item d-sm-block d-md-block d-lg-none">
                         <a href onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="nav-link"><i class="fa fa-sign-out" aria-hidden="true"></i> 退出</a>
                     </li>
                 </ul>
                 <div class="navbar-text my-2 my-lg-0 d-none d-lg-block">
-                    <span>
+                    <b-dropdown text="{{$user['name']}}" right lazy>
+                        <b-dropdown-item>更改密码...</b-dropdown-item>
+                        <b-dropdown-item onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                        <i class="fa fa-sign-out" aria-hidden="true"></i> 退出
+                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                            {{ csrf_field() }}
+                        </form>
+                        </b-dropdown-item>
+                    </b-dropdown>
+                    {{-- <span>
                         <span id="usermenu">{{$user['name']}}</span>
                         <div class="dropdown-menu dropdown-menu-right bg-dark" role="menu">
                             <a href class="dropdown-item"><i class="fa fa-key" aria-hidden="true"></i> 更改密码...</a>
                             <div class="dropdown-divider"></div>
-                            <a href onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="dropdown-item"><i class="fa fa-sign-out" aria-hidden="true"></i> 退出</a>
-                        </div>
-                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                            {{ csrf_field() }}
-                        </form>
-                    </span>
+
+                    </span> --}}
                 </div>
             </div>
         </nav>

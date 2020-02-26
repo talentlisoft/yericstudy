@@ -14,7 +14,7 @@
 
     <form @submit.prevent="research">
       <div class="input-group mb-3">
-        <input type="text" class="form-control" />
+        <input type="text" v-model="searchcontent" class="form-control" />
         <div class="input-group-append">
           <button class="btn btn-outline-secondary" type="submit">
             <i class="fa fa-search fa-fw" aria-hidden="true"></i>
@@ -105,7 +105,6 @@
     </div>
     <div class="d-flex justify-content-end">
       <b-pagination v-model="currentPage" :total-rows="total" per-page="20" :disabled="loading" @change="search()"></b-pagination>
-      <!-- <ul uib-pagination boundary-links="true" max-size="3" boundary-link-numbers="true" rotate="true" items-per-page="20" total-items="per.topicsList.total" ng-model="currentPage" class="pagination-sm" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;" ng-change="search()"></ul> -->
     </div>
   </div>
 </template>
@@ -124,7 +123,8 @@ export default {
       currentPage: 1,
       total: 0,
       topicsList: [],
-      loading: false
+      loading: false,
+      searchcontent: null
     };
   },
   created() {
@@ -154,7 +154,7 @@ export default {
             grade: this.selectedgrade,
             course: this.selectedcourse,
             type: this.selectedcourseType,
-            searchcontent: null,
+            searchcontent: this.searchcontent,
             page: this.currentPage
           }).then(response => {
               this.topicsList = response.data.data.list;

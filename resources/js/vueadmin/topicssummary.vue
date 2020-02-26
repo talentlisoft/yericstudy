@@ -7,7 +7,7 @@
         <div class="card mb-3" v-for="su in topicsSummary" :key="su.level" v-show="su.data.length > 0">
             <div class="card-header text-white bg-secondary d-flex justify-content-between">
                 <span>{{getlevelname(su.level)}}</span>
-                <span class="cursor-pointer" v-b-tooltip.hover title="添加新题" @click="showtoast()"><i class="fa fa-plus fa-fw" aria-hidden="true"></i></span>
+                <span class="cursor-pointer" v-b-tooltip.hover title="添加新题" @click="addnewtopic()"><i class="fa fa-plus fa-fw" aria-hidden="true"></i></span>
             </div>
             <div class="card-body">
                 <h5 class="card-title">题目总数：{{getlevelsum(su)}}</h5>
@@ -65,14 +65,8 @@ export default {
             });
             this.$router.push('/system/topics/list');
         },
-        showtoast() {
-            this.$bvToast.toast('test Toast', {
-                title: 'Lisoft',
-                autoHideDelay: 2000,
-                appendToast: true,
-                variant: 'success',
-                solid: true
-            });
+        addnewtopic() {
+            this.$router.push('/system/topics/addnew');
         }
     },
     computed: {
