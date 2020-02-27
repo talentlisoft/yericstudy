@@ -2,14 +2,21 @@ import Vue from 'vue';
 import axios from 'axios'
 import VueAxios from 'vue-axios'
 import { BootstrapVue, IconsPlugin } from 'bootstrap-vue';
+import { ValidationProvider, extend, ValidationObserver } from 'vee-validate';
+import { required } from 'vee-validate/dist/rules';
 
 import store from './store';
 import router from './router';
 import loadingComponent from './loading.vue';
 
+
 Vue.component('load-indicator', loadingComponent);
-
-
+Vue.component('ValidationProvider', ValidationProvider);
+Vue.component('ValidationObserver', ValidationObserver);
+extend('required', {
+    ...required,
+    message: 'This field is required'
+  });
 
 Vue.use(VueAxios, axios);
 // Install BootstrapVue
