@@ -19,38 +19,16 @@ class authController extends Controller
         ]);
         try {
             $credentials = request(['email', 'password']);
-            if (! $token = auth()->attempt($credentials)) {
+            if (! $token = auth('api')->attempt($credentials)) {
                 return response()->json(['error' => 'Unauthorized'], 401);
             }
-            return $this->respondWithToken([
+            return $this->successresponse([
                 'api_token' => $token,
                 'token_type' => 'bearer',
-                'name' => auth()->user()->name,
-                'expires_in' => auth()->factory()->getTTL() * 60
+                'name' => auth('api')->user()->name,
+                'expires_in' => auth('api')->factory()->getTTL() * 60
             ]);
 
-            // $userRecord = DB::table('users')->where('email', $request->input('email'))->first();
-            // if ($userRecord) {
-            //     if (Hash::check($request->input('password'), $userRecord->password)) {
-            //         if ($request->has('openid')) {
-            //             //Bind wechat openid
-            //             DB::table('users')->where('id', $userRecord->id)->update(['wechart_openid' => $request->input('openid')]);
-            //         }
-            //         return $this->successresponse(['name' => $userRecord->name, 'api_token' =>$userRecord->api_token]);
-            //     }
-            // } elseif ($request->has('openid')) {
-            //     // Create new account from 小程序
-            //     $newuserRecord = new User;
-            //     $newuserRecord->api_token = str_random(64);
-            //     $newuserRecord->name = $request->input('email');
-            //     $newuserRecord->email = $request->input('email');
-            //     $newuserRecord->password = Hash::make($request->input('password'));
-            //     $newuserRecord->permissions = 0;
-            //     if ($newuserRecord->save()) {
-            //         return $this->successresponse(['name' => $newuserRecord->email, 'api_token' =>$newuserRecord->api_token]);
-            //     }
-            // }
-            // return $this->failureresponse('Email address and password mismatch!');
             
         } catch (\Illuminate\Database\QueryException $e) {
             Log::error('api\authController->login->QueryException异常' . $e->getMessage());
@@ -63,7 +41,7 @@ class authController extends Controller
 
     public function logout()
     {
-        auth()->logout();
+        auth('api')->logout();
         return response()->json(['message' => 'Successfully logged out']);
     }
 
@@ -87,8 +65,8 @@ class authController extends Controller
             $wechatData = json_decode($matcharr[0][0], true);
             $userRecord = User::where('wechart_openid', $wechatData['openid'])->first();
             if ($userRecord) {
-                $token = auth()->login($userRecord);
-                return $this->successresponse(['name' => $userRecord->name, 'api_token' =>$token, 'token_type' => 'bearer', 'expires_in' => auth()->factory()->getTTL() * 60]);
+                $token = auth('api')->login($userRecord);
+                return $this->successresponse(['name' => $userRecord->name, 'api_token' =>$token, 'token_type' => 'bearer', 'expires_in' => auth('api')->factory()->getTTL() * 60]);
             } else {
                 return $this->failureresponse($wechatData['openid']);
             }
