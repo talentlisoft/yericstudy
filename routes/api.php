@@ -38,3 +38,5 @@ Route::get('training/resultdetail/{resultId}', 'Api\apitrainingController@getans
 Route::get('manualaudit/list', 'Api\apitrainingController@manualauditlist');
 Route::get('manualaudit/detail/{trainingresultId}', 'Api\apitrainingController@getauditDetail');
 Route::post('manualaudit/auditanswer', 'Api\apitrainingController@auditanawer');
+
+Route::get('users/info','Api\apiusersController@userinfo');
