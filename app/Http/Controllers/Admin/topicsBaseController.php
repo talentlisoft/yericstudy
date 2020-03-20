@@ -100,7 +100,7 @@ class topicsBaseController extends Controller
             'grade' => 'nullable',
             'course' => 'nullable',
             'type' => 'nullable',
-            'search_content' => 'nullable'
+            'searchcontent' => 'nullable'
         ]);
         try {
             $topicList = [];
@@ -118,8 +118,8 @@ class topicsBaseController extends Controller
                     if (!is_null($request->input('course'))) {
                         $query->where('topics.course_id', $request->input('course'));
                     }
-                    if (!is_null($request->input('search_content'))) {
-                        $query->where('topics.question', 'LIKE', '%'.$request->input('search_content').'%');
+                    if (!is_null($request->input('searchcontent'))) {
+                        $query->where('topics.question', 'LIKE', '%'.$request->input('searchcontent').'%');
                     }
                     if (!is_null($request->input('type'))) {
                         $query->where('topics.type', $request->input('type'));
