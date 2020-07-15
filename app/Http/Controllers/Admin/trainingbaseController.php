@@ -26,7 +26,7 @@ class trainingbaseController extends Controller
         try {
             $user = Auth::user();
             $trainingsRecord = DB::table('trainnings')
-                ->select('trainnings.title', 'trainnings.created_at', 'trainnings.id', 
+                ->select('trainnings.title', 'trainnings.created_at', 'trainnings.id',
                 DB::raw('COUNT(trainee_trainings.id) AS trainee_count'),
                 DB::raw('SUM(IF(trainee_trainings.status = 1, 1, 0)) AS finished_count')
                 )
@@ -34,7 +34,7 @@ class trainingbaseController extends Controller
                 ->join('user_trainee', 'user_trainee.trainee_id', '=' ,'trainee_trainings.trainee_id')
                 ->where('user_trainee.user_id', $user->id)
                 ->orderBy('trainnings.created_at', 'desc')
-                ->groupBy('trainnings.title', 'trainnings.created_at', 'trainnings.id')
+                ->groupBy(['trainnings.title', 'trainnings.created_at', 'trainnings.id'])
                 ->paginate(20);
             $trainingsList = [];
             foreach ($trainingsRecord as $tr) {
@@ -353,9 +353,9 @@ class trainingbaseController extends Controller
             $traineeRecord = DB::table('trainee_trainings')
                 ->join('user_trainee', 'user_trainee.trainee_id', '=' ,'trainee_trainings.trainee_id')
                 ->join('trainees', 'trainees.id', '=', 'trainee_trainings.trainee_id')
-                ->select('trainees.name', 'trainee_trainings.id', 
-                    DB::raw('(SELECT COUNT(*) FROM training_topics WHERE training_topics.training_id = trainee_trainings.training_id) AS total_topics'), 
-                    DB::raw('(SELECT COUNT(*) FROM training_results WHERE training_results.trainingtrainee_id = trainee_trainings.id) AS finished_topics'), 
+                ->select('trainees.name', 'trainee_trainings.id',
+                    DB::raw('(SELECT COUNT(*) FROM training_topics WHERE training_topics.training_id = trainee_trainings.training_id) AS total_topics'),
+                    DB::raw('(SELECT COUNT(*) FROM training_results WHERE training_results.trainingtrainee_id = trainee_trainings.id) AS finished_topics'),
                     'trainee_trainings.status')
                 ->where('trainee_trainings.training_id', $trainingId)
                 ->where('user_trainee.user_id', $user->id)
@@ -439,7 +439,7 @@ class trainingbaseController extends Controller
                 return $this->failureresponse('Can not find such training');
             }
 
-            
+
         } catch (\Illuminate\Database\QueryException $e) {
             Log::error('trainingController->trainingResult->QueryException异常' . $e->getMessage());
             return $this->failureresponse('数据库查询出错了');
@@ -462,7 +462,7 @@ class trainingbaseController extends Controller
                 ->where('training_results.status', 'PENDDING')
                 ->where('user_trainee.user_id', $user->id)
                 ->get();
-            
+
             $manualauditList = [];
             foreach ($manualauditRecord as $au) {
                 $manualauditList[] = [
@@ -585,6 +585,39 @@ class trainingbaseController extends Controller
         }
     }
 
+    public function changejudgement($resultId)
+    {
+        try {
+            $trainresultRecord = DB::table('training_results')
+                ->select('status')
+                ->where('id', $resultId)
+                ->first();
+            if ($trainresultRecord) {
+                switch ($trainresultRecord->status) {
+                    case 'CORRECT':
+                        DB::table('training_results')
+                            ->where('id', $resultId)
+                            ->update(['status' => 'WRONG']);
+                        break;
+                    case 'WRONG':
+                        DB::table('training_results')
+                            ->where('id', $resultId)
+                            ->update(['status' => 'CORRECT']);
+                        break;
+                }
+            } else {
+                return $this->failureresponse('找不到这条训练记录');
+            }
+            return $this->successresponse();
+        } catch (\Illuminate\Database\QueryException $e) {
+            Log::error('trainingController->changejudgement->QueryException异常' . $e->getMessage());
+            return $this->failureresponse('数据库查询出错了');
+        } catch (Exception $e) {
+            Log::error('trainingController->changejudgement->Exception' . $e->getMessage());
+            return $this->failureresponse('操作失败.');
+        }
+    }
+
     public function getanswerDetail($resultId)
     {
         try {
@@ -620,6 +653,7 @@ class trainingbaseController extends Controller
                     ];
                 }
                 return $this->successresponse([
+                    'id' => $resultId,
                     'trainee_name' => $answerRecord->trainee_name,
                     'question' => $answerRecord->question,
                     'answer' => $answerRecord->answer,

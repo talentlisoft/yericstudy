@@ -27,6 +27,7 @@
     </h6>
     <div class="alert" ng-class="answerDetail.status=='CORRECT'?'alert-success':(answerDetail.status=='WRONG'?'alert-danger':'alert-secondary')" role="alert">
         {{answerDetail.trainee_answer}}
+        <span class="cursor-pointer" uib-tooltip="改判" ng-click="changejugement()"><i class="fa fa-reply" aria-hidden="true"></i></span>
     </div>
     <div uib-collapse="hidehistory">
         <table class="table table-striped">

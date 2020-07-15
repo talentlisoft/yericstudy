@@ -18,6 +18,7 @@ use Illuminate\Http\Request;
 // });
 
 Route::post('auth/login', 'Api\authController@login');
+Route::get('auth/captcha', 'Api\authController@getcaptcha');
 Route::post('auth/wechatlogin', 'Api\authController@wechartlogin');
 
 Route::get('topics/summary', 'Api\apitopicsController@summary');
@@ -35,6 +36,7 @@ Route::post('training/add', 'Api\apitrainingController@savetraining');
 Route::get('training/detail/{trainingId}', 'Api\apitrainingController@trainingDetail');
 Route::get('training/result/{traineetrainingId}', 'Api\apitrainingController@trainingResult');
 Route::get('training/resultdetail/{resultId}', 'Api\apitrainingController@getanswerDetail');
+Route::get('training/result/changejudgement/{resultId}', 'Api\apitrainingController@changejudgement');
 Route::get('manualaudit/list', 'Api\apitrainingController@manualauditlist');
 Route::get('manualaudit/detail/{trainingresultId}', 'Api\apitrainingController@getauditDetail');
 Route::post('manualaudit/auditanswer', 'Api\apitrainingController@auditanawer');

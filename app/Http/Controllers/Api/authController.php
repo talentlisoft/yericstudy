@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Hash;
 use App\User;
+use Mews\Captcha\Facades\Captcha;
 
 class authController extends Controller
 {
@@ -15,32 +16,39 @@ class authController extends Controller
     {
         $this->validate($request, [
             'email'=> 'required | email',
-            'password' => 'required'
+            'password' => 'required',
+            'captcha_value' => 'required',
+            'captcha_key' => 'required'
         ]);
         try {
-            $userRecord = DB::table('users')->where('email', $request->input('email'))->first();
-            if ($userRecord) {
-                if (Hash::check($request->input('password'), $userRecord->password)) {
-                    if ($request->has('openid')) {
-                        //Bind wechat openid
-                        DB::table('users')->where('id', $userRecord->id)->update(['wechart_openid' => $request->input('openid')]);
+            if (captcha_api_check($request->input('captcha_value'), $request->input('captcha_key'))) {
+                $userRecord = DB::table('users')->where('email', $request->input('email'))->first();
+                if ($userRecord) {
+                    if (Hash::check($request->input('password'), $userRecord->password)) {
+                        if ($request->has('openid')) {
+                            //Bind wechat openid
+                            DB::table('users')->where('id', $userRecord->id)->update(['wechart_openid' => $request->input('openid')]);
+                        }
+                        return $this->successresponse(['name' => $userRecord->name, 'api_token' =>$userRecord->api_token]);
                     }
-                    return $this->successresponse(['name' => $userRecord->name, 'api_token' =>$userRecord->api_token]);
+                } elseif ($request->has('openid')) {
+                    // Create new account from 小程序
+                    $newuserRecord = new User;
+                    $newuserRecord->api_token = str_random(64);
+                    $newuserRecord->name = $request->input('email');
+                    $newuserRecord->email = $request->input('email');
+                    $newuserRecord->password = Hash::make($request->input('password'));
+                    $newuserRecord->permissions = 0;
+                    if ($newuserRecord->save()) {
+                        return $this->successresponse(['name' => $newuserRecord->email, 'api_token' =>$newuserRecord->api_token]);
+                    }
                 }
-            } elseif ($request->has('openid')) {
-                // Create new account from 小程序
-                $newuserRecord = new User;
-                $newuserRecord->api_token = str_random(64);
-                $newuserRecord->name = $request->input('email');
-                $newuserRecord->email = $request->input('email');
-                $newuserRecord->password = Hash::make($request->input('password'));
-                $newuserRecord->permissions = 0;
-                if ($newuserRecord->save()) {
-                    return $this->successresponse(['name' => $newuserRecord->email, 'api_token' =>$newuserRecord->api_token]);
-                }
+                return $this->failureresponse('Email address and password mismatch!');
+            } else {
+                return $this->failureresponse('验证码不匹配');
             }
-            return $this->failureresponse('Email address and password mismatch!');
-            
+
+
         } catch (\Illuminate\Database\QueryException $e) {
             Log::error('api\authController->login->QueryException异常' . $e->getMessage());
             return $this->failureresponse('数据库查询出错了');
@@ -94,4 +102,10 @@ class authController extends Controller
         curl_close($curl);
         return $data;
     }
+
+    public function getcaptcha()
+    {
+        return $this->successresponse(Captcha::create('flat', true));
+    }
+
 }

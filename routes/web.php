@@ -40,6 +40,9 @@ Route::post('rest/training/add', 'Web\webtrainingController@savetraining');
 Route::post('rest/training/list', 'Web\webtrainingController@trainingsList');
 Route::get('rest/training/detail/{trainingId}', 'Web\webtrainingController@trainingDetail');
 Route::get('rest/training/result/{traineetrainingId}', 'Web\webtrainingController@trainingResult');
+
+Route::get('rest/training/result/changejudgement/{resultId}', 'Web\webtrainingController@changejudgement');
+
 Route::get('rest/manualaudit/list', 'Web\webtrainingController@manualauditlist');
 Route::get('rest/manualaudit/detail/{trainingresultId}', 'Web\webtrainingController@getauditDetail');
 Route::post('rest/manualaudit/auditanswer', 'Web\webtrainingController@auditanawer');

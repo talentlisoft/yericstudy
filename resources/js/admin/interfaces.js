@@ -140,6 +140,13 @@ export default angular.module('Admininterface', ['ngResource']).service('Adminin
             isArray: false,
             timeout: 10000,
             url: `${baseUrl}rest/trainees/save`
+        },
+        changejudgement: {
+            method: 'get',
+            isArray: false,
+            timeout: 10000,
+            url: `${baseUrl}rest/training/result/changejudgement/:resultId`,
+            resultId: '@resultId'
         }
     });
 }]);

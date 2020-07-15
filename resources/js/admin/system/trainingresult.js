@@ -17,7 +17,7 @@ export default systemModule.controller('trainingresultctl', ['$scope', '$state',
                 animation: true,
                 size: 'lg',
                 templateUrl: '../adminpages/system.trainings.answerdetail',
-                controller: ['$scope', 'answerDetail', '$uibModalInstance', '$state', 'Persist', function($scope, answerDetail, $uibModalInstance, $state, Persist) {
+                controller: ['$scope', 'answerDetail', '$uibModalInstance', '$state', 'Persist', 'Admininterface', 'toastr',function($scope, answerDetail, $uibModalInstance, $state, Persist, admininterface, toastr) {
                     $scope.per = Persist;
                     $scope.hidehistory = true;
                     $scope.answerDetail = answerDetail;
@@ -29,6 +29,18 @@ export default systemModule.controller('trainingresultctl', ['$scope', '$state',
                         $uibModalInstance.close(null);
                         $state.go('system.topics.detail', {topicId: answerDetail.topic_id});
                     };
+                    $scope.changejugement = () => {
+                        admininterface.changejudgement({resultId: answerDetail.id}).$promise.then(response => {
+                            if (response.result) {
+                                if ($scope.answerDetail.status === 'CORRECT') {
+                                    $scope.answerDetail.status = 'WRONG';
+                                } else if ($scope.answerDetail.status === 'WRONG') {
+                                    $scope.answerDetail.status = 'CORRECT';
+                                }
+                                toastr.success('操作成功', '改判成功');
+                            }
+                        })
+                    };
                 }],
                 resolve: {
                     answerDetail: ['Admininterface', function(Admininterface) {
@@ -38,16 +50,16 @@ export default systemModule.controller('trainingresultctl', ['$scope', '$state',
                     }]
                 }
             });
-    
+
             detaildlg.result.then(result => {
-    
+
             }, () => {
                 // Canceled
             });
         }
     };
 
-    $scope.getresultcolor = answer => answer.status == 'WRONG' ? 'table-warning': '';
+    $scope.getresultcolor = answer => answer.status === 'WRONG' ? 'table-warning': '';
     if ($scope.resultData.status != 1) {
         window.Echo.private(`training.${resultData.id}`).listen('.trainee.answering', e => {
             angular.forEach($scope.resultData.results, resultItem => {
