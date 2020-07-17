@@ -19,7 +19,7 @@ class mytrainController extends Controller
 
     public function __construct()
     {
-        $this->middleware('traineeauth');
+        $this->middleware('auth:trainee');
     }
 
     public function mytrainlist(Request $request, Trainee $trainee)
@@ -243,7 +243,7 @@ class mytrainController extends Controller
                 return $this->failureresponse('Can not find such training');
             }
 
-            
+
         } catch (\Illuminate\Database\QueryException $e) {
             Log::error('mytrainController->gettrainresult->QueryException异常' . $e->getMessage());
             return $this->failureresponse('数据库查询出错了');

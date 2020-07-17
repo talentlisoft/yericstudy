@@ -33,29 +33,35 @@ class loginController extends Controller
         ]);
 
         try {
-            $traineeRecord = DB::table('trainees')
-                ->select('id', 'password', 'avatar', 'name')
-                ->where('name', $request->input('traineename'))
-                ->first();
-            if ($traineeRecord) {
-                if (Hash::check($request->input('password'), $traineeRecord->password)) {
-                    $request->session()->put(['logined_trainee' => [
-                        'trainee_id' => $traineeRecord->id,
-                        'name'       => $traineeRecord->name,
-                        'avatar'     => $traineeRecord->avatar
-                    ]]);
-                    //Goto trainee main page
-                    return redirect('/trainee/mytrain/mytrains/list');
-                } else {
-                    return redirect('/')
-                        ->withErrors(['password' => '密码不正确'])
-                        ->withInput();
-                }
+            if ($this->attemptLogin($request)) {
+                return redirect('/trainee/mytrain/mytrains/list');
             } else {
                 return redirect('/')
-                    ->withErrors(['traineename' => '学员不存在'])
-                    ->withInput();
+                    ->withErrors(['password' => '用户名与密码不匹配']);
             }
+//            $traineeRecord = DB::table('trainees')
+//                ->select('id', 'password', 'avatar', 'name')
+//                ->where('name', $request->input('traineename'))
+//                ->first();
+//            if ($traineeRecord) {
+//                if (Hash::check($request->input('password'), $traineeRecord->password)) {
+//                    $request->session()->put(['logined_trainee' => [
+//                        'trainee_id' => $traineeRecord->id,
+//                        'name'       => $traineeRecord->name,
+//                        'avatar'     => $traineeRecord->avatar
+//                    ]]);
+//                    //Goto trainee main page
+//                    return redirect('/trainee/mytrain/mytrains/list');
+//                } else {
+//                    return redirect('/')
+//                        ->withErrors(['password' => '密码不正确'])
+//                        ->withInput();
+//                }
+//            } else {
+//                return redirect('/')
+//                    ->withErrors(['traineename' => '学员不存在'])
+//                    ->withInput();
+//            }
         } catch (\Illuminate\Database\QueryException $e) {
             Log::error('loginController->login->QueryException异常' . $e->getMessage());
             abort(500);
@@ -91,7 +97,7 @@ class loginController extends Controller
      */
     protected function guard()
     {
-        return Auth::guard();
+        return Auth::guard('trainee');
     }
 
     /**
@@ -102,6 +108,6 @@ class loginController extends Controller
      */
     protected function credentials(Request $request)
     {
-        return ['name' => $request->input('name'), 'password' => $request->input('password')];
+        return ['name' => $request->input('traineename'), 'password' => $request->input('password')];
     }
 }

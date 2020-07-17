@@ -14,7 +14,7 @@ class Trainee extends Model implements Authenticatable
     protected $rememberTokenName = 'remember_token';
 
     // Fields
-    public $password;
+//    public $password;
 
     public function getAuthIdentifierName()
     {
