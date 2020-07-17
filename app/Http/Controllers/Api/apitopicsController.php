@@ -11,5 +11,6 @@ class apitopicsController extends topicsBaseController
     public function __construct()
     {
         $this->middleware('auth:api');
+        parent::__construct();
     }
 }

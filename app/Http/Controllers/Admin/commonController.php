@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\User;
+use Illuminate\Support\Facades\Auth;
 
 class commonController extends Controller
 {
@@ -13,12 +14,13 @@ class commonController extends Controller
         $this->middleware('auth');
     }
 
-    public function adminmain($module, $method = null, $optional1 = null, $optional2 = null, $optional3 = null, User $user)
+    public function adminmain($module, $method = null, $optional1 = null, $optional2 = null, $optional3 = null)
     {
+        $user = Auth::user();
         return view('main.adminmain', ['user' => [
             'name' => $user->name
         ]]);
-        
+
     }
 
     public function adminpages($pagename)
@@ -35,8 +37,8 @@ class commonController extends Controller
     {
         $user = $request->user();
         return $this->successresponse(['permission' => [
-            'edittopics' => ($user->permissions & 1) == 1 ? true : false,
-            'editusers' => ($user->permissions & 2) == 2 ? true : false
+            'edittopics' => ($user->permissions & 1) == 1,
+            'editusers'  => ($user->permissions & 2) == 2
         ]]);
     }
 }

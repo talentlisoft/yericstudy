@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
@@ -48,5 +49,12 @@ class LoginController extends Controller
             'captcha.required' => '请填写验证码',
             'captcha.captcha' => '验证码不匹配'
         ]);
+    }
+
+    public function redirectPath()
+    {
+        $user = Auth::user();
+
+        return ($user->permissions & 1) == 1 ? '/admin/system/topics/summary' : '/admin/system/trainings/list';
     }
 }

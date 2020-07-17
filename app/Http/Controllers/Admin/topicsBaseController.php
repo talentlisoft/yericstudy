@@ -12,6 +12,10 @@ use Carbon\Carbon;
 
 class topicsBaseController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('topicseditor')->only('savetopic');
+    }
     public function savetopic(Request $request)
     {
         $this->validate($request, [
@@ -71,7 +75,7 @@ class topicsBaseController extends Controller
                     ->where('topics.level', $summaryData[$index]['level'])
                     ->groupBy('courses.name', 'topics.course_id', 'topics.grade')
                     ->get();
-                
+
                 foreach ($summaryRecord as $su) {
                     $summaryData[$index]['data'][] = [
                         'course_name' => $su->name,
@@ -89,7 +93,7 @@ class topicsBaseController extends Controller
             Log::error('topicsController->savetopic->Exception' . $e->getMessage());
             return $this->failureresponse('操作失败.');
         }
-        
+
         return $this->successresponse($summaryData);
     }
 
