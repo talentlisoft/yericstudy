@@ -7,32 +7,32 @@ export default angular.module('TraineeInterfaces', ['ngResource']).service('Trai
         getmytrainlist: {
             method: 'post',
             isArray: false,
-            timeout: 2000,
+            timeout: 10000,
             url: `${baseUrl}resttrainee/mytrain/list`
         },
         gettrainingdetail: {
             method: 'get',
             isArray: false,
-            timeout: 3000,
+            timeout: 10000,
             url: `${baseUrl}resttrainee/mytrain/detail/:traineetrainingId`,
             traineetrainingId: '@traineetrainingId'
         },
         submitanswer: {
             method: 'post',
             isArray: false,
-            timeout: 4000,
+            timeout: 10000,
             url: `${baseUrl}resttrainee/mytrain/submitanswer`,
         },
         gettrainingresult: {
             method: 'get',
             isArray: false,
-            timeout: 2000,
+            timeout: 10000,
             url: `${baseUrl}resttrainee/mytrain/result/:traineetrainingId`,
         },
         getanswerdetail: {
             method: 'get',
             isArray: false,
-            timeout: 4000,
+            timeout: 10000,
             url: `${baseUrl}resttrainee/mytrain/result/detail/:resultId`,
             resultId: '@resultId'
         }

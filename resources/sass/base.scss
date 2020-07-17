@@ -2,7 +2,7 @@
 @import "variables";
 @import "~bootstrap/scss/bootstrap";
 //font awesome
-// $fa-font-path: "../../fonts/vendor/font-awesome";
+//$fa-font-path: "../../fonts/vendor/font-awesome";
 @import "~font-awesome/scss/font-awesome";
 //angular toastr
 @import "~angular-toastr/dist/angular-toastr.css";
@@ -15,6 +15,11 @@
 @import "changepassword";
 // @import "sortable";
 @import "loadingindicator";
+
+body {
+    overflow-x: hidden;
+}
+
 .container-fluid{
     font-size: 0.875rem !important;
 }
@@ -90,6 +95,7 @@
 
 .maincontent {
     margin-left: 230px;
+    transition: all 0.3s ease-in-out;
 }
 
 
@@ -176,7 +182,7 @@
         }
 
         &.maincontent-offset {
-            margin-left: 230px;
+            transform: translateX(230px);
         }
     }
 
@@ -236,4 +242,16 @@
 
 button:disabled {
     cursor: no-drop;
+}
+
+.result-answer {
+    position: relative;
+    .badge {
+        position: absolute;
+        top: -8px;
+    }
+}
+
+.font-24 {
+    font-size: 24px;
 }

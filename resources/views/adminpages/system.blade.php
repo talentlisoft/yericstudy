@@ -8,4 +8,10 @@
 <li class="nav-item">
     <a class="nav-link" ui-sref="system.manualaudit" ui-sref-active="{'active':'system.manualaudit'}"><i class="fa fa-question-circle-o fa-fw"></i>人工审核</a>
 </li>
+<li class="nav-item">
+    <a class="nav-link" ui-sref="system.users.list" ui-sref-active="{'active':'system.users.**'}"><i class="fa fa-users fa-fw"></i>用户管理</a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" ui-sref="system.trainees.list" ui-sref-active="{'active':'system.trainees.**'}"><i class="fa fa-graduation-cap fa-fw"></i>学员管理</a>
+</li>
 @endcomponent

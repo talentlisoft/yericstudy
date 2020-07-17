@@ -10,28 +10,31 @@
         "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
     },
     "devDependencies": {
-        "axios": "^0.19",
-        "bootstrap": "^4.1.0",
-        "cross-env": "^5.1",
-        "jquery": "^3.2",
-        "laravel-mix": "^4.0.7",
-        "lodash": "^4.17.5",
-        "popper.js": "^1.12",
+        "axios": "^0.19.2",
+        "babel-plugin-syntax-dynamic-import": "^6.18.0",
+        "bootstrap": "^4.5.0",
+        "cross-env": "^5.2.1",
+        "jquery": "^3.5.1",
+        "laravel-mix": "^4.1.4",
+        "lodash": "^4.17.19",
+        "popper.js": "^1.16.1",
         "resolve-url-loader": "^2.3.1",
-        "sass": "^1.15.2",
-        "sass-loader": "^7.1.0",
-        "vue-template-compiler": "^2.6.10"
+        "sass": "^1.26.10",
+        "sass-loader": "^7.3.1",
+        "vue-template-compiler": "^2.6.11"
     },
     "dependencies": {
         "@iamadamjowett/angular-click-outside": "^2.10.1",
-        "@uirouter/angularjs": "^1.0.22",
-        "angular": "^1.7.8",
-        "angular-animate": "^1.7.8",
-        "angular-i18n": "^1.7.8",
-        "angular-resource": "^1.7.8",
-        "angular-sanitize": "^1.7.8",
+        "@uirouter/angularjs": "^1.0.26",
+        "angular": "^1.8.0",
+        "angular-animate": "^1.8.0",
+        "angular-i18n": "^1.7.9",
+        "angular-resource": "^1.8.0",
+        "angular-sanitize": "^1.8.0",
         "angular-toastr": "^2.1.1",
         "font-awesome": "^4.7.0",
+        "laravel-echo": "^1.8.0",
+        "socket.io-client": "^2.3.0",
         "ui-bootstrap4": "^3.0.6"
     }
 }

@@ -14,13 +14,13 @@
                     <span class="head-border-left">{{currenttopic().course_name + currenttopic().topic_type}}</span>
                 </h6>
                 <div class="alert alert-primary" role="alert">
-                    {{currenttopic().question}}
+                    {{currenttopic().question | yericfomular}}
                 </div>
                 <h6 class="border-bottom pb-2 font-weight-bold mt-3 mb-3">
                     <span class="head-border-left">回答</span>
                 </h6>
                 <form ng-submit="answerquestion()">
-                    <textarea id="answer" class="form-control mb-3" rows="3" ng-model="answer" required>
+                    <textarea id="answer" class="form-control form-control-lg mb-3" rows="3" ng-model="answer" required>
                     </textarea>
                     <button ng-disabled="submitting" class="pull-right btn btn-outline-success" type="submit"><i class="fa fa-fw" ng-class="submitting?'fa-spinner fa-pulse':'fa-check'" aria-hidden="true"></i> 回答</button>                    
                 </form>

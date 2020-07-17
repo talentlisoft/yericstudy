@@ -30,4 +30,13 @@ class commonController extends Controller
             abort(404);
         }
     }
+
+    public function getusrpermission(Request $request)
+    {
+        $user = $request->user();
+        return $this->successresponse(['permission' => [
+            'edittopics' => ($user->permissions & 1) == 1 ? true : false,
+            'editusers' => ($user->permissions & 2) == 2 ? true : false
+        ]]);
+    }
 }

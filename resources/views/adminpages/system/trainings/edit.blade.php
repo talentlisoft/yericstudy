@@ -73,17 +73,20 @@
 </form>
 
 <ul class="nav nav-tabs mb-3">
-    <li class="nav-item" ng-click="conditions.mode='RECENT';gettopicslist()">
+    <li class="nav-item" ng-click="conditions.mode='RECENT';refreshtopiclist()">
         <a class="nav-link" ng-class="conditions.mode=='RECENT'?'active':''" href>最近错过</a>
     </li>
-    <li class="nav-item" ng-click="conditions.mode='EVER';gettopicslist()">
+    <li class="nav-item" ng-click="conditions.mode='EVER';refreshtopiclist()">
         <a class="nav-link" ng-class="conditions.mode=='EVER'?'active':''" href>曾经错过</a>
     </li>
-    <li class="nav-item" ng-click="conditions.mode='RADOM';gettopicslist()">
+    <li class="nav-item" ng-click="conditions.mode='RADOM';refreshtopiclist()">
         <a class="nav-link" ng-class="conditions.mode=='RADOM'?'active':''" href>随机</a>
     </li>
-    <li class="nav-item" ng-click="conditions.mode='FREQUENCY';gettopicslist()">
+    <li class="nav-item" ng-click="conditions.mode='FREQUENCY';refreshtopiclist()">
         <a class="nav-link" ng-class="conditions.mode=='FREQUENCY'?'active':''" href>训练最少</a>
+    </li>
+    <li class="nav-item" ng-click="conditions.mode='NEWEST';refreshtopiclist()">
+        <a class="nav-link" ng-class="conditions.mode=='NEWEST'?'active':''" href>最新的</a>
     </li>
 </ul>
 <table class="table table-striped table-hover picking-topics">
@@ -92,7 +95,7 @@
             <th>#</th>
             <th>类型</th>
             <th>题目</th>
-            <th>更新日期</th>
+            <th>做题统计</th>
         </tr>
     </thead>
     <tbody>
@@ -102,8 +105,8 @@
                 <span class="topic-selected"><i class="fa fa-check" aria-hidden="true"></i></span>
             </td>
             <td>{{gettypedesc(topic)}}</td>
-            <td>{{topic.question}}</td>
-            <td>{{topic.updated_at}}</td>
+            <td><span uib-popover="{{topic.question_full}}" popover-title="题目详情" popover-trigger="topic.question_full == topic.question ? 'none':'mouseenter'">{{topic.question}}</span></td>
+            <td><span class="text-success">{{topic.total_correct}}</span> / <span class="text-danger">{{topic.total_fail}}</span></td>
         </tr>
     </tbody>
 </table>

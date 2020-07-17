@@ -48,7 +48,7 @@
                 <div class="form-group row">
                     <label for="inputquestion" class="col-form-label col-md-2">题目</label>
                     <div class="col-md-10">
-                        <textarea id="inputquestion" rows="5" class="form-control" ng-model="topicData.question" required></textarea>
+                        <textarea id="inputquestion" rows="5" class="form-control" ng-model="topicData.question" ng-blur="checkquestion()" required></textarea>
                     </div>
                 </div>
             </div>
@@ -57,7 +57,7 @@
                     <label for="inputanswer" class="col-form-label col-md-2">答案</label>
                     <div class="col-md-10">
                         <div class="input-group mb-2">
-                            <input type="text" id="inputanswer" class="form-control" ng-model="topicData.answer" maxlength="40">
+                            <input type="text" id="inputanswer" class="form-control" ng-model="topicData.answer" maxlength="200">
                             <div class="input-group-append">
                                 <button class="btn btn-outline-secondary" type="button" uib-tooltip="添加其它可选答案" tooltip-placement="left" ng-click="addoptionalanswer()">
                                     <i class="fa fa-plus-circle fa-fw" aria-hidden="true"></i>

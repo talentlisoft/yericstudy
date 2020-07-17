@@ -10,9 +10,13 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use App\Traits\traineetopicssummaryUpdater;
+use App\Events\studentAnswering;
 
 class mytrainController extends Controller
 {
+    use traineetopicssummaryUpdater;
+
     public function __construct()
     {
         $this->middleware('traineeauth');
@@ -32,8 +36,8 @@ class mytrainController extends Controller
                     $join->on('training_results.trainingtrainee_id', '=', 'trainee_trainings.id');
                     $join->on('training_results.trainingtopic_id', '=', 'training_topics.topic_id');
                 })
-                ->select('trainee_trainings.id', 'trainnings.title', 'trainee_trainings.created_at', 'trainee_trainings.status', DB::raw('COUNT(training_topics.id) AS total_topics'), DB::raw('SUM(IF(training_results.id IS NULL, 0, 1)) AS finished_topics'))
-                ->groupBy('trainee_trainings.id', 'trainnings.title', 'trainee_trainings.created_at', 'trainee_trainings.status')
+                ->select('trainee_trainings.id', 'trainnings.title', 'trainnings.created_at', 'trainee_trainings.status', DB::raw('COUNT(training_topics.id) AS total_topics'), DB::raw('SUM(IF(training_results.id IS NULL, 0, 1)) AS finished_topics'))
+                ->groupBy('trainee_trainings.id', 'trainnings.title', 'trainnings.created_at', 'trainee_trainings.status')
                 ->where(function ($query) use ($request) {
                     if ($request->input('scope') == 'PENDDING') {
                         $query->where('trainee_trainings.status', 0);
@@ -41,7 +45,9 @@ class mytrainController extends Controller
                         $query->where('trainee_trainings.status', 1);
                     }
                 })
-                ->paginate(10);
+                ->where('trainee_trainings.trainee_id', $trainee->id)
+                ->orderBy('trainnings.created_at', 'desc')
+                ->paginate(12);
             $mytrainList = [];
             foreach ($mytrainRecord as $tr) {
                 $mytrainList[] = [
@@ -154,24 +160,8 @@ class mytrainController extends Controller
 
                     if ($trainingresult->save()) {
                         // Update trainee topic summary
-                        if (DB::table('trainee_topics_summary')->where('trainee_id', $trainee->id)->where('topic_id', $request->input('topic_id'))->exists()) {
-                            DB::table('trainee_topics_summary')
-                                ->where('trainee_id', $trainee->id)
-                                ->where('topic_id', $request->input('topic_id'))
-                                ->increment($result?'correct_count':'fail_count', 1, [
-                                    'recent_failed' => ($result==false) ? true : false,
-                                    'updated_at' => Carbon::now()
-                                ]);
-                        } else {
-                            DB::table('trainee_topics_summary')->insert([
-                                'trainee_id' => $trainee->id,
-                                'topic_id' => $request->input('topic_id'),
-                                'correct_count' => ($result? 1 : 0),
-                                'fail_count' => ($result==false ? 1 : 0),
-                                'recent_failed' => ($result==false) ? true : false,
-                                'created_at' => Carbon::now(),
-                                'updated_at' => Carbon::now()
-                            ]);
+                        if (!$topicsRecord->manualverify) {
+                            $this->updatetraineetopicsummary($trainee->id, $request->input('topic_id'), $result);
                         }
                         // Check if training finished
                         $isFinished = !DB::table('training_topics')
@@ -187,6 +177,7 @@ class mytrainController extends Controller
                             $trainingtrainee->status = 1;
                             $trainingtrainee->save();
                         }
+                        broadcast(new studentAnswering($request->input('traineetrainingId'), $trainingresult->id, $request->input('topic_id'), $request->input('answer'), $request->input('duration'), $trainingresult->status));
                         return $this->successresponse(['isFinished' => $isFinished]);
                     } else {
                         return $this->failureresponse('Can not save training result');
@@ -218,7 +209,12 @@ class mytrainController extends Controller
             if ($trainingRecord) {
                 $trainingresult = DB::table('training_results')
                     ->join('topics', 'topics.id', '=', 'training_results.trainingtopic_id')
-                    ->select('topics.question', 'training_results.answer', 'training_results.status', 'training_results.duration', 'training_results.id')
+                    ->leftJoin('trainee_trainings', 'trainee_trainings.id', 'training_results.trainingtrainee_id')
+                    ->leftJoin('trainee_topics_summary', function($join) {
+                        $join->on('trainee_topics_summary.topic_id', '=', 'topics.id');
+                        $join->on('trainee_topics_summary.trainee_id', '=', 'trainee_trainings.trainee_id');
+                    })
+                    ->select('topics.question', 'training_results.answer', 'training_results.status', 'training_results.duration', 'training_results.id', 'trainee_topics_summary.correct_count', 'trainee_topics_summary.fail_count')
                     ->where('training_results.trainingtrainee_id', $traineetrainingId)
                     ->get();
 
@@ -230,7 +226,9 @@ class mytrainController extends Controller
                         'answer' => $result->answer,
                         'status' => $result->status,
                         'duration' => $result->duration,
-                        'result_id' => $result->id
+                        'result_id' => $result->id,
+                        'correct_count' => $result->correct_count,
+                        'fail_count' => $result->fail_count
                     ];
                     $correctCount += ($result->status == 'CORRECT' ? 1 : 0);
                 }

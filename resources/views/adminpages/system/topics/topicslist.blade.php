@@ -71,7 +71,7 @@
         <tbody>
             <tr ng-repeat="item in topicsList" class="cursor-pointer" ng-click="gotodetail(item)">
                 <td>{{$index + 1}}</td>
-                <td>{{item.question}}</td>
+                <td><span uib-popover="{{item.question_full}}" popover-title="题目详情" popover-trigger="item.question_full == item.question ? 'none':'mouseenter'">{{item.question}}</span></td>
                 <th>{{gettypedesc(item)}}</th>
                 <td>{{item.updated_at}}</td>
             </tr>
@@ -79,6 +79,6 @@
     </table>
 </div>
 <div class="d-flex justify-content-end">
-    <ul uib-pagination boundary-links="true" total-items="per.topicsList.total" ng-model="currentPage" class="pagination-sm" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;" ng-change="search()"></ul>
+    <ul uib-pagination boundary-links="true" max-size="3" boundary-link-numbers="true" rotate="true" items-per-page="20" total-items="per.topicsList.total" ng-model="currentPage" class="pagination-sm" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;" ng-change="search()"></ul>
 </div>
 @endverbatim

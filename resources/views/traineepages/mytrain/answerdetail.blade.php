@@ -7,16 +7,16 @@
         <span class="head-border-left">{{answerDetail.course_name + answerDetail.topic_type}}题</span>
     </h6>
     <div class="alert alert-info" role="alert">
-        {{answerDetail.question}}
+        {{answerDetail.question | yericfomular}}
     </div>
     <h6 class="border-bottom pb-2 font-weight-bold mb-3">
         <span class="head-border-left">正确答案</span>
     </h6>
     <div class="alert alert-success" role="alert">
-        <ul ng-show="answerDetail.answer && getanswerlist().length > 1">
+        <ul ng-show="answerDetail.answer && getanswerlist().length > 1" class="font-24">
             <li ng-repeat="an in getanswerlist()">{{an}}</li>
         </ul>
-        <span ng-show="answerDetail.answer && getanswerlist().length == 1">{{answerDetail.answer}}</span>
+        <span ng-show="answerDetail.answer && getanswerlist().length == 1" class="font-24">{{answerDetail.answer}}</span>
     </div>
     <h6 class="border-bottom pb-2 font-weight-bold mb-3">
         <span class="head-border-left">{{answerDetail.trainee_name}}用时{{answerDetail.duration}}秒做出的回答</span>

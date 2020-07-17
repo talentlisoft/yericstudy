@@ -25,7 +25,10 @@ class loginController extends Controller
     {
         $this->validate($request, [
             'traineename' => 'required',
-            'password' => 'required'
+            'password' => 'required',
+            'captcha' => 'required|captcha'
+        ], [
+            'captcha.captcha' => '验证码不匹配'
         ]);
 
         try {
@@ -44,10 +47,12 @@ class loginController extends Controller
                     return redirect('/trainee/mytrain/mytrains/list');
                 } else {
                     return redirect('/')
+                        ->withErrors(['password' => '密码不正确'])
                         ->withInput();
                 }
             } else {
                 return redirect('/')
+                    ->withErrors(['traineename' => '学员不存在'])
                     ->withInput();
             }
         } catch (\Illuminate\Database\QueryException $e) {

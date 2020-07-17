@@ -7,3 +7,39 @@
         height: 48px;
     }
 }
+
+.score-good {
+    background-image: url("/images/score-good.gif");
+
+    background-repeat: no-repeat;
+    
+    background-position-x: right;
+    
+    background-position-y: -20px;
+
+    background-size: 97px;
+}
+
+.score-notbad {
+    background-image: url("/images/score-notbad.gif");
+
+    background-repeat: no-repeat;
+    
+    background-position-x: right;
+    
+    background-position-y: 0px;
+
+    background-size: 114px;
+}
+
+.score-bad {
+    background-image: url("/images/score-bad.gif");
+
+    background-repeat: no-repeat;
+    
+    background-position-x: right;
+    
+    background-position-y: 0px;
+
+    background-size: 129px;
+}

@@ -17,7 +17,7 @@ class TraineeAuth
     {
         $logined_trainee = $request->session()->get('logined_trainee', null);
         if (is_null($logined_trainee)) {
-            return $request->ajax() ? response()->json(['message'=> 'Trainee not logined']) : redirect('/');
+            return $request->ajax() ? response('', 401)->json(['message'=> 'Trainee not logined']) : redirect('/');
         } else {
             return $next($request);
         }

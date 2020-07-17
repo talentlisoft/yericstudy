@@ -7,15 +7,11 @@ use App\Models\Topics as Topics;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 
-class topicsController extends Controller
+class topicsBaseController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
-
     public function savetopic(Request $request)
     {
         $this->validate($request, [
@@ -25,26 +21,32 @@ class topicsController extends Controller
             'course' => 'required',
             'question' => 'required',
             'type' => 'required|numeric',
-            'answer' => 'max:50',
+            'answer' => 'max:200',
             'manualverify' => 'boolean'
         ]);
 
         try {
-            $topicRecord = is_null($request->input('id')) ? new Topics : Topics::find($request->input('id'));
-            if ($topicRecord) {
-                $topicRecord->level = $request->input('level');
-                $topicRecord->grade = $request->input('grade');
-                $topicRecord->course_id = $request->input('course');
-                $topicRecord->question = $request->input('question');
-                $topicRecord->manualverify = $request->input('manualverify');
-                $topicRecord->type = $request->input('type');
-                $topicRecord->answer = $request->answer;
-                if ($topicRecord->save()) {
-                    return $this->successresponse(['id' => $topicRecord->id]);
-                } else {
-                    return $this->failureresponse('Save failed');
+            $user = Auth::user();
+            if (($user->permissions & 1) == 1) {
+                $topicRecord = is_null($request->input('id')) ? new Topics : Topics::find($request->input('id'));
+                if ($topicRecord) {
+                    $topicRecord->level = $request->input('level');
+                    $topicRecord->grade = $request->input('grade');
+                    $topicRecord->course_id = $request->input('course');
+                    $topicRecord->question = $request->input('question');
+                    $topicRecord->manualverify = $request->input('manualverify');
+                    $topicRecord->type = $request->input('type');
+                    $topicRecord->answer = $request->answer;
+                    if ($topicRecord->save()) {
+                        return $this->successresponse(['id' => $topicRecord->id]);
+                    } else {
+                        return $this->failureresponse('Save failed');
+                    }
                 }
+            } else {
+                return $this->failureresponse('Not allowed!');
             }
+
         } catch (\Illuminate\Database\QueryException $e) {
             Log::error('topicsController->savetopic->QueryException异常' . $e->getMessage());
             return $this->failureresponse('数据库查询出错了');
@@ -98,7 +100,7 @@ class topicsController extends Controller
             'grade' => 'nullable',
             'course' => 'nullable',
             'type' => 'nullable',
-            'search_content' => 'nullable'
+            'searchcontent' => 'nullable'
         ]);
         try {
             $topicList = [];
@@ -129,6 +131,7 @@ class topicsController extends Controller
                 $topicList[] = [
                     'id' => $topic->id,
                     'question' => mb_strimwidth($topic->question, 0, 10, '...'),
+                    'question_full' => $topic->question,
                     'level' => $topic->level,
                     'grade' => $topic->grade,
                     'course_name' => $topic->name,

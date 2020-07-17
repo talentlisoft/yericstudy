@@ -42,6 +42,9 @@ export default angular.module('interfaceInteractor', ['toastr']).factory('ajaxlo
             if (response.status == 404) {
                 toastr.error('页面被吹飞了~~', '404 错误');
             }
+            if (response.status === -1) {
+                toastr.error('服务器暂时忙不过来', '请求超时');
+            }
 
             if (response.status == 408) {
                 toastr.error('服务器好像忙不过来了，请稍后再试', '超时错误');

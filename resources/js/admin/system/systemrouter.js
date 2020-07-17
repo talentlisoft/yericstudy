@@ -10,7 +10,33 @@ export default systemmodule.config(['$stateProvider', '$locationProvider', funct
 
     $stateProvider.state('system.topics', {
         url: '/topics',
-        template: `<ui-view class="w-100 d-block uiview"></ui-view>`
+        template: `<ui-view class="w-100 d-block uiview"></ui-view>`,
+        resolve: {
+            guard: ['Persist', 'Admininterface', '$q', 'toastr', function(Persist, Admininterface, $q, toastr) {
+                if (Persist.shared.permission) {
+                    if (Persist.shared.permission.edittopics) {
+                        return true;
+                    } else {
+                        toastr.error('您暂时还无法使用此模块', '抱歉');
+                        return $q.reject();
+                    }
+                } else {
+                    return Admininterface.getuserpermission().$promise.then(response => {
+                        if (response.result) {
+                            Persist.shared.permission = response.data.permission;
+                            if (Persist.shared.permission.edittopics) {
+                                return true;
+                            } else {
+                                toastr.error('您暂时还无法使用此模块', '抱歉');
+                                return $q.reject();
+                            }
+                        } else {
+                            return $q.reject();
+                        }
+                    })
+                }
+            }]
+        }
     });
 
     $stateProvider.state('system.topics.summary', {
@@ -186,7 +212,7 @@ export default systemmodule.config(['$stateProvider', '$locationProvider', funct
         },
         resolve: {
             traineesList: ['Persist', 'Admininterface', function (Persist, Admininterface) {
-                return Persist.shared.traineesList ? Persist.shared.traineesList : Admininterface.gettraineelist().$promise.then(response => {
+                return Persist.shared.traineesList ? Persist.shared.traineesList : Admininterface.getmytraineelist().$promise.then(response => {
                     if (response.result) {
                         Persist.shared.traineesList = response.data;
                         return Persist.shared.traineesList;
@@ -223,4 +249,98 @@ export default systemmodule.config(['$stateProvider', '$locationProvider', funct
             }]
         }
     });
+
+    $stateProvider.state('system.users', {
+        url: '/users',
+        template: `<ui-view class="w-100 d-block uiview"></ui-view>`,
+        resolve: {
+            guard: ['Persist', 'Admininterface', '$q', 'toastr', function(Persist, Admininterface, $q, toastr) {
+                if (Persist.shared.permission) {
+                    if (Persist.shared.permission.editusers) {
+                        return true;
+                    } else {
+                        toastr.error('您暂时还无法使用此模块', '抱歉');
+                        return $q.reject();
+                    }
+                } else {
+                    return Admininterface.getuserpermission().$promise.then(response => {
+                        if (response.result) {
+                            Persist.shared.permission = response.data.permission;
+                            if (Persist.shared.permission.editusers) {
+                                return true;
+                            } else {
+                                toastr.error('您暂时还无法使用此模块', '抱歉');
+                                return $q.reject();
+                            }
+                        } else {
+                            return $q.reject();
+                        }
+                    })
+                }
+            }]
+        }
+    });
+
+    $stateProvider.state('system.users.list', {
+        url: '/list',
+        templateUrl: `${baseUrl}adminpages/system.users.list`,
+        controller: 'userslistctl',
+        resolve: {
+            usersList: ['Admininterface', function(Admininterface) {
+                return Admininterface.getuserlist().$promise.then(response => response.result ? response.data : null);
+            }]
+        }
+    });
+
+    $stateProvider.state('system.users.add', {
+        url: '/add',
+        templateUrl: `${baseUrl}adminpages/system.users.edit`,
+        controller: 'editusersctl',
+        resolve: {
+            userData: [function() {
+                return null;
+            }],
+            traineesList: ['Admininterface', function (Admininterface) {
+                return Admininterface.gettraineelist().$promise.then(response => {
+                    return response.result ? response.data : null;
+                })
+            }],
+        }
+    });
+
+    $stateProvider.state('system.users.modify', {
+        url: '/modify/:userId',
+        templateUrl: `${baseUrl}adminpages/system.users.edit`,
+        controller: 'editusersctl',
+        resolve: {
+            userData: ['Admininterface', '$stateParams', function(Admininterface, $stateParams) {
+                return Admininterface.getuserdetail({
+                    userId: $stateParams.userId
+                }).$promise.then(response => response.result ? response.data : null);
+            }],
+            traineesList: ['Admininterface', function (Admininterface) {
+                return Admininterface.gettraineelist().$promise.then(response => {
+                    return response.result ? response.data : null;
+                })
+            }]
+        }
+    });
+
+    $stateProvider.state('system.trainees', {
+        url: '/trainees',
+        template: `<ui-view class="w-100 d-block uiview"></ui-view>`
+    });
+
+    $stateProvider.state('system.trainees.list', {
+        url: '/list',
+        templateUrl: `${baseUrl}adminpages/system.trainees.list`,
+        resolve: {
+            traineesList: ['Admininterface', function (Admininterface) {
+                return Admininterface.gettraineelist().$promise.then(response => {
+                    return response.result ? response.data : null;
+                })
+            }],
+        },
+        controller: 'traineelistctl'
+    })
 }]);

@@ -22,6 +22,7 @@ export default appmodule.factory('Persist', [function() {
             searchcontent: null
         },
         shared: {
+            permission: null,
             coursesList: null,
             traineesList: null,
             topictypesList:null,
@@ -39,6 +40,23 @@ export default appmodule.factory('Persist', [function() {
                 {'id': '5', 'desc': '五年级'},
                 {'id': '6', 'desc': '六年级'}
             ]
+        },
+        getresulticon: function(status) {
+            switch (status) {
+                case null:
+                    return 'text-dark fa-clock-o';
+                    break;
+                case 'CORRECT':
+                    return 'fa-check text-success';
+                    break;
+                case 'WRONG':
+                    return 'fa-times text-danger';
+                case 'PENDDING':
+                    return 'fa-question-circle text-dark';
+                    break;
+                default:
+                    return null;
+            }
         }
     };
 }]);

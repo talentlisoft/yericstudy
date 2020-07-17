@@ -5,10 +5,10 @@
             <i class="fa fa-bars"></i>
         </button>
     </div>
-    <button class="navbar-toggler collapsed" type="button" ng-click="isNavCollapsed = !isNavCollapsed">
+    <button class="navbar-toggler collapsed" id="togglemainmenu" type="button" ng-click="isNavCollapsed = !isNavCollapsed">
         <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="nav-content navbar-collapse collapse" uib-collapse="!isNavCollapsed">
+    <div class="nav-content navbar-collapse collapse" uib-collapse="!isNavCollapsed" click-outside="isNavCollapsed = false" outside-if-not="togglemainmenu">
         <ul class="navbar-nav mr-auto pl-3 text-left">
             {{$slot}}
             <li class="nav-item d-sm-block d-md-block d-lg-none">
