@@ -7,7 +7,10 @@ use App\Models\Trainee;
 use App\Models\TrainingResult as TrainingResult;
 use App\Models\TrainingTrainees as TrainingTrainees;
 use Carbon\Carbon;
+use Exception;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Traits\traineetopicssummaryUpdater;
@@ -22,8 +25,9 @@ class mytrainController extends Controller
         $this->middleware('auth:trainee');
     }
 
-    public function mytrainlist(Request $request, Trainee $trainee)
+    public function mytrainlist(Request $request)
     {
+        $trainee = $this->gettrainee();
         $this->validate($request, [
             'scope' => 'required',
         ]);
@@ -32,12 +36,12 @@ class mytrainController extends Controller
             $mytrainRecord = DB::table('trainee_trainings')
                 ->join('trainnings', 'trainnings.id', '=', 'trainee_trainings.training_id')
                 ->leftJoin('training_topics', 'training_topics.training_id', '=', 'trainee_trainings.training_id')
-                ->leftJoin('training_results', function($join) {
+                ->leftJoin('training_results', function ($join) {
                     $join->on('training_results.trainingtrainee_id', '=', 'trainee_trainings.id');
                     $join->on('training_results.trainingtopic_id', '=', 'training_topics.topic_id');
                 })
                 ->select('trainee_trainings.id', 'trainnings.title', 'trainnings.created_at', 'trainee_trainings.status', DB::raw('COUNT(training_topics.id) AS total_topics'), DB::raw('SUM(IF(training_results.id IS NULL, 0, 1)) AS finished_topics'))
-                ->groupBy('trainee_trainings.id', 'trainnings.title', 'trainnings.created_at', 'trainee_trainings.status')
+                ->groupBy(['trainee_trainings.id', 'trainnings.title', 'trainnings.created_at', 'trainee_trainings.status'])
                 ->where(function ($query) use ($request) {
                     if ($request->input('scope') == 'PENDDING') {
                         $query->where('trainee_trainings.status', 0);
@@ -48,19 +52,19 @@ class mytrainController extends Controller
                 ->where('trainee_trainings.trainee_id', $trainee->id)
                 ->orderBy('trainnings.created_at', 'desc')
                 ->paginate(12);
-            $mytrainList = [];
+            $mytrainList   = [];
             foreach ($mytrainRecord as $tr) {
                 $mytrainList[] = [
-                    'id' => $tr->id,
-                    'title' => $tr->title,
-                    'created_at' => (new Carbon($tr->created_at))->locale('zh_CN')->diffForHumans(Carbon::now()),
-                    'total_topics' => $tr->total_topics,
-                    'status' => $tr->status,
+                    'id'              => $tr->id,
+                    'title'           => $tr->title,
+                    'created_at'      => (new Carbon($tr->created_at))->locale('zh_CN')->diffForHumans(Carbon::now()),
+                    'total_topics'    => $tr->total_topics,
+                    'status'          => $tr->status,
                     'finished_topics' => $tr->finished_topics,
                 ];
             }
             return $this->successresponse(['list' => $mytrainList, 'total' => $mytrainRecord->total()]);
-        } catch (\Illuminate\Database\QueryException $e) {
+        } catch (QueryException $e) {
             Log::error('mytrainController->mytrainlist->QueryException异常' . $e->getMessage());
             return $this->failureresponse('数据库查询出错了');
         } catch (Exception $e) {
@@ -69,10 +73,11 @@ class mytrainController extends Controller
         }
     }
 
-    public function gettraining($traineetrainingId, Trainee $trainee)
+    public function gettraining($traineetrainingId)
     {
+        $trainee = $this->gettrainee();
         try {
-            $trainingRecord = DB::table('trainee_trainings')
+            $trainingRecord       = DB::table('trainee_trainings')
                 ->join('trainnings', 'trainnings.id', '=', 'trainee_trainings.training_id')
                 ->select('trainnings.title', 'trainee_trainings.created_at', 'trainee_trainings.training_id')
                 ->where('trainee_trainings.id', $traineetrainingId)
@@ -80,11 +85,11 @@ class mytrainController extends Controller
                 ->first();
             $finishedtopics_count = DB::table('training_results')
                 ->where('training_results.trainingtrainee_id', $traineetrainingId)->count();
-            $trainingData = [
-                'id' => $traineetrainingId,
-                'title' => $trainingRecord->title,
-                'created_at' => (new Carbon($trainingRecord->created_at))->locale('zh_CN')->diffForHumans(Carbon::now()),
-                'finished_count' => $finishedtopics_count,
+            $trainingData         = [
+                'id'              => $traineetrainingId,
+                'title'           => $trainingRecord->title,
+                'created_at'      => (new Carbon($trainingRecord->created_at))->locale('zh_CN')->diffForHumans(Carbon::now()),
+                'finished_count'  => $finishedtopics_count,
                 'pendding_topics' => [],
             ];
             if ($trainingRecord) {
@@ -102,10 +107,10 @@ class mytrainController extends Controller
                     ->get();
                 foreach ($topicsRecord as $key => $topic) {
                     $trainingData['pendding_topics'][] = [
-                        'topic_id' => $topic->id,
+                        'topic_id'    => $topic->id,
                         'course_name' => $topic->name,
-                        'question' => $topic->question,
-                        'topic_type' =>$topic->topic_type
+                        'question'    => $topic->question,
+                        'topic_type'  => $topic->topic_type
                     ];
                 }
 
@@ -113,7 +118,7 @@ class mytrainController extends Controller
             } else {
                 return $this->failureresponse('Record not exists!');
             }
-        } catch (\Illuminate\Database\QueryException $e) {
+        } catch (QueryException $e) {
             Log::error('mytrainController->gettraining->QueryException异常' . $e->getMessage());
             return $this->failureresponse('数据库查询出错了');
         } catch (Exception $e) {
@@ -122,12 +127,13 @@ class mytrainController extends Controller
         }
     }
 
-    public function anawerquestion(Request $request, Trainee $trainee)
+    public function anawerquestion(Request $request)
     {
+        $trainee = $this->gettrainee();
         $this->validate($request, [
-            'topic_id' => 'numeric|required',
-            'answer' => 'required|max:50',
-            'duration' => 'required',
+            'topic_id'          => 'numeric|required',
+            'answer'            => 'required|max:50',
+            'duration'          => 'required',
             'traineetrainingId' => 'required|numeric',
         ]);
 
@@ -140,7 +146,7 @@ class mytrainController extends Controller
                     ->select('answer', 'manualverify')->where('id', $request->input('topic_id'))
                     ->first();
                 if ($topicsRecord) {
-                    $result = false;
+                    $result     = false;
                     $answerList = explode('|', $topicsRecord->answer);
                     foreach ($answerList as $answer) {
                         if (trim(strtolower($request->input('answer'))) == trim(strtolower($answer))) {
@@ -152,10 +158,10 @@ class mytrainController extends Controller
                     if (!$trainingresult) {
                         $trainingresult = new TrainingResult;
                     }
-                    $trainingresult->trainingtopic_id = $request->input('topic_id');
-                    $trainingresult->answer = $request->input('answer');
-                    $trainingresult->status = ($topicsRecord->manualverify ? 'PENDDING' : ($result ? 'CORRECT' : 'WRONG'));
-                    $trainingresult->duration = $request->input('duration');
+                    $trainingresult->trainingtopic_id   = $request->input('topic_id');
+                    $trainingresult->answer             = $request->input('answer');
+                    $trainingresult->status             = ($topicsRecord->manualverify ? 'PENDDING' : ($result ? 'CORRECT' : 'WRONG'));
+                    $trainingresult->duration           = $request->input('duration');
                     $trainingresult->trainingtrainee_id = $request->input('traineetrainingId');
 
                     if ($trainingresult->save()) {
@@ -188,7 +194,7 @@ class mytrainController extends Controller
             } else {
                 return $this->failureresponse('Can not find training record');
             }
-        } catch (\Illuminate\Database\QueryException $e) {
+        } catch (QueryException $e) {
             Log::error('mytrainController->anawerquestion->QueryException异常' . $e->getMessage());
             return $this->failureresponse('数据库查询出错了');
         } catch (Exception $e) {
@@ -197,8 +203,9 @@ class mytrainController extends Controller
         }
     }
 
-    public function gettrainresult($traineetrainingId, Trainee $trainee)
+    public function gettrainresult($traineetrainingId)
     {
+        $trainee = $this->gettrainee();
         try {
             $trainingRecord = DB::table('trainee_trainings')
                 ->join('trainnings', 'trainnings.id', '=', 'trainee_trainings.training_id')
@@ -210,7 +217,7 @@ class mytrainController extends Controller
                 $trainingresult = DB::table('training_results')
                     ->join('topics', 'topics.id', '=', 'training_results.trainingtopic_id')
                     ->leftJoin('trainee_trainings', 'trainee_trainings.id', 'training_results.trainingtrainee_id')
-                    ->leftJoin('trainee_topics_summary', function($join) {
+                    ->leftJoin('trainee_topics_summary', function ($join) {
                         $join->on('trainee_topics_summary.topic_id', '=', 'topics.id');
                         $join->on('trainee_topics_summary.trainee_id', '=', 'trainee_trainings.trainee_id');
                     })
@@ -218,33 +225,33 @@ class mytrainController extends Controller
                     ->where('training_results.trainingtrainee_id', $traineetrainingId)
                     ->get();
 
-                $resultList = [];
+                $resultList   = [];
                 $correctCount = 0;
                 foreach ($trainingresult as $key => $result) {
                     $resultList[] = [
-                        'question' => mb_strimwidth($result->question, 0, 10, '...'),
-                        'answer' => $result->answer,
-                        'status' => $result->status,
-                        'duration' => $result->duration,
-                        'result_id' => $result->id,
+                        'question'      => mb_strimwidth($result->question, 0, 10, '...'),
+                        'answer'        => $result->answer,
+                        'status'        => $result->status,
+                        'duration'      => $result->duration,
+                        'result_id'     => $result->id,
                         'correct_count' => $result->correct_count,
-                        'fail_count' => $result->fail_count
+                        'fail_count'    => $result->fail_count
                     ];
                     $correctCount += ($result->status == 'CORRECT' ? 1 : 0);
                 }
                 return $this->successresponse([
-                    'id' => $traineetrainingId,
-                    'title' => $trainingRecord->title,
+                    'id'         => $traineetrainingId,
+                    'title'      => $trainingRecord->title,
                     'created_at' => (new Carbon($trainingRecord->created_at))->locale('zh_CN')->diffForHumans(Carbon::now()),
-                    'results' => $resultList,
-                    'score' => round(($correctCount / count($trainingresult)) * 100)
+                    'results'    => $resultList,
+                    'score'      => round(($correctCount / count($trainingresult)) * 100)
                 ]);
             } else {
                 return $this->failureresponse('Can not find such training');
             }
 
 
-        } catch (\Illuminate\Database\QueryException $e) {
+        } catch (QueryException $e) {
             Log::error('mytrainController->gettrainresult->QueryException异常' . $e->getMessage());
             return $this->failureresponse('数据库查询出错了');
         } catch (Exception $e) {
@@ -253,8 +260,9 @@ class mytrainController extends Controller
         }
     }
 
-    public function getanswerDetail($resultId, Trainee $trainee)
+    public function getanswerDetail($resultId)
     {
+        $trainee = $this->gettrainee();
         try {
             $answerRecord = DB::table('training_results')
                 ->leftJoin('topics', 'topics.id', '=', 'training_results.trainingtopic_id')
@@ -268,24 +276,32 @@ class mytrainController extends Controller
                 ->first();
             if ($answerRecord) {
                 return $this->successresponse([
-                    'trainee_name' => $answerRecord->trainee_name,
-                    'question' => $answerRecord->question,
-                    'answer' => $answerRecord->answer,
-                    'course_name' => $answerRecord->course_name,
-                    'topic_type' => $answerRecord->topic_type,
+                    'trainee_name'   => $answerRecord->trainee_name,
+                    'question'       => $answerRecord->question,
+                    'answer'         => $answerRecord->answer,
+                    'course_name'    => $answerRecord->course_name,
+                    'topic_type'     => $answerRecord->topic_type,
                     'trainee_answer' => $answerRecord->trainee_answer,
-                    'status' => $answerRecord->status,
-                    'duration' => $answerRecord->duration
+                    'status'         => $answerRecord->status,
+                    'duration'       => $answerRecord->duration
                 ]);
             } else {
                 return $this->failureresponse('Record not exists');
             }
-        } catch (\Illuminate\Database\QueryException $e) {
+        } catch (QueryException $e) {
             Log::error('mytrainController->gettrainresult->QueryException异常' . $e->getMessage());
             return $this->failureresponse('数据库查询出错了');
         } catch (Exception $e) {
             Log::error('mytrainController->gettrainresult->Exception' . $e->getMessage());
             return $this->failureresponse('操作失败.');
         }
+    }
+
+    /**
+     * @return Trainee
+     */
+    protected function gettrainee()
+    {
+        return Auth::guard('trainee')->user();
     }
 }

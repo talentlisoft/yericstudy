@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Trainee;
 
+use Exception;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Hash;
 
 class loginController extends Controller
 {
@@ -62,7 +62,7 @@ class loginController extends Controller
 //                    ->withErrors(['traineename' => '学员不存在'])
 //                    ->withInput();
 //            }
-        } catch (\Illuminate\Database\QueryException $e) {
+        } catch (QueryException $e) {
             Log::error('loginController->login->QueryException异常' . $e->getMessage());
             abort(500);
         } catch (Exception $e) {
@@ -81,7 +81,7 @@ class loginController extends Controller
     /**
      * Attempt to log the user into the application.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param Request $request
      * @return bool
      */
     protected function attemptLogin(Request $request)
@@ -103,7 +103,7 @@ class loginController extends Controller
     /**
      * Get the needed authorization credentials from the request.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param Request $request
      * @return array
      */
     protected function credentials(Request $request)
