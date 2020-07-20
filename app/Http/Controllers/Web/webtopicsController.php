@@ -11,5 +11,6 @@ class webtopicsController extends topicsBaseController
     public function __construct()
     {
         $this->middleware('auth:web');
+        parent::__construct();
     }
 }

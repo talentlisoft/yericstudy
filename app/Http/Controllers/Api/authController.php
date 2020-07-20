@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Hash;
@@ -12,13 +13,29 @@ use Mews\Captcha\Facades\Captcha;
 
 class authController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth:api')->only('userinfo');
+    }
+
+    public function userinfo()
+    {
+        $user = Auth::guard('api')->user();
+        if ($user) {
+            return $this->successresponse(['name' => $user->name, 'edittopic' => ($user->permissions & 1) == 1]);
+        } else {
+            abort(402);
+        }
+
+    }
+
     public function login(Request $request)
     {
         $this->validate($request, [
-            'email'=> 'required | email',
-            'password' => 'required',
+            'email'         => 'required | email',
+            'password'      => 'required',
             'captcha_value' => 'required',
-            'captcha_key' => 'required'
+            'captcha_key'   => 'required'
         ]);
         try {
             if (captcha_api_check($request->input('captcha_value'), $request->input('captcha_key'))) {
@@ -29,7 +46,7 @@ class authController extends Controller
                             //Bind wechat openid
                             DB::table('users')->where('id', $userRecord->id)->update(['wechart_openid' => $request->input('openid')]);
                         }
-                        return $this->successresponse(['name' => $userRecord->name, 'api_token' =>$userRecord->api_token]);
+                        return $this->successresponse(['name' => $userRecord->name, 'api_token' => $userRecord->api_token, 'edittopic' => ($userRecord->permissions & 1) == 1]);
                     }
                 } elseif ($request->has('openid')) {
                     // Create new account from 小程序
@@ -40,7 +57,7 @@ class authController extends Controller
                     $newuserRecord->password = Hash::make($request->input('password'));
                     $newuserRecord->permissions = 0;
                     if ($newuserRecord->save()) {
-                        return $this->successresponse(['name' => $newuserRecord->email, 'api_token' =>$newuserRecord->api_token]);
+                        return $this->successresponse(['name' => $newuserRecord->email, 'api_token' => $newuserRecord->api_token]);
                     }
                 }
                 return $this->failureresponse('Email address and password mismatch!');
@@ -65,20 +82,20 @@ class authController extends Controller
         ]);
 
         $queryData = [
-            'appid' => env('WECHAT_APPID', null),
-            'secret' => env('WECHAT_APPSECRET', null),
-            'js_code' => $request->input('js_code'),
+            'appid'      => env('WECHAT_APPID', null),
+            'secret'     => env('WECHAT_APPSECRET', null),
+            'js_code'    => $request->input('js_code'),
             'grant_type' => 'authorization_code'
         ];
 
-        $returnstr =  $this->httpget('https://api.weixin.qq.com/sns/jscode2session?' . http_build_query($queryData));
+        $returnstr = $this->httpget('https://api.weixin.qq.com/sns/jscode2session?' . http_build_query($queryData));
         if ($returnstr) {
             $matcharr = [];
             preg_match_all('/{.+}/', $returnstr, $matcharr);
             $wechatData = json_decode($matcharr[0][0], true);
             $userRecord = DB::table('users')->where('wechart_openid', $wechatData['openid'])->first();
             if ($userRecord) {
-                return $this->successresponse(['name' => $userRecord->name, 'api_token' =>$userRecord->api_token]);
+                return $this->successresponse(['name' => $userRecord->name, 'api_token' => $userRecord->api_token]);
             } else {
                 return $this->failureresponse($wechatData['openid']);
             }

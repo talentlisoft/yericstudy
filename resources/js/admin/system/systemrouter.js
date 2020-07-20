@@ -328,7 +328,33 @@ export default systemmodule.config(['$stateProvider', '$locationProvider', funct
 
     $stateProvider.state('system.trainees', {
         url: '/trainees',
-        template: `<ui-view class="w-100 d-block uiview"></ui-view>`
+        template: `<ui-view class="w-100 d-block uiview"></ui-view>`,
+        resolve: {
+            guard: ['Persist', 'Admininterface', '$q', 'toastr', function(Persist, Admininterface, $q, toastr) {
+                if (Persist.shared.permission) {
+                    if (Persist.shared.permission.editusers) {
+                        return true;
+                    } else {
+                        toastr.error('您暂时还无法使用此模块', '抱歉');
+                        return $q.reject();
+                    }
+                } else {
+                    return Admininterface.getuserpermission().$promise.then(response => {
+                        if (response.result) {
+                            Persist.shared.permission = response.data.permission;
+                            if (Persist.shared.permission.editusers) {
+                                return true;
+                            } else {
+                                toastr.error('您暂时还无法使用此模块', '抱歉');
+                                return $q.reject();
+                            }
+                        } else {
+                            return $q.reject();
+                        }
+                    })
+                }
+            }]
+        }
     });
 
     $stateProvider.state('system.trainees.list', {
