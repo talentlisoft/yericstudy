@@ -24,15 +24,15 @@ class loginController extends Controller
 
     public function login(Request $request)
     {
-        $this->validate($request, [
-            'traineename' => 'required',
-            'password'    => 'required',
-            'captcha'     => 'required|captcha',
-        ], [
-            'captcha.captcha' => '验证码不匹配'
-        ]);
-
         try {
+            $this->validate($request, [
+                'traineename' => 'required',
+                'password'    => 'required',
+                'captcha'     => 'required|captcha',
+            ], [
+                'captcha.captcha' => '验证码不匹配'
+            ]);
+
             if ($this->attemptLogin($request)) {
                 return redirect('/trainee/mytrain/mytrains/list');
             } else {
@@ -65,9 +65,8 @@ class loginController extends Controller
         } catch (QueryException $e) {
             Log::error('loginController->login->QueryException异常' . $e->getMessage());
             abort(500);
-        } catch (Exception $e) {
+        } Catch (Exception $e) {
             Log::error('loginController->login->Exception' . $e->getMessage());
-            abort(500);
         }
     }
 

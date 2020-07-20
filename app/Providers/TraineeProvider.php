@@ -6,10 +6,11 @@ namespace App\Providers;
 
 use Illuminate\Contracts\Auth\Authenticatable;
 use App\Models\Trainee;
+use Illuminate\Contracts\Auth\UserProvider;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
-class TraineeProvider implements \Illuminate\Contracts\Auth\UserProvider
+class TraineeProvider implements UserProvider
 {
 
     /**
