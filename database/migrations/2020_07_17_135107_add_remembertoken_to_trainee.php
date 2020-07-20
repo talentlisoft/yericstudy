@@ -14,7 +14,7 @@ class AddRemembertokenToTrainee extends Migration
     public function up()
     {
         Schema::table('trainees', function (Blueprint $table) {
-            $table->string('remember_token', 100)->nullable();
+            $table->rememberToken();
         });
     }
 

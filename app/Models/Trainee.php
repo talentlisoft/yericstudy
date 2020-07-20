@@ -33,12 +33,14 @@ class Trainee extends Model implements Authenticatable
 
     public function getRememberToken()
     {
-        return null;
+        if (! empty($this->getRememberTokenName())) {
+            return (string) $this->{$this->getRememberTokenName()};
+        }
     }
 
     public function setRememberToken($value)
     {
-        // TODO: Implement setRememberToken() method.
+        $this->remember_token = $value;
     }
 
     public function getRememberTokenName()

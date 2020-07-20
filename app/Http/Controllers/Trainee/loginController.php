@@ -27,7 +27,7 @@ class loginController extends Controller
         $this->validate($request, [
             'traineename' => 'required',
             'password'    => 'required',
-            'captcha'     => 'required|captcha'
+            'captcha'     => 'required|captcha',
         ], [
             'captcha.captcha' => '验证码不匹配'
         ]);
@@ -71,9 +71,10 @@ class loginController extends Controller
         }
     }
 
-    public function logout()
+    public function logout(Request $request)
     {
         Auth::guard('trainee')->logout();
+        $request->session()->invalidate();
         return redirect('/');
     }
 
@@ -87,7 +88,7 @@ class loginController extends Controller
     protected function attemptLogin(Request $request)
     {
         return $this->guard()->attempt(
-            $this->credentials($request));
+            $this->credentials($request), $request->filled('remember'));
     }
 
     /**
