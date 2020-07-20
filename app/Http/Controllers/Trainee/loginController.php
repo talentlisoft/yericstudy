@@ -13,7 +13,7 @@ class loginController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('traineeauth')->only('logout');
+        $this->middleware('auth:trainee')->only('logout');
         $this->middleware('traineeguest')->only('showloginpage');
     }
 
@@ -71,9 +71,9 @@ class loginController extends Controller
         }
     }
 
-    public function logout(Request $request)
+    public function logout()
     {
-        $request->session()->forget('logined_trainee');
+        Auth::guard('trainee')->logout();
         return redirect('/');
     }
 

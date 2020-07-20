@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Illuminate\Support\Facades\Auth;
 
 class TraineeGuest
 {
@@ -15,12 +16,12 @@ class TraineeGuest
      */
     public function handle($request, Closure $next)
     {
-        $logined_trainee = $request->session()->get('logined_trainee', null);
-        if (is_null($logined_trainee)) {
+
+        if (!Auth::guard('trainee')->check()) {
             return $next($request);
         } else {
             return redirect('/trainee/mytrain/mytrains/list');
         }
     }
-    
+
 }
