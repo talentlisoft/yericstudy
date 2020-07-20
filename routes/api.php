@@ -18,6 +18,7 @@ use Illuminate\Http\Request;
 // });
 
 Route::post('auth/login', 'Api\authController@login');
+Route::get('auth/userinfo', 'Api\authController@userinfo');
 Route::get('auth/captcha', 'Api\authController@getcaptcha');
 Route::post('auth/wechatlogin', 'Api\authController@wechartlogin');
 
