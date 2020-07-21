@@ -22,6 +22,7 @@
         <input type="text" class="form-control" ng-model="conditions.searchcontent">
         <div class="input-group-append">
             <button class="btn btn-outline-secondary" type="submit"><i class="fa fa-search fa-fw" aria-hidden="true"></i></button>
+            <button class="btn btn-outline-secondary" type="button" ng-click="getrandomTopics()" uib-tooltip="随机出题"><i class="fa fa-random fa-fw" aria-hidden="true"></i></button>
             <button class="btn btn-outline-secondary" type="button" ng-click="conditions.optionexpanded = !conditions.optionexpanded"><i class="fa fa-caret-down fa-fw" aria-hidden="true"></i></button>
         </div>
     </div>

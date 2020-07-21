@@ -32,6 +32,7 @@ Route::get('rest/topics/summary', 'Web\webtopicsController@summary');
 Route::post('rest/topics/list', 'Web\webtopicsController@topicsList');
 Route::get('rest/topics/detail/{topicId}', 'Web\webtopicsController@topicDetail');
 Route::post('rest/trainings/list', 'Web\webtrainingController@trainingsList');
+Route::post('rest/training/getradomtopics', 'Web\webtrainingController@getradomtopics');
 Route::get('rest/trainees/list', 'Web\webtraineeController@traineeList');
 Route::get('rest/trainees/mylist', 'Web\webtrainingController@getmytraineesList');
 Route::post('rest/trainees/save', 'Web\webtraineeController@savetrainee');

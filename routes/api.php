@@ -30,6 +30,7 @@ Route::get('courses/list', 'Api\apicoursesController@getcoursesList');
 Route::get('topics/detail/{topicId}', 'Api\apitopicsController@topicDetail');
 
 Route::post('trainings/list', 'Api\apitrainingController@trainingsList');
+Route::post('trainings/getradomtopics', 'Api\apitrainingController@getradomtopics');
 
 Route::get('trainees/list', 'Api\apitraineeController@traineeList');
 Route::post('trainees/topicslist', 'Api\apitrainingController@gettopicsList');

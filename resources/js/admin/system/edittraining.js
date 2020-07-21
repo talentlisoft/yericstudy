@@ -13,7 +13,7 @@ export default systemmodule.controller('edittrainingctl', ['$scope', 'Persist', 
         selectedgrade: null,
         selectedcourse: null,
         searchcontent: null,
-        optionexpanded: true,
+        optionexpanded: false,
         selectedtype: null,
         mode: 'RADOM',
         currentPage: 1,
@@ -26,7 +26,7 @@ export default systemmodule.controller('edittrainingctl', ['$scope', 'Persist', 
         };
     }
     $scope.selecttrainee = trainee => {
-        if (!$scope.trainingData.selectedtrainees.find(tr => tr.id == trainee.id)) {
+        if (!$scope.trainingData.selectedtrainees.find(tr => tr.id === trainee.id)) {
             $scope.trainingData.selectedtrainees.push(trainee);
         } else {
             let index = $scope.trainingData.selectedtrainees.indexOf(trainee);
@@ -37,7 +37,7 @@ export default systemmodule.controller('edittrainingctl', ['$scope', 'Persist', 
     };
 
     $scope.istraineeselected = trainee => {
-        return $scope.trainingData.selectedtrainees.find(tr => tr.id == trainee.id) ? true : false;
+        return !!$scope.trainingData.selectedtrainees.find(tr => tr.id === trainee.id);
     };
 
     $scope.gettopicslist = () => {
@@ -60,19 +60,40 @@ export default systemmodule.controller('edittrainingctl', ['$scope', 'Persist', 
             }
         });
     };
-    
+
     $scope.gettopicslist();
+
+    $scope.getrandomTopics = () => {
+        if (!$scope.conditions.searchcontent || parseInt($scope.conditions.searchcontent) === 0) {
+            toastr.warning('请提供出题数量', '缺少数量');
+        } else {
+            Admininterface.getradomtopics({
+                level: $scope.conditions.selectedlevel ? $scope.conditions.selectedlevel.id : null,
+                trade: $scope.conditions.selectedgrade ? $scope.conditions.selectedgrade.id : null,
+                course: $scope.conditions.selectedcourse ? $scope.conditions.selectedcourse.id : null,
+                type: $scope.conditions.selectedtype ? $scope.conditions.selectedtype.id : null,
+                mode: $scope.conditions.mode,
+                quantity: parseInt($scope.conditions.searchcontent)
+            }, response => {
+                if (response.result) {
+                    $scope.trainingData.selectedtopics = response.data;
+                    $scope.conditions.searchcontent = null;
+                }
+            });
+        }
+
+    };
 
     $scope.refreshtopiclist = () => {
         $scope.conditions.currentPage = 1;
         $scope.gettopicslist();
     }
     $scope.gettypedesc = topic => {
-        return `${Persist.shared.levelList.find(lv => lv.id == topic.level).desc}${topic.grade}年级（${topic.course_name}${topic.topic_type}）`;
+        return `${Persist.shared.levelList.find(lv => lv.id === topic.level).desc}${topic.grade}年级（${topic.course_name}${topic.topic_type}）`;
     };
 
     $scope.selecttopic = topic => {
-        let selectedone = $scope.trainingData.selectedtopics.find(tp => tp.id == topic.id);
+        let selectedone = $scope.trainingData.selectedtopics.find(tp => tp.id === topic.id);
         if (selectedone) {
             let index = $scope.trainingData.selectedtopics.indexOf(selectedone);
             if (index > -1) {
@@ -85,8 +106,8 @@ export default systemmodule.controller('edittrainingctl', ['$scope', 'Persist', 
             $scope.showselectedtopics = false;
         }
     };
-    
-    $scope.istopicselected = topic => $scope.trainingData.selectedtopics.find(tp => tp.id == topic.id) ? true : false;
+
+    $scope.istopicselected = topic => !!$scope.trainingData.selectedtopics.find(tp => tp.id === topic.id);
 
     $scope.removetopic = topic => {
         let index = $scope.trainingData.selectedtopics.indexOf(topic);

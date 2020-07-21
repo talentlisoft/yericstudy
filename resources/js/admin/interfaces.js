@@ -147,6 +147,12 @@ export default angular.module('Admininterface', ['ngResource']).service('Adminin
             timeout: 10000,
             url: `${baseUrl}rest/training/result/changejudgement/:resultId`,
             resultId: '@resultId'
+        },
+        getradomtopics: {
+            method: 'post',
+            isArray: false,
+            timeout: 10000,
+            url: `${baseUrl}rest/training/getradomtopics`,
         }
     });
 }]);
