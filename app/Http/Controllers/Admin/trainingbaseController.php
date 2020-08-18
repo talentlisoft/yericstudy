@@ -110,7 +110,6 @@ class trainingbaseController extends Controller
                 'level'    => 'nullable',
                 'grade'    => 'nullable',
                 'course'   => 'nullable',
-                'mode'     => 'required',
                 'type'     => 'nullable',
                 'quantity' => 'required|numeric'
             ]);
@@ -613,10 +612,14 @@ class trainingbaseController extends Controller
         }
     }
 
+    public function getUser() {
+        return Auth::guard('web')->user();
+    }
+
     public function getmytraineesList()
     {
         try {
-            $user          = Auth::user();
+            $user          = $this->getUser();
             $traineeRecord = DB::table('trainees')
                 ->join('user_trainee', 'user_trainee.trainee_id', '=', 'trainees.id')
                 ->where('user_trainee.user_id', $user->id)

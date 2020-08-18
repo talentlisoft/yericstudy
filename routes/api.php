@@ -32,9 +32,10 @@ Route::get('topics/detail/{topicId}', 'Api\apitopicsController@topicDetail');
 Route::post('trainings/list', 'Api\apitrainingController@trainingsList');
 Route::post('trainings/getradomtopics', 'Api\apitrainingController@getradomtopics');
 
-Route::get('trainees/list', 'Api\apitraineeController@traineeList');
+Route::get('trainees/list', 'Api\apitrainingController@getmytraineesList');
 Route::post('trainees/topicslist', 'Api\apitrainingController@gettopicsList');
 Route::post('training/add', 'Api\apitrainingController@savetraining');
+Route::post('training/getradomtopics', 'Api\apitrainingController@getradomtopics');
 Route::get('training/detail/{trainingId}', 'Api\apitrainingController@trainingDetail');
 Route::get('training/result/{traineetrainingId}', 'Api\apitrainingController@trainingResult');
 Route::get('training/resultdetail/{resultId}', 'Api\apitrainingController@getanswerDetail');
