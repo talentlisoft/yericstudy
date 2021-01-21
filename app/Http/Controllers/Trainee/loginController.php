@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\ValidationException;
 
 class loginController extends Controller
 {
@@ -65,8 +66,13 @@ class loginController extends Controller
         } catch (QueryException $e) {
             Log::error('loginController->login->QueryException异常' . $e->getMessage());
             abort(500);
-        } Catch (Exception $e) {
+        } catch (ValidationException $e) {
+            return redirect('/')
+                ->withErrors(['captcha' => '缺少用户名或者密码，或者验证码不匹配']);
+        }
+        catch (Exception $e) {
             Log::error('loginController->login->Exception' . $e->getMessage());
+            abort(500);
         }
     }
 
