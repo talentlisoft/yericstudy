@@ -73,7 +73,7 @@
         </main>
     </div>
     <div class="footericp w-100 bg-info text-dark">
-        沪ICP备17030323号-2
+        <a href="https://beian.miit.gov.cn" target="_blank">沪ICP备17030323号-2</a>
     </div>
 </body>
 </html>
